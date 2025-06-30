@@ -11,15 +11,21 @@ namespace Notion.Sync.Api.Controllers
     public class NotionController : ControllerBase
     {
         private readonly HttpClient _httpClient;
-        public NotionController(HttpClient httpClient)
+        private readonly IConfiguration _configuration;
+
+        public NotionController(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _configuration = configuration;
         }
         [HttpPost("articles/query")]
         public async Task<IActionResult> QueryArticles()
         {
-            string notionToken = "";
+            string notionToken = _configuration["notionToken"];
+
             string databaseId = "220a52ceaaaf80328f81e1c663be707f";
+
+            Console.WriteLine(_configuration["AllowedHosts"]);
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", notionToken);
             _httpClient.DefaultRequestHeaders.Add("Notion-Version", "2022-06-28");
@@ -48,8 +54,9 @@ namespace Notion.Sync.Api.Controllers
         [HttpPost("tags/query")]
         public async Task<IActionResult> QueryTags()
         {
-            string notionToken = "";
-            string databaseId = "220a52ceaaaf802fad9de344d2b38e23";
+            string notionToken = _configuration["notionToken"];
+
+            string databaseId = "220a52ceaaaf80c9b0effb671054afc9";
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", notionToken);
             _httpClient.DefaultRequestHeaders.Add("Notion-Version", "2022-06-28");
