@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notion.Sync.Api", "Notion.Sync.Api\Notion.Sync.Api.csproj", "{3DC1C16D-A002-44D5-B671-ECD59132CD16}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DC1C16D-A002-44D5-B671-ECD59132CD16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DC1C16D-A002-44D5-B671-ECD59132CD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DC1C16D-A002-44D5-B671-ECD59132CD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DC1C16D-A002-44D5-B671-ECD59132CD16}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8BE0996A-4C84-4A34-AC71-A14AEF9C710B}
+	EndGlobalSection
+EndGlobal
