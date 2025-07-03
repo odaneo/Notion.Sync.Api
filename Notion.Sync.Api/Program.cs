@@ -1,3 +1,5 @@
+﻿using Notion.Sync.Api.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,6 +10,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient();
+
+builder.Services.AddAppDbContext(builder.Configuration);
 
 var app = builder.Build();
 

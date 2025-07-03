@@ -56,7 +56,7 @@ namespace Notion.Sync.Api.Controllers
         {
             string notionToken = _configuration["notionToken"];
 
-            string databaseId = "220a52ceaaaf80c9b0effb671054afc9";
+            string databaseId = "220a52ceaaaf802fad9de344d2b38e23";
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", notionToken);
             _httpClient.DefaultRequestHeaders.Add("Notion-Version", "2022-06-28");
