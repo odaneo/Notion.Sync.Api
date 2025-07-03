@@ -1,6 +1,6 @@
 ﻿namespace Notion.Sync.Api.Dtos
 {
-    public class NotionArticleDtos
+    public class NotionArticleDto
     {
         public string ArticleId { set; get; }
         public string Title { set; get; }

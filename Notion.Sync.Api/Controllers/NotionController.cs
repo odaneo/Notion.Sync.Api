@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Notion.Sync.Api.Business.IServices;
 using Notion.Sync.Api.Common;
 using System.Net.Http.Headers;
 using System.Text;
@@ -12,11 +13,13 @@ namespace Notion.Sync.Api.Controllers
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        private readonly ITagService _tagService;
 
-        public NotionController(HttpClient httpClient, IConfiguration configuration)
+        public NotionController(HttpClient httpClient, IConfiguration configuration, ITagService tagService)
         {
             _httpClient = httpClient;
             _configuration = configuration;
+            _tagService = tagService;
         }
         [HttpPost("articles/query")]
         public async Task<IActionResult> QueryArticles()
@@ -55,31 +58,39 @@ namespace Notion.Sync.Api.Controllers
         public async Task<IActionResult> QueryTags()
         {
             string notionToken = _configuration["notionToken"];
-
-            string databaseId = "220a52ceaaaf802fad9de344d2b38e23";
-
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", notionToken);
             _httpClient.DefaultRequestHeaders.Add("Notion-Version", "2022-06-28");
 
-            var url = $"https://api.notion.com/v1/databases/{databaseId}/query";
+            string tagsId = _configuration["NotionDatabaseId:Tags"];
+            string subTagsId = _configuration["NotionDatabaseId:SubTags"];
+
+            var tags = await GetListFromNotionDatabase(tagsId);
+
+            var subTags = await GetListFromNotionDatabase(subTagsId);
+
+            return Ok(tags);
+        }
+
+        private async Task<List<object>> GetListFromNotionDatabase(string id)
+        {
+            var url = $"https://api.notion.com/v1/databases/{id}/query";
 
             var body = new StringContent("{}", Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync(url, body);
-
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json);
-            var results = doc.RootElement.GetProperty("results");
+            var jsonResults = doc.RootElement.GetProperty("results");
 
-            List<object> articles = [];
+            List<object> tags = [];
 
-            foreach (var result in results.EnumerateArray())
+            foreach (var result in jsonResults.EnumerateArray())
             {
                 Dictionary<string, object> newResult = NotionHelper.FlattenNotionPage(result);
-                articles.Add(newResult);
+                tags.Add(newResult);
             }
 
-            return Ok(articles);
+            return tags;
         }
     }
 }
