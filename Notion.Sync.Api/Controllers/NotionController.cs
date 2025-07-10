@@ -15,47 +15,35 @@ namespace Notion.Sync.Api.Controllers
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly ITagService _tagService;
-
-        public NotionController(HttpClient httpClient, IConfiguration configuration, ITagService tagService)
+        private readonly ILogger _logger;
+        public NotionController(HttpClient httpClient, IConfiguration configuration, ITagService tagService, ILogger<NotionController> logger)
         {
             _httpClient = httpClient;
             _configuration = configuration;
             _tagService = tagService;
+            _logger = logger;
         }
-        [HttpPost("articles/query")]
+        [HttpPost("articles/queryAll")]
         public async Task<IActionResult> QueryArticles()
         {
             string notionToken = _configuration["notionToken"];
-
-            string databaseId = "220a52ceaaaf80328f81e1c663be707f";
-
-            Console.WriteLine(_configuration["AllowedHosts"]);
-
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", notionToken);
             _httpClient.DefaultRequestHeaders.Add("Notion-Version", "2022-06-28");
 
-            var url = $"https://api.notion.com/v1/databases/{databaseId}/query";
+            string databaseId = _configuration["NotionDatabaseId:ArticleList"];
 
-            var body = new StringContent("{}", Encoding.UTF8, "application/json");
+            _logger.LogInformation("Start to get articles.");
 
-            var response = await _httpClient.PostAsync(url, body);
+            var articlesJson = await GetListFromNotionDatabase(databaseId);
 
-            var json = await response.Content.ReadAsStringAsync();
-            var doc = JsonDocument.Parse(json);
-            var results = doc.RootElement.GetProperty("results");
+            _logger.LogInformation("Successfully retrieved articles from Notion.");
 
-            List<object> articles = [];
-
-            foreach (var result in results.EnumerateArray())
-            {
-                Dictionary<string, object> newResult = NotionHelper.FlattenNotionPage(result);
-                articles.Add(newResult);
-            }
+            ICollection<NotionArticleDto> articles = NotionHelper.GetNotionArticleDtoList(articlesJson);
 
             return Ok(articles);
         }
 
-        [HttpPost("tags/query")]
+        [HttpPost("tags/queryAll")]
         public async Task<IActionResult> QueryTags()
         {
             string notionToken = _configuration["notionToken"];
@@ -65,17 +53,34 @@ namespace Notion.Sync.Api.Controllers
             string tagsId = _configuration["NotionDatabaseId:Tags"];
             string subTagsId = _configuration["NotionDatabaseId:SubTags"];
 
+            _logger.LogInformation("Start to get sub-tags.");
+
             var subTagsJson = await GetListFromNotionDatabase(subTagsId);
 
-            List<SubTagDto> subTagDtoList = GetSubTagDtoList(subTagsJson);
+            _logger.LogInformation("Successfully retrieved sub-tags from Notion.");
+
+            ICollection<SubTagDto> subTagDtoList = NotionHelper.GetSubTagDtoList(subTagsJson);
+
+            _logger.LogInformation("Start to get tags.");
 
             var tagsJson = await GetListFromNotionDatabase(tagsId);
 
-            List<TagDto> tagDtoList = GetTagDtoList(tagsJson, subTagDtoList);
+            _logger.LogInformation("Successfully retrieved tags from Notion.");
 
-            await _tagService.AddTagsWithSubTagsAsync(tagDtoList);
+            ICollection<TagDto> tagDtoList = NotionHelper.GetTagDtoList(tagsJson, subTagDtoList);
 
-            return Ok();
+            try
+            {
+                await _tagService.AddTagsWithSubTagsAsync(tagDtoList);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, "Failed to add tags with sub-tags.");
+
+                return BadRequest(ex.Message);
+            }
         }
 
         private async Task<JsonElement> GetListFromNotionDatabase(string id)
@@ -90,82 +95,6 @@ namespace Notion.Sync.Api.Controllers
             var jsonResults = doc.RootElement.GetProperty("results");
 
             return jsonResults;
-        }
-        private static List<SubTagDto> GetSubTagDtoList(JsonElement subTagsJson)
-        {
-            List<SubTagDto> subTagDtoList = [];
-
-            foreach (var result in subTagsJson.EnumerateArray())
-            {
-                var properties = result.GetProperty("properties");
-                var slug = properties
-                            .GetProperty("Slug")
-                            .GetProperty("rich_text")
-                            .EnumerateArray()
-                            .FirstOrDefault()
-                            .GetProperty("plain_text").GetString();
-                var title = properties
-                            .GetProperty("Name")
-                            .GetProperty("title")
-                            .EnumerateArray()
-                            .FirstOrDefault()
-                            .GetProperty("plain_text").GetString();
-
-                var subTagDto = new SubTagDto()
-                {
-                    NotionId = result.GetProperty("id").GetString(),
-                    Title = title,
-                    Slug = slug,
-                    LastEditedTime = result.GetProperty("last_edited_time").GetDateTime()
-                };
-                subTagDtoList.Add(subTagDto);
-            }
-
-            return subTagDtoList;
-        }
-
-        private static List<TagDto> GetTagDtoList(JsonElement tagJson, List<SubTagDto> subTagDtoList)
-        {
-            List<TagDto> tagDtoList = [];
-
-            var subTagMap = subTagDtoList.ToDictionary(t => t.NotionId!);
-
-            foreach (var result in tagJson.EnumerateArray())
-            {
-                var properties = result.GetProperty("properties");
-                var slug = properties
-                            .GetProperty("Slug")
-                            .GetProperty("rich_text")
-                            .EnumerateArray()
-                            .FirstOrDefault()
-                            .GetProperty("plain_text").GetString();
-                var title = properties.GetProperty("Name")
-                            .GetProperty("title")
-                            .EnumerateArray()
-                            .FirstOrDefault()
-                            .GetProperty("plain_text").GetString();
-                List<SubTagDto> subTags = properties
-                            .GetProperty("🏷️ SubTags")
-                            .GetProperty("relation")
-                            .EnumerateArray()
-                            .Select(r => r.GetProperty("id").GetString())
-                            .Where(id => id != null && subTagMap.TryGetValue(id, out _))
-                            .Select(id => subTagMap[id!])
-                            .ToList();
-
-                var tagDto = new TagDto()
-                {
-                    NotionId = result.GetProperty("id").GetString(),
-                    Title = title,
-                    Slug = slug,
-                    LastEditedTime = result.GetProperty("last_edited_time").GetDateTime(),
-                    SubTags = subTags
-                };
-
-                tagDtoList.Add(tagDto);
-            }
-            return tagDtoList;
-
         }
     }
 }

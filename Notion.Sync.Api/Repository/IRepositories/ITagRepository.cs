@@ -6,5 +6,6 @@ namespace Notion.Sync.Api.Repository.IRepositories
     public interface ITagRepository : IBaseRepository<Tag>
     {
         AppDbContext AppDbContext { get; }
+        public Task<Tag?> GetByIdAsync(string Id);
     }
 }

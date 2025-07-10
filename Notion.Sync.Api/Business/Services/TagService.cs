@@ -9,9 +9,12 @@ namespace Notion.Sync.Api.Business.Services
     public class TagService : BaseService<TagService>, ITagService
     {
         private readonly ITagRepository _tagRepository;
-        public TagService(ITagRepository tagRepository, IMapper mapper, ILogger<TagService> logger) : base(mapper, logger)
+        private readonly ISubTagRepository _subTagRepository;
+
+        public TagService(ITagRepository tagRepository, ISubTagRepository subTagRepository, IMapper mapper, ILogger<TagService> logger) : base(mapper, logger)
         {
             _tagRepository = tagRepository;
+            _subTagRepository = subTagRepository;
         }
         public async Task AddTagsWithSubTagsAsync(ICollection<TagDto> tagDtos)
         {
@@ -29,7 +32,24 @@ namespace Notion.Sync.Api.Business.Services
 
             try
             {
-                await _tagRepository.AddRangeAsync(tags);
+                foreach (var tag in tags)
+                {
+
+                    var existingTag = await _tagRepository.GetByIdAsync(tag.Id);
+
+                    if (existingTag != null)
+                    {
+                        existingTag.Title = tag.Title;
+                        existingTag.Slug = tag.Slug;
+                        existingTag.LastEditedTime = tag.LastEditedTime;
+                        _subTagRepository.RemoveRange(existingTag.SubTags);
+                        existingTag.SubTags = tag.SubTags;
+                    }
+                    else
+                    {
+                        await _tagRepository.AddAsync(tag);
+                    }
+                }
 
                 var success = await _tagRepository.SaveAsync();
                 if (success)

@@ -1,8 +1,4 @@
-﻿using Notion.Sync.Api.Business.IServices;
-using Notion.Sync.Api.Business.Services;
-using Notion.Sync.Api.Extensions;
-using Notion.Sync.Api.Repository.IRepositories;
-using Notion.Sync.Api.Repository.Repositories;
+﻿using Notion.Sync.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,10 +13,9 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddAppDbContext(builder.Configuration);
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddServices();
 
-builder.Services.AddScoped<ITagRepository, TagRepository>();// TODO
-builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

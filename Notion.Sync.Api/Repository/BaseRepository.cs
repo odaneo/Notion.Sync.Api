@@ -25,6 +25,13 @@ namespace Notion.Sync.Api.Repository
         {
             return await _dbSet.Where(expression).ToListAsync();
         }
+        public async Task<List<T>> FindAsNoTrackingAsync(Expression<Func<T, bool>> expression)
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .Where(expression)
+                .ToListAsync();
+        }
         public async Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);

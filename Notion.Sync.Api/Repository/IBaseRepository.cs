@@ -7,6 +7,7 @@ namespace Notion.Sync.Api.Repository
         Task AddAsync(T entity);
         Task AddRangeAsync(IEnumerable<T> entities);
         Task<List<T>> FindAsync(Expression<Func<T, bool>> expression);
+        Task<List<T>> FindAsNoTrackingAsync(Expression<Func<T, bool>> expression);
         Task<List<T>> GetAllAsync();
         IQueryable<T> GetQueryable();
         void Remove(T entity);

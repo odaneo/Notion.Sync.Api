@@ -6,6 +6,6 @@
         public string Title { get; set; }
         public string Slug { get; set; }
         public DateTime LastEditedTime { get; set; }
-        public List<SubTagDto> SubTags { get; set; } = [];
+        public ICollection<SubTagDto> SubTags { get; set; } = [];
     }
 }

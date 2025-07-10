@@ -2,10 +2,12 @@
 {
     public class NotionArticleDto
     {
+        public string NotionId { get; set; }
         public string ArticleId { set; get; }
         public string Title { set; get; }
         public bool Published { set; get; } = false;
-        public List<string> TagsId { set; get; } = [];
-        public List<string> SubTagsId { set; get; } = [];
+        public DateTime LastEditedTime { get; set; }
+        public ICollection<string> TagsId { set; get; } = [];
+        public ICollection<string> SubTagsId { set; get; } = [];
     }
 }
