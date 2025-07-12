@@ -14,8 +14,8 @@ namespace Notion.Sync.Api.Common
                 var articleId = GetArticleIdFromJson(result);
                 var title = GetTitleFromJson(result);
                 bool published = GetIsPublishedFromJson(result);
-                ICollection<string?> tagsId = GetTagIdsFromJson(result).ToList();
-                ICollection<string?> subTagsId = GetSubTagIdsFromJson(result).ToList();
+                ICollection<string?> tagsIds = GetTagIdsFromJson(result).ToList();
+                ICollection<string?> subTagsIds = GetSubTagIdsFromJson(result).ToList();
 
                 notionArticleList.Add(
                     new NotionArticleDto()
@@ -25,8 +25,8 @@ namespace Notion.Sync.Api.Common
                         Title = title,
                         Published = published,
                         LastEditedTime = GetLastEditedTimeFromJson(result),
-                        TagsId = tagsId,
-                        SubTagsId = subTagsId
+                        TagsIds = tagsIds,
+                        SubTagsIds = subTagsIds
                     });
             }
 

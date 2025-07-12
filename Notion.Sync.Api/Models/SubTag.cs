@@ -13,5 +13,6 @@ namespace Notion.Sync.Api.Models
         public DateTime LastEditedTime { get; set; }
         public string TagId { get; set; } = default!;
         public Tag Tag { get; set; } = default!;
+        public ICollection<NotionArticleSubTag> NotionArticleSubTags { get; set; } = [];
     }
 }
