@@ -22,8 +22,6 @@ namespace Notion.Sync.Api.Business.Services
 
             var tags = _mapper.Map<List<Tag>>(tagDtos);
 
-            _logger.LogDebug("Mapped {Count} tags with SubTags", tags.Count);
-
             var dbContext = _tagRepository.AppDbContext;
 
             _logger.LogInformation("Begin transaction");

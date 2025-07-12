@@ -10,17 +10,19 @@ namespace Notion.Sync.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NotionController : ControllerBase
+    public class NotionDatabaseController : ControllerBase
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        private readonly INotionArticleService _notionArticleService;
         private readonly ITagService _tagService;
         private readonly ILogger _logger;
-        public NotionController(HttpClient httpClient, IConfiguration configuration, ITagService tagService, ILogger<NotionController> logger)
+        public NotionDatabaseController(HttpClient httpClient, IConfiguration configuration, ITagService tagService, INotionArticleService notionArticleService, ILogger<NotionDatabaseController> logger)
         {
             _httpClient = httpClient;
             _configuration = configuration;
             _tagService = tagService;
+            _notionArticleService = notionArticleService;
             _logger = logger;
         }
         [HttpPost("articles/queryAll")]
@@ -40,7 +42,18 @@ namespace Notion.Sync.Api.Controllers
 
             ICollection<NotionArticleDto> articles = NotionHelper.GetNotionArticleDtoList(articlesJson);
 
-            return Ok(articles);
+            try
+            {
+                await _notionArticleService.AddNotionArticleAsync(articles);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, "Failed to add notion article.");
+
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("tags/queryAll")]

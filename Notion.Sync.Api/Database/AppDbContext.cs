@@ -51,6 +51,11 @@ namespace Notion.Sync.Api.Database
                     .WithOne(e => e.NotionArticle)
                     .HasForeignKey(e => e.NotionArticleId)
                     .OnDelete(DeleteBehavior.Cascade);
+                entity
+                    .HasOne(e => e.Article)
+                    .WithOne(e => e.NotionArticle)
+                    .HasForeignKey<NotionArticle>(e => e.ArticleId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<NotionArticleTag>(entity =>
             {

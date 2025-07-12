@@ -7,16 +7,19 @@ namespace Notion.Sync.Api.Repository.Repositories
 {
     public class NotionArticleRepository : BaseRepository<NotionArticle>, INotionArticleRepository
     {
+        public AppDbContext AppDbContext { get; }
         public NotionArticleRepository(AppDbContext appDbContext) : base(appDbContext)
         {
+            AppDbContext = appDbContext;
         }
         public async Task<NotionArticle?> GetByIdAsync(string Id)
         {
             return await _dbSet
-                    //.Include(t => t.NotionArticleTags)
-                    //    .ThenInclude(at => at.Tag)
-                    //.Include(t => t.NotionArticleSubTags)
-                    //    .ThenInclude(at => at.SubTag)
+                    .Include(t => t.Article)
+                    .Include(t => t.NotionArticleTags)
+                        .ThenInclude(at => at.Tag)
+                    .Include(t => t.NotionArticleSubTags)
+                        .ThenInclude(at => at.SubTag)
                     .FirstOrDefaultAsync(t => t.Id == Id);
         }
     }
