@@ -10,6 +10,7 @@ namespace Notion.Sync.Api.Database
         }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<SubTag> SubTags { get; set; }
+        public DbSet<Article> Articles { get; set; }
         public DbSet<NotionArticle> NotionArticles { get; set; }
         public DbSet<NotionArticleTag> NotionArticleTags { get; set; }
         public DbSet<NotionArticleSubTag> NotionArticleSubTags { get; set; }

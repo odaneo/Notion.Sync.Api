@@ -22,5 +22,15 @@ namespace Notion.Sync.Api.Repository.Repositories
                         .ThenInclude(at => at.SubTag)
                     .FirstOrDefaultAsync(t => t.Id == Id);
         }
+        public new async Task<ICollection<NotionArticle>?> GetAllAsync()
+        {
+            return await _dbSet
+                   .Include(x => x.Article)
+                   .Include(x => x.NotionArticleTags)
+                        .ThenInclude(at => at.Tag)
+                   .Include(x => x.NotionArticleSubTags)
+                        .ThenInclude(at => at.SubTag)
+                   .ToListAsync();
+        }
     }
 }

@@ -7,5 +7,6 @@ namespace Notion.Sync.Api.Repository.IRepositories
     {
         AppDbContext AppDbContext { get; }
         Task<NotionArticle?> GetByIdAsync(string Id);
+        new Task<ICollection<NotionArticle>?> GetAllAsync();
     }
 }

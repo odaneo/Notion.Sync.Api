@@ -25,9 +25,12 @@ namespace Notion.Sync.Api.Extensions
         {
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<ISubTagRepository, SubTagRepository>();
-            services.AddScoped<ITagService, TagService>();
             services.AddScoped<INotionArticleRepository, NotionArticleRepository>();
+            services.AddScoped<IArticleRepository, ArticleRepository>();
+
+            services.AddScoped<ITagService, TagService>();
             services.AddScoped<INotionArticleService, NotionArticleService>();
+            services.AddScoped<IArticleService, ArticleService>();
 
             return services;
         }

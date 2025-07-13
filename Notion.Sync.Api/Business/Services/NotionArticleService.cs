@@ -10,9 +10,11 @@ namespace Notion.Sync.Api.Business.Services
     public class NotionArticleService : BaseService<NotionArticle>, INotionArticleService
     {
         private readonly INotionArticleRepository _notionArticleRepository;
-        public NotionArticleService(IMapper mapper, ILogger<NotionArticle> logger, INotionArticleRepository notionArticleRepository) : base(mapper, logger)
+        private readonly IArticleRepository _articleRepository;
+        public NotionArticleService(IMapper mapper, ILogger<NotionArticle> logger, INotionArticleRepository notionArticleRepository, IArticleRepository articleRepository) : base(mapper, logger)
         {
             _notionArticleRepository = notionArticleRepository;
+            _articleRepository = articleRepository;
         }
         public async Task<List<string>> GetNotionArticleIdListAsync()
         {
@@ -26,6 +28,10 @@ namespace Notion.Sync.Api.Business.Services
 
             var notionArticles = _mapper.Map<List<NotionArticle>>(notionArticleDtos);
 
+            var existingArticles = await _notionArticleRepository.GetAllAsync();
+
+            var toRemove = existingArticles?.Where(x => !notionArticles.Select(a => a.Id).Contains(x.Id)).ToList();
+
             var dbContext = _notionArticleRepository.AppDbContext;
 
             _logger.LogInformation("Begin transaction");
@@ -33,6 +39,19 @@ namespace Notion.Sync.Api.Business.Services
             await using var transaction = await dbContext.Database.BeginTransactionAsync();
             try
             {
+                if (toRemove != null && toRemove.Any())
+                {
+                    foreach (var toRemoveArticle in toRemove)
+                    {
+                        if (toRemoveArticle.Article != null)
+                        {
+                            _articleRepository.Remove(toRemoveArticle.Article);
+                        }
+                    }
+
+                    _notionArticleRepository.RemoveRange(toRemove);
+                }
+
                 foreach (var article in notionArticles)
                 {
                     var existing = await _notionArticleRepository.GetByIdAsync(article.Id);
@@ -76,6 +95,16 @@ namespace Notion.Sync.Api.Business.Services
                         article.Article = newArticle;
                         await _notionArticleRepository.AddAsync(article);
                     }
+                }
+
+                var orphanArticles = dbContext.Articles
+                       .Where(a => !dbContext.NotionArticles.Any(n => n.ArticleId == a.Id))
+                       .ToList();
+
+                if (orphanArticles.Any())
+                {
+                    _articleRepository.RemoveRange(orphanArticles);
+                    _logger.LogInformation("Removed {Count} orphan articles.", orphanArticles.Count);
                 }
 
                 var success = await _notionArticleRepository.SaveAsync();
