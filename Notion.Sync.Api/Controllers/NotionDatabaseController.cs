@@ -44,8 +44,8 @@ namespace Notion.Sync.Api.Controllers
 
             try
             {
-                await _notionArticleService.AddNotionArticleAsync(articles);
-                //toRemove
+                await _notionArticleService.AddNotionArticleListAsync(articles);
+
                 return Ok();
             }
             catch (Exception ex)

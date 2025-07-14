@@ -22,7 +22,7 @@ namespace Notion.Sync.Api.Business.Services
 
             return notionArticleIdList.Select(x => x.ArticleId).ToList();
         }
-        public async Task AddNotionArticleAsync(ICollection<NotionArticleDto> notionArticleDtos)
+        public async Task AddNotionArticleListAsync(ICollection<NotionArticleDto> notionArticleDtos)
         {
             _logger.LogInformation("Start AddNotionArticleAsync: {Count}", notionArticleDtos.Count);
 

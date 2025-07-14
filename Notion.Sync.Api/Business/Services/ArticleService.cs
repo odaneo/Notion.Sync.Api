@@ -12,5 +12,20 @@ namespace Notion.Sync.Api.Business.Services
         {
             _articleRepository = articleRepository;
         }
+        public async Task<bool> AddOrUpdateArticleAsync(Article article)
+        {
+            var existing = await _articleRepository.GetByIdAsync(article.Id);
+
+            if (existing != null)
+            {
+                existing.Content = article.Content;
+            }
+            else
+            {
+                await _articleRepository.AddAsync(article);
+            }
+
+            return await _articleRepository.SaveAsync();
+        }
     }
 }
