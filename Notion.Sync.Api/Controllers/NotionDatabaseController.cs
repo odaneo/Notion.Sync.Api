@@ -25,8 +25,8 @@ namespace Notion.Sync.Api.Controllers
             _notionArticleService = notionArticleService;
             _logger = logger;
         }
-        [HttpPost("articles/queryAll")]
-        public async Task<IActionResult> QueryArticles()
+        [HttpPost("articles/queryList")]
+        public async Task<IActionResult> QueryArticleList()
         {
             string notionToken = _configuration["notionToken"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", notionToken);
