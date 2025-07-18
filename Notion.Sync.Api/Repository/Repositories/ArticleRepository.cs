@@ -15,5 +15,11 @@ namespace Notion.Sync.Api.Repository.Repositories
             return await _dbSet
                     .FirstOrDefaultAsync(t => t.Id == Id);
         }
+        public async Task<Article?> GetByIdNoTrackingAsync(string Id)
+        {
+            return await _dbSet
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(t => t.Id == Id);
+        }
     }
 }

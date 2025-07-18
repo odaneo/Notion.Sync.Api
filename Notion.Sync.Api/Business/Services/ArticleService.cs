@@ -12,6 +12,12 @@ namespace Notion.Sync.Api.Business.Services
         {
             _articleRepository = articleRepository;
         }
+        public async Task<Article?> GetArticleByIdNoTracking(string pageId)
+        {
+            var result = await _articleRepository.GetByIdNoTrackingAsync(pageId);
+
+            return result;
+        }
         public async Task<bool> AddOrUpdateArticleAsync(Article article)
         {
             var existing = await _articleRepository.GetByIdAsync(article.Id);

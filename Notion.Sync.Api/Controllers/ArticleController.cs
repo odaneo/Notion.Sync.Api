@@ -14,6 +14,16 @@ namespace Notion.Sync.Api.Controllers
         private readonly IConfiguration _configuration = configuration;
         private readonly IArticleService _articleService = articleService;
         private readonly ILogger _logger = logger;
+        [HttpGet("{pageId}")]
+        public async Task<IActionResult> QueryArticleById(string pageId)
+        {
+            var article = await _articleService.GetArticleByIdNoTracking(pageId);
+            if (article == null)
+            {
+                return NoContent();
+            }
+            return Ok(article.Content);
+        }
         [HttpPost("queryAll")]
         public async Task<IActionResult> QueryArticles()
         {
