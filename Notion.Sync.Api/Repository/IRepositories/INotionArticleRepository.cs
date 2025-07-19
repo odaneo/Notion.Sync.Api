@@ -1,4 +1,5 @@
 ﻿using Notion.Sync.Api.Database;
+using Notion.Sync.Api.Dtos;
 using Notion.Sync.Api.Models;
 
 namespace Notion.Sync.Api.Repository.IRepositories

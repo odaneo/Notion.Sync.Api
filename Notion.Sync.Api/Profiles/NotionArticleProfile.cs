@@ -27,6 +27,11 @@ namespace Notion.Sync.Api.Profiles
                         NotionArticleId = src.NotionId
                     }).ToList() ?? [];
                 });
+            CreateMap<NotionArticle, NotionArticleDetailDto>()
+                .ForMember(dest => dest.NotionId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ArticleContent, opt => opt.MapFrom(src => src.Article.Content))
+                .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.NotionArticleTags.Select(nt => nt.Tag)))
+                .ForMember(dest => dest.SubTags, opt => opt.MapFrom(src => src.NotionArticleSubTags.Select(st => st.SubTag)));
         }
     }
 }

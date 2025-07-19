@@ -16,7 +16,7 @@ namespace Notion.Sync.Api.Business.Services
             _notionArticleRepository = notionArticleRepository;
             _articleRepository = articleRepository;
         }
-        public async Task<NotionArticle?> GetByArticleIdAsync(string articleId)
+        public async Task<NotionArticleDetailDto?> GetByArticleIdAsync(string articleId)
         {
             _logger.LogInformation("Starting fetch for ArticleId={articleId}", articleId);
 
@@ -24,7 +24,7 @@ namespace Notion.Sync.Api.Business.Services
 
             _logger.LogInformation("Fetched article ArticleId={articleId}", articleId);
 
-            return article;
+            return article == null ? null : _mapper.Map<NotionArticleDetailDto>(article);
 
         }
         public async Task<List<string>> GetNotionArticleIdListAsync()

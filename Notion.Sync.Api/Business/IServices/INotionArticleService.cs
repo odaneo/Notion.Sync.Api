@@ -5,7 +5,7 @@ namespace Notion.Sync.Api.Business.IServices
 {
     public interface INotionArticleService
     {
-        Task<NotionArticle?> GetByArticleIdAsync(string ArticleId);
+        Task<NotionArticleDetailDto?> GetByArticleIdAsync(string ArticleId);
         Task AddNotionArticleListAsync(ICollection<NotionArticleDto> notionArticleDtos);
         Task<List<string>> GetNotionArticleIdListAsync();
     }

@@ -21,6 +21,7 @@ namespace Notion.Sync.Api.Repository.Repositories
                         .ThenInclude(at => at.Tag)
                     .Include(t => t.NotionArticleSubTags)
                         .ThenInclude(at => at.SubTag)
+                    .AsSplitQuery()
                     .FirstOrDefaultAsync(t => t.ArticleId == ArticleId);
         }
         public async Task<NotionArticle?> GetByIdAsync(string Id)
@@ -31,6 +32,7 @@ namespace Notion.Sync.Api.Repository.Repositories
                         .ThenInclude(at => at.Tag)
                     .Include(t => t.NotionArticleSubTags)
                         .ThenInclude(at => at.SubTag)
+                    .AsSplitQuery()
                     .FirstOrDefaultAsync(t => t.Id == Id);
         }
         public new async Task<ICollection<NotionArticle>?> GetAllAsync()
@@ -41,6 +43,7 @@ namespace Notion.Sync.Api.Repository.Repositories
                         .ThenInclude(at => at.Tag)
                    .Include(x => x.NotionArticleSubTags)
                         .ThenInclude(at => at.SubTag)
+                   .AsSplitQuery()
                    .ToListAsync();
         }
     }

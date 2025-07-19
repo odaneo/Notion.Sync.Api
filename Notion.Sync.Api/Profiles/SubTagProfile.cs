@@ -13,6 +13,11 @@ namespace Notion.Sync.Api.Profiles
                     de => de.Id,
                     opt => opt.MapFrom(src => src.NotionId)
                 );
+            CreateMap<SubTag, SubTagDto>()
+                .ForMember(
+                    de => de.NotionId,
+                    opt => opt.MapFrom(src => src.Id)
+                );
         }
     }
 }
