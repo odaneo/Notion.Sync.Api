@@ -16,11 +16,28 @@ namespace Notion.Sync.Api.Business.Services
             _notionArticleRepository = notionArticleRepository;
             _articleRepository = articleRepository;
         }
+        public async Task<NotionArticle?> GetByArticleIdAsync(string articleId)
+        {
+            _logger.LogInformation("Starting fetch for ArticleId={articleId}", articleId);
+
+            var article = await _notionArticleRepository.GetByArticleIdAsyncAsNoTracking(articleId);
+
+            _logger.LogInformation("Fetched article ArticleId={articleId}", articleId);
+
+            return article;
+
+        }
         public async Task<List<string>> GetNotionArticleIdListAsync()
         {
+            _logger.LogInformation("Retrieving list of all Notion article IDs");
+
             var notionArticleIdList = await _notionArticleRepository.GetAllAsync();
 
-            return notionArticleIdList.Select(x => x.ArticleId).ToList();
+            var ids = notionArticleIdList.Select(x => x.ArticleId).ToList();
+
+            _logger.LogInformation("Total Notion article IDs retrieved: {Count}", ids.Count);
+
+            return ids;
         }
         public async Task AddNotionArticleListAsync(ICollection<NotionArticleDto> notionArticleDtos)
         {

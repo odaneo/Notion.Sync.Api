@@ -1,10 +1,12 @@
 ﻿using Notion.Sync.Api.Dtos;
+using Notion.Sync.Api.Models;
 
 namespace Notion.Sync.Api.Business.IServices
 {
     public interface INotionArticleService
     {
-        public Task AddNotionArticleListAsync(ICollection<NotionArticleDto> notionArticleDtos);
-        public Task<List<string>> GetNotionArticleIdListAsync();
+        Task<NotionArticle?> GetByArticleIdAsync(string ArticleId);
+        Task AddNotionArticleListAsync(ICollection<NotionArticleDto> notionArticleDtos);
+        Task<List<string>> GetNotionArticleIdListAsync();
     }
 }

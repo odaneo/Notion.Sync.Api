@@ -12,6 +12,17 @@ namespace Notion.Sync.Api.Repository.Repositories
         {
             AppDbContext = appDbContext;
         }
+        public async Task<NotionArticle?> GetByArticleIdAsyncAsNoTracking(string ArticleId)
+        {
+            return await _dbSet
+                    .AsNoTracking()
+                    .Include(t => t.Article)
+                    .Include(t => t.NotionArticleTags)
+                        .ThenInclude(at => at.Tag)
+                    .Include(t => t.NotionArticleSubTags)
+                        .ThenInclude(at => at.SubTag)
+                    .FirstOrDefaultAsync(t => t.ArticleId == ArticleId);
+        }
         public async Task<NotionArticle?> GetByIdAsync(string Id)
         {
             return await _dbSet

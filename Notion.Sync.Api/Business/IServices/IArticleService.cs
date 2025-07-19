@@ -4,7 +4,7 @@ namespace Notion.Sync.Api.Business.IServices
 {
     public interface IArticleService
     {
-        public Task<Article?> GetArticleByIdNoTracking(string pageId);
-        public Task<bool> AddOrUpdateArticleAsync(Article article);
+        Task<Article?> GetArticleByIdNoTracking(string pageId);
+        Task<bool> AddOrUpdateArticleAsync(Article article);
     }
 }

@@ -4,6 +4,6 @@ namespace Notion.Sync.Api.Business.IServices
 {
     public interface ITagService
     {
-        public Task AddTagsWithSubTagsAsync(ICollection<TagDto> tagDtos);
+        Task AddTagsWithSubTagsAsync(ICollection<TagDto> tagDtos);
     }
 }
