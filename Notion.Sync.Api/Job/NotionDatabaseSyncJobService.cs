@@ -11,8 +11,18 @@ namespace Notion.Sync.Api.Job
     {
         public async Task SyncTagsAndArticleListAsync()
         {
+            string notionToken;
+
             // SyncTagsAndSubTags
-            string notionToken = configuration["notionToken"];
+            if (configuration["ASPNETCORE_ENVIRONMENT"] == Environments.Development)
+            {
+                notionToken = configuration["notionToken"];
+            }
+            else
+            {
+                notionToken = await SecretsHelper.GetNotionApiToken();
+            }
+
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", notionToken);
             httpClient.DefaultRequestHeaders.Add("Notion-Version", "2022-06-28");
 

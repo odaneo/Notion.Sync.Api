@@ -33,5 +33,23 @@ namespace Notion.Sync.Api.Common
                 throw;
             }
         }
+        public static async Task<string> GetNotionApiToken()
+        {
+            var cache2 = new SecretsManagerCache(new AmazonSecretsManagerClient(RegionEndpoint.GetBySystemName("ap-northeast-1")));
+            try
+            {
+                var secretString = await cache2.GetSecretString("notion-api-token");
+                var credentials = JsonSerializer.Deserialize<Dictionary<string, string>>(secretString)
+                            ?? throw new InvalidOperationException("Secret 反序列化失败");
+
+                var notionToken = credentials["notionToken"];
+
+                return notionToken;
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

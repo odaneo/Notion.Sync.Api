@@ -51,7 +51,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseHangfireDashboard();
+
+app.UseHangfireDashboard("/hangfirehangfirehangfirehangfirehangfire", new DashboardOptions
+{
+    Authorization = [new AllowAllDashboardAuthorization()]
+});
 
 RecurringJob.AddOrUpdate<NotionDatabaseSyncJobService>(
     "SyncTagsAndArticleListAsync",

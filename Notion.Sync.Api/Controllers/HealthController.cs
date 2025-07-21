@@ -9,7 +9,7 @@ namespace Notion.Sync.Api.Controllers
         [HttpGet]
         public IActionResult HealthCheck()
         {
-            return Ok("Healthy");
+            return Ok("Healthy\n");
         }
     }
 }
