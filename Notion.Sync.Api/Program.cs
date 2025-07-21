@@ -1,5 +1,6 @@
 ﻿using Hangfire;
 using Hangfire.MemoryStorage;
+using Notion.Sync.Api.Common;
 using Notion.Sync.Api.Extensions;
 using Notion.Sync.Api.Job;
 
@@ -19,9 +20,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpClient();
 
-builder.Services.AddAppDbContext(builder.Configuration);
+var connectionString = builder.Configuration["DbContext:ConnectionString"] ??
+    throw new InvalidOperationException("Database connection string not found!");
+
+if (!builder.Environment.IsDevelopment())
+{
+    connectionString = await SecretsHelper.GetSecretAsync(builder.Configuration, connectionString);
+}
+
+builder.Services.AddAppDbContext(connectionString);
 
 builder.Services.AddServices();
 
@@ -48,7 +56,7 @@ app.UseHangfireDashboard();
 RecurringJob.AddOrUpdate<NotionDatabaseSyncJobService>(
     "SyncTagsAndArticleListAsync",
     job => job.SyncTagsAndArticleListAsync(),
-    "*/15 * * * *");
+    "0 3 * * *");
 
 app.UseHttpsRedirection();
 
