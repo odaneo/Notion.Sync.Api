@@ -16,11 +16,12 @@ namespace Notion.Sync.Api.Job
             // SyncTagsAndSubTags
             if (configuration["ASPNETCORE_ENVIRONMENT"] == Environments.Development)
             {
-                notionToken = configuration["notionToken"];
+                notionToken = configuration["notionToken"]!;
             }
             else
             {
-                notionToken = await SecretsHelper.GetNotionApiToken();
+                notionToken = configuration["NotionToken:notionToken"]
+                      ?? throw new InvalidOperationException("NotionToken:notionToken 未加载");
             }
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", notionToken);

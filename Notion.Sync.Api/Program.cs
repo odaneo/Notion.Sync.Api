@@ -1,8 +1,9 @@
-﻿using Hangfire;
+﻿using Amazon.SecretsManager;
+using Hangfire;
 using Hangfire.MemoryStorage;
-using Notion.Sync.Api.Common;
 using Notion.Sync.Api.Extensions;
 using Notion.Sync.Api.Job;
+using W4k.Extensions.Configuration.Aws.SecretsManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,16 +21,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-var connectionString = builder.Configuration["DbContext:ConnectionString"] ??
-    throw new InvalidOperationException("Database connection string not found!");
-
+// AWS
 if (!builder.Environment.IsDevelopment())
 {
-    connectionString = await SecretsHelper.GetSecretAsync(builder.Configuration, connectionString);
+    builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions("AWS"));
+    builder.Services.AddAWSService<IAmazonSecretsManager>();
+    builder.Configuration
+        .AddSecretsManager(
+            builder.Configuration["AWS:SecretNameRDS"]!,
+            configurationKeyPrefix: "Db"
+        )
+        .AddSecretsManager(
+            builder.Configuration["AWS:SecretNameNotionToken"]!,
+            configurationKeyPrefix: "NotionToken"
+        );
 }
-
-builder.Services.AddAppDbContext(connectionString);
+//DB
+builder.Services.AddAppDbContext(builder.Environment.IsDevelopment(), builder.Configuration);
 
 builder.Services.AddServices();
 
@@ -62,7 +70,7 @@ RecurringJob.AddOrUpdate<NotionDatabaseSyncJobService>(
     job => job.SyncTagsAndArticleListAsync(),
     "0 3 * * *");
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
