@@ -1,28 +1,26 @@
 ﻿using Amazon.SecretsManager;
 using Hangfire;
 using Hangfire.MemoryStorage;
+using Hangfire.PostgreSql;
+using Microsoft.EntityFrameworkCore;
+using Notion.Sync.Api.Database;
 using Notion.Sync.Api.Extensions;
 using Notion.Sync.Api.Job;
 using W4k.Extensions.Configuration.Aws.SecretsManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var isDev = builder.Environment.IsDevelopment();
+
 // Add services to the container.
-
-// Hangfire
-builder.Services.AddHangfire(x => x.UseMemoryStorage());
-builder.Services.AddHangfireServer();
-builder.Services.AddHttpClient();
-builder.Services.AddTransient<NotionDatabaseSyncJobService>();
-
 builder.Services.AddControllers();
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
 
 // AWS
-if (!builder.Environment.IsDevelopment())
+if (!isDev)
 {
     builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions("AWS"));
     builder.Services.AddAWSService<IAmazonSecretsManager>();
@@ -36,18 +34,43 @@ if (!builder.Environment.IsDevelopment())
             configurationKeyPrefix: "NotionToken"
         );
 }
+
 //DB
-builder.Services.AddAppDbContext(builder.Environment.IsDevelopment(), builder.Configuration);
+var finalConnStr = builder.Configuration.BuildFinalConnString(isDev);
+builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql(finalConnStr));
+
+// Hangfire
+if (isDev)
+{
+    builder.Services.AddHangfire(x => x.UseMemoryStorage());
+}
+else
+{
+    builder.Services.AddHangfire((sp, cfg) =>
+    {
+        cfg.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+           .UseSimpleAssemblyNameTypeSerializer()
+           .UseRecommendedSerializerSettings()
+           .UsePostgreSqlStorage(opts =>
+           {
+               opts.UseNpgsqlConnection(finalConnStr);
+           });
+    });
+}
+builder.Services.AddHangfireServer();
+
+builder.Services.AddTransient<NotionDatabaseSyncJobService>();
 
 builder.Services.AddServices();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-if (!builder.Environment.IsDevelopment())
+if (!isDev)
 {
     builder.WebHost.ConfigureKestrel(options =>
     {
         options.ListenAnyIP(7031);
+        options.ListenLocalhost(7032);//HangfireDashboard
     });
 }
 
@@ -60,9 +83,26 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHangfireDashboard("/hangfirehangfirehangfirehangfirehangfire", new DashboardOptions
+app.Map("/hangfire", hb =>
 {
-    Authorization = [new AllowAllDashboardAuthorization()]
+    if (!app.Environment.IsDevelopment())
+    {
+        hb.Use(async (ctx, next) =>
+        {
+            if (ctx.Connection.LocalPort != 7032)
+            {
+                ctx.Response.StatusCode = 404;
+                return;
+            }
+            await next();
+        });
+    }
+
+    hb.UseHangfireDashboard("", new DashboardOptions
+    {
+        Authorization = [new AllowAllDashboardAuthorization()]
+    });
+
 });
 
 RecurringJob.AddOrUpdate<NotionDatabaseSyncJobService>(
