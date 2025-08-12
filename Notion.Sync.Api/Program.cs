@@ -108,7 +108,12 @@ app.Map("/hangfire", hb =>
 RecurringJob.AddOrUpdate<NotionDatabaseSyncJobService>(
     "SyncTagsAndArticleListAsync",
     job => job.SyncTagsAndArticleListAsync(),
-    "0 3 * * *");
+    "0 3 * * *",
+    new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time")
+    }
+);
 
 //app.UseHttpsRedirection();
 
