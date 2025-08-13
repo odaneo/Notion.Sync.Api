@@ -4,3 +4,4 @@
 3. 上Scaling Group
 4. Docker化以及cicd
 5. 日志优化
+6. CloudFront拦截非前端流量，以及CDN
