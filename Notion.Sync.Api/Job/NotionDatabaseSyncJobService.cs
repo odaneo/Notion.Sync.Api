@@ -1,4 +1,7 @@
-﻿using Notion.Sync.Api.Business.IServices;
+﻿using Amazon;
+using Amazon.Lambda;
+using Amazon.Lambda.Model;
+using Notion.Sync.Api.Business.IServices;
 using Notion.Sync.Api.Common;
 using Notion.Sync.Api.Dtos;
 using System.Net.Http.Headers;
@@ -78,6 +81,8 @@ namespace Notion.Sync.Api.Job
 
                 throw new Exception("Failed to article list");
             }
+
+            await InvokeLambda();
         }
         private async Task<JsonElement> GetListFromNotionDatabase(string id)
         {
@@ -91,6 +96,41 @@ namespace Notion.Sync.Api.Job
             var jsonResults = doc.RootElement.GetProperty("results");
 
             return jsonResults;
+        }
+        private async Task InvokeLambda()
+        {
+            var config = new AmazonLambdaConfig
+            {
+                RegionEndpoint = RegionEndpoint.APNortheast1
+            };
+            var functionName = "updateNotionArticles";
+            using var client = new AmazonLambdaClient(config);
+
+            try
+            {
+                logger.LogInformation("Invoking Lambda function {FunctionName}", functionName);
+
+                var resp = await client.InvokeAsync(new InvokeRequest
+                {
+                    FunctionName = functionName,
+                    InvocationType = InvocationType.RequestResponse,
+                });
+
+                logger.LogInformation("Lambda invoke completed with HTTP {StatusCode}, FunctionError={FunctionError}",
+                  resp.StatusCode, resp.FunctionError ?? "None");
+
+                string body;
+                using (var reader = new StreamReader(resp.Payload, Encoding.UTF8))
+                    body = await reader.ReadToEndAsync();
+
+                logger.LogInformation("Lambda response payload: {Payload}", body);
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error invoking Lambda");
+                throw;
+            }
         }
     }
 }

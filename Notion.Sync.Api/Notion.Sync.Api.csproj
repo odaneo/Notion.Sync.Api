@@ -11,6 +11,7 @@
 	<PackageReference Include="AutoMapper" Version="14.0.0" />
 	<PackageReference Include="AWSSDK.Core" Version="4.0.0.16" />
 	<PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.0" />
+	<PackageReference Include="AWSSDK.Lambda" Version="4.0.0.10" />
 	<PackageReference Include="AWSSDK.SecretsManager" Version="4.0.0.14" />
 	<PackageReference Include="Hangfire" Version="1.8.20" />
 	<PackageReference Include="Hangfire.AspNetCore" Version="1.8.20" />
