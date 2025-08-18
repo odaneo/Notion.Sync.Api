@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Notion.Sync.Api.Database;
 using Notion.Sync.Api.Extensions;
 using Notion.Sync.Api.Job;
+using Serilog;
 using W4k.Extensions.Configuration.Aws.SecretsManager;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
+
+// Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("Service", "NotionApi")
+    .WriteTo.Console(new Serilog.Formatting.Compact.RenderedCompactJsonFormatter())
+    .CreateLogger();
+builder.Host.UseSerilog();
 
 // AWS
 if (!isDev)
