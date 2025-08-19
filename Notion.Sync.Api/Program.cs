@@ -25,7 +25,6 @@ Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
     .Enrich.WithProperty("Service", "NotionApi")
-    .WriteTo.Console(new Serilog.Formatting.Compact.RenderedCompactJsonFormatter())
     .CreateLogger();
 builder.Host.UseSerilog();
 
