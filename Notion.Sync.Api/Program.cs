@@ -79,7 +79,7 @@ if (!isDev)
     builder.WebHost.ConfigureKestrel(options =>
     {
         options.ListenAnyIP(7031);
-        options.ListenLocalhost(7032);//HangfireDashboard
+        options.ListenAnyIP(7032);//HangfireDashboard
     });
 }
 
