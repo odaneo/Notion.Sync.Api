@@ -9,7 +9,7 @@ permissions:
   packages: write
 
 env:
-  IMAGE: ghcr.io/${{ toLower(github.repository_owner) }}/notion.sync.api
+  IMAGE: ghcr.io/odaneo/notion.sync.api
   
 jobs:
   docker:
