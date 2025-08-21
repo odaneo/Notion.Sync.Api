@@ -12,23 +12,34 @@ namespace Notion.Sync.Api.Controllers
         {
             logger.LogInformation("QueryArticleById called with pageId: {PageId}", pageId);
 
+            var _pageId = pageId;
+
+            if (Guid.TryParseExact(pageId, "N", out Guid guid))
+            {
+                _pageId = guid.ToString();
+            }
+            else
+            {
+                return NoContent();
+            }
+
             try
             {
-                var article = await notionArticleService.GetByArticleIdAsync(pageId);
+                var article = await notionArticleService.GetByArticleIdAsync(_pageId);
 
                 if (article == null)
                 {
-                    logger.LogWarning("No article found for pageId: {PageId}", pageId);
+                    logger.LogWarning("No article found for pageId: {PageId}", _pageId);
                     return NoContent();
                 }
 
-                logger.LogInformation("Article retrieved successfully for pageId: {PageId}", pageId);
+                logger.LogInformation("Article retrieved successfully for pageId: {PageId}", _pageId);
 
                 return Ok(article);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error querying article by id {PageId}", pageId);
+                logger.LogError(ex, "Error querying article by id {PageId}", _pageId);
 
                 return BadRequest();
             }
