@@ -24,7 +24,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./Notion.Sync.Api
           file: ./Notion.Sync.Api/Dockerfile
           push: true
           tags: |
