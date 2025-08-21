@@ -6,3 +6,4 @@
 5. 上Scaling Group，完成零停机滚动更新，最后丢弃ALB
 6. CloudFront拦截非前端流量，以及CDN
 7. DB优化，加redis，hangfire任务完成后，刷新redis
+8. 更换成Fargate RunTask，改成定时任务
