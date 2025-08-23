@@ -35,7 +35,7 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE }}:latest
-            ${{ env.IMAGE }}:${{ github.sha::0:7 }}
+            ${{ env.IMAGE }}:${{ github.sha }}
   deploy:
     needs: docker
     runs-on: ubuntu-latest
