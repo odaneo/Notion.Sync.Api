@@ -57,6 +57,6 @@ jobs:
             
             cd ~
             docker compose pull notion-sync-api
-            docker compose up -d notion-sync-api --remove-orphans
+            docker compose up -d --pull always --remove-orphans notion-sync-api
             docker image prune -f
             docker ps --filter "name=notion-sync-api" --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
