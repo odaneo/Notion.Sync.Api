@@ -7,7 +7,7 @@ EXPOSE 7032
 VOLUME ["/var/log/notionapi"]
 
 ENV ASPNETCORE_ENVIRONMENT=Production
-    TZ=Asia/Tokyo
+ENV TZ=Asia/Tokyo
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
