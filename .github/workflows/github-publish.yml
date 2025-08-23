@@ -1,4 +1,4 @@
-name: Push image to GHCR
+name: Push image to ECR
 on:
   push:
     branches: [ master ]
@@ -6,10 +6,14 @@ on:
   
 permissions:
   contents: read
-  packages: write
+  id-token: write
 
 env:
-  IMAGE: ghcr.io/odaneo/notion.sync.api
+  AWS_REGION: ap-northeast-1
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+  ECR_REPO: notion.sync.api
+  IMAGE: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}
   
 jobs:
   docker:
@@ -17,11 +21,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
-      - uses: docker/login-action@v3
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GHA_ECR_Pusher
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region "${AWS_REGION}" \
+          | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
       - uses: docker/build-push-action@v6
         with:
           context: ./Notion.Sync.Api
@@ -43,6 +50,12 @@ jobs:
           port: ${{ secrets.EC2_SSH_PORT || 22 }}
           script: |
             set -euo pipefail
+            export AWS_REGION=ap-northeast-1
+            export ECR_REGISTRY=${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com
+            
+            aws ecr get-login-password --region "${AWS_REGION}" \
+            | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
+            
             cd ~
             docker compose pull notion-sync-api
             docker compose up -d notion-sync-api --remove-orphans
