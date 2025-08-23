@@ -1,0 +1,14 @@
+﻿version: "3.9"
+services:
+  notion-sync-api:
+    image: ghcr.io/odaneo/notion.sync.api:latest
+    container_name: notion-sync-api
+    restart: unless-stopped
+    ports:
+      - "7031:7031"
+      - "7032:7032"
+    volumes:
+      - /var/log/notionapi:/var/log/notionapi
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      TZ: "Asia/Tokyo"
