@@ -39,6 +39,10 @@ builder.Configuration
     .AddSecretsManager(
         builder.Configuration["AWS:SecretNameNotionToken"]!,
         configurationKeyPrefix: "NotionToken"
+    )
+    .AddSecretsManager(
+        builder.Configuration["AWS:SecretNameHangfireUser"]!,
+        configurationKeyPrefix: "HangfireUser"
     );
 
 //DB
