@@ -14,8 +14,8 @@ namespace Notion.Sync.Api.Extensions
 
             _inner = new BasicAuthAuthorizationFilter(new BasicAuthAuthorizationFilterOptions
             {
-                RequireSsl = false,
-                SslRedirect = false,
+                RequireSsl = true,
+                SslRedirect = true,
                 LoginCaseSensitive = true,
                 Users = [authUser]
             });
