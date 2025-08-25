@@ -109,7 +109,7 @@ app.Map("/hangfire", hb =>
 
     hb.UseHangfireDashboard("", new DashboardOptions
     {
-        Authorization = [new AllowAllDashboardAuthorization()]
+        Authorization = [new BasicAuthDashboardAuthorization(app.Configuration)]
     });
 
 });

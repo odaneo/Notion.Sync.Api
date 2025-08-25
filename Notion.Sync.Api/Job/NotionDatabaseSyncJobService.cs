@@ -19,7 +19,7 @@ namespace Notion.Sync.Api.Job
             // SyncTagsAndSubTags
             if (configuration["ASPNETCORE_ENVIRONMENT"] == Environments.Development)
             {
-                notionToken = configuration["notionToken"]!;
+                notionToken = configuration["NotionTokenLocal"]!;
             }
             else
             {
