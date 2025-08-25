@@ -29,20 +29,17 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // AWS
-if (!isDev)
-{
-    builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions("AWS"));
-    builder.Services.AddAWSService<IAmazonSecretsManager>();
-    builder.Configuration
-        .AddSecretsManager(
-            builder.Configuration["AWS:SecretNameRDS"]!,
-            configurationKeyPrefix: "Db"
-        )
-        .AddSecretsManager(
-            builder.Configuration["AWS:SecretNameNotionToken"]!,
-            configurationKeyPrefix: "NotionToken"
-        );
-}
+builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions("AWS"));
+builder.Services.AddAWSService<IAmazonSecretsManager>();
+builder.Configuration
+    .AddSecretsManager(
+        builder.Configuration["AWS:SecretNameRDS"]!,
+        configurationKeyPrefix: "Db"
+    )
+    .AddSecretsManager(
+        builder.Configuration["AWS:SecretNameNotionToken"]!,
+        configurationKeyPrefix: "NotionToken"
+    );
 
 //DB
 var finalConnStr = builder.Configuration.BuildFinalConnString(isDev);
