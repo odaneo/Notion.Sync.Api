@@ -6,7 +6,7 @@
           {
             "file_path": "/var/log/notionapi/notionapi-*.log",
             "log_group_name": "/aws/ec2/NotionApi",
-            "log_stream_name": "{instance_id}/{file_name}",
+            "log_stream_name": "{instance_id}/{file_name}", // /opt/aws/amazon-cloudwatch-agent/etc
             "timestamp_format": "%Y-%m-%dT%H:%M:%S.%fZ",
             "timezone": "UTC"
           }
