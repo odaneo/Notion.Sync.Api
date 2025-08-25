@@ -79,7 +79,6 @@ if (!isDev)
     builder.WebHost.ConfigureKestrel(options =>
     {
         options.ListenAnyIP(7031);
-        options.ListenAnyIP(7032);//HangfireDashboard
     });
 }
 
@@ -94,18 +93,18 @@ if (app.Environment.IsDevelopment())
 
 app.Map("/hangfire", hb =>
 {
-    if (!app.Environment.IsDevelopment())
-    {
-        hb.Use(async (ctx, next) =>
-        {
-            if (ctx.Connection.LocalPort != 7032)
-            {
-                ctx.Response.StatusCode = 404;
-                return;
-            }
-            await next();
-        });
-    }
+    // if (!app.Environment.IsDevelopment())
+    // {
+    //     hb.Use(async (ctx, next) =>
+    //     {
+    //         if (ctx.Connection.LocalPort != 7031)
+    //         {
+    //             ctx.Response.StatusCode = 404;
+    //             return;
+    //         }
+    //         await next();
+    //     });
+    // }
 
     hb.UseHangfireDashboard("", new DashboardOptions
     {
