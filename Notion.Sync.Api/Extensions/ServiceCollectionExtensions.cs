@@ -8,17 +8,17 @@ namespace Notion.Sync.Api.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static string BuildFinalConnString(this IConfiguration cfg, bool isDev)
+        public static string BuildFinalConnString(this IConfiguration configuration, bool isDev)
         {
-            var template = cfg["DbContext:ConnectionString"]
-                ?? throw new InvalidOperationException("DbContext:ConnectionString 未配置");
+            var template = configuration["DbContext:ConnectionString"]
+                ?? throw new InvalidOperationException("no DbContext:ConnectionString");
 
             var csb = new NpgsqlConnectionStringBuilder(template);
 
             if (!isDev)
             {
-                csb.Username = cfg["Db:username"] ?? throw new InvalidOperationException("Db:username 未加载");
-                csb.Password = cfg["Db:password"] ?? throw new InvalidOperationException("Db:password 未加载");
+                csb.Username = configuration["Db:username"] ?? throw new InvalidOperationException("no username");
+                csb.Password = configuration["Db:password"] ?? throw new InvalidOperationException("no password");
             }
             return csb.ConnectionString;
         }

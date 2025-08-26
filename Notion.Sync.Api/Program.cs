@@ -43,7 +43,12 @@ builder.Configuration
     .AddSecretsManager(
         builder.Configuration["AWS:SecretNameHangfireUser"]!,
         configurationKeyPrefix: "HangfireUser"
-    );
+    )
+    .AddSecretsManager(
+        builder.Configuration["AWS:SecretNameSupabase"]!,
+        configurationKeyPrefix: "Supabase"
+    )
+    ;
 
 //DB
 var finalConnStr = builder.Configuration.BuildFinalConnString(isDev);
