@@ -36,27 +36,27 @@ jobs:
           tags: |
             ${{ env.IMAGE }}:latest
             ${{ env.IMAGE }}:${{ github.sha }}
-  deploy:
-    needs: docker
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy on EC2 (pull & restart)
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: ${{ secrets.EC2_SSH_PORT || 22 }}
-          script: |
-            set -euo pipefail
-            export AWS_REGION=ap-northeast-1
-            export ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com
+  # deploy:
+  #   needs: docker
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Deploy on EC2 (pull & restart)
+  #       uses: appleboy/ssh-action@v1.2.0
+  #       with:
+  #         host: ${{ secrets.EC2_HOST }}
+  #         username: ${{ secrets.EC2_USER }}
+  #         key: ${{ secrets.EC2_SSH_KEY }}
+  #         port: ${{ secrets.EC2_SSH_PORT || 22 }}
+  #         script: |
+  #           set -euo pipefail
+  #           export AWS_REGION=ap-northeast-1
+  #           export ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com
             
-            aws ecr get-login-password --region "${AWS_REGION}" \
-            | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
+  #           aws ecr get-login-password --region "${AWS_REGION}" \
+  #           | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
             
-            cd ~
-            docker compose pull notion-sync-api
-            docker compose up -d --pull always --remove-orphans notion-sync-api
-            docker image prune -f
-            docker ps --filter "name=notion-sync-api" --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
+  #           cd ~
+  #           docker compose pull notion-sync-api
+  #           docker compose up -d --pull always --remove-orphans notion-sync-api
+  #           docker image prune -f
+  #           docker ps --filter "name=notion-sync-api" --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
