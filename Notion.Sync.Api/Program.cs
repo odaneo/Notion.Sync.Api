@@ -33,10 +33,6 @@ builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions("AWS")
 builder.Services.AddAWSService<IAmazonSecretsManager>();
 builder.Configuration
     .AddSecretsManager(
-        builder.Configuration["AWS:SecretNameRDS"]!,
-        configurationKeyPrefix: "Db"
-    )
-    .AddSecretsManager(
         builder.Configuration["AWS:SecretNameNotionToken"]!,
         configurationKeyPrefix: "NotionToken"
     )
@@ -51,7 +47,6 @@ builder.Configuration
 
 //DB
 var finalConnStr = builder.Configuration.BuildFinalConnString(isDev);
-Console.WriteLine(finalConnStr);
 builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql(finalConnStr));
 
 // Hangfire

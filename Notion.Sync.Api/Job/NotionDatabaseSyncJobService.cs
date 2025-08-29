@@ -82,7 +82,7 @@ namespace Notion.Sync.Api.Job
                 throw new Exception("Failed to article list");
             }
 
-            //await InvokeLambda();
+            await InvokeLambda();
         }
         private async Task<JsonElement> GetListFromNotionDatabase(string id)
         {
