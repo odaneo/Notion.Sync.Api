@@ -17,8 +17,8 @@ namespace Notion.Sync.Api.Extensions
 
             if (!isDev)
             {
-                csb.Username = configuration["Db:username"] ?? throw new InvalidOperationException("no username");
-                csb.Password = configuration["Db:password"] ?? throw new InvalidOperationException("no password");
+                csb.Username = configuration["Supabase:username"] ?? throw new InvalidOperationException("no username");
+                csb.Password = configuration["Supabase:password"] ?? throw new InvalidOperationException("no password");
             }
             return csb.ConnectionString;
         }

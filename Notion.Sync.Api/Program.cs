@@ -51,6 +51,7 @@ builder.Configuration
 
 //DB
 var finalConnStr = builder.Configuration.BuildFinalConnString(isDev);
+Console.WriteLine(finalConnStr);
 builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql(finalConnStr));
 
 // Hangfire
