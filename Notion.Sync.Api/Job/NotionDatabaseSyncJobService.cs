@@ -15,9 +15,10 @@ namespace Notion.Sync.Api.Job
         public async Task SyncTagsAndArticleListAsync()
         {
             string notionToken;
+            bool isDev = configuration["ASPNETCORE_ENVIRONMENT"] == Environments.Development;
 
             // SyncTagsAndSubTags
-            if (configuration["ASPNETCORE_ENVIRONMENT"] == Environments.Development)
+            if (isDev)
             {
                 notionToken = configuration["NotionTokenLocal"]!;
             }
@@ -82,7 +83,10 @@ namespace Notion.Sync.Api.Job
                 throw new Exception("Failed to article list");
             }
 
-            await InvokeLambda();
+            if (!isDev)
+            {
+                await InvokeLambda();
+            }
         }
         private async Task<JsonElement> GetListFromNotionDatabase(string id)
         {

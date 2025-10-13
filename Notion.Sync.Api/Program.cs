@@ -29,21 +29,24 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // AWS
-builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions("AWS"));
-builder.Services.AddAWSService<IAmazonSecretsManager>();
-builder.Configuration
-    .AddSecretsManager(
-        builder.Configuration["AWS:SecretNameNotionToken"]!,
-        configurationKeyPrefix: "NotionToken"
-    )
-    .AddSecretsManager(
-        builder.Configuration["AWS:SecretNameHangfireUser"]!,
-        configurationKeyPrefix: "HangfireUser"
-    )
-    .AddSecretsManager(
-        builder.Configuration["AWS:SecretNameSupabase"]!,
-        configurationKeyPrefix: "Supabase"
-    );
+if (!isDev)
+{
+    builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions("AWS"));
+    builder.Services.AddAWSService<IAmazonSecretsManager>();
+    builder.Configuration
+        .AddSecretsManager(
+            builder.Configuration["AWS:SecretNameNotionToken"]!,
+            configurationKeyPrefix: "NotionToken"
+        )
+        .AddSecretsManager(
+            builder.Configuration["AWS:SecretNameHangfireUser"]!,
+            configurationKeyPrefix: "HangfireUser"
+        )
+        .AddSecretsManager(
+            builder.Configuration["AWS:SecretNameSupabase"]!,
+            configurationKeyPrefix: "Supabase"
+        );
+}
 
 //DB
 var finalConnStr = builder.Configuration.BuildFinalConnString(isDev);
@@ -92,27 +95,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.Map("/hangfire", hb =>
+if (app.Environment.IsDevelopment())
 {
-    // if (!app.Environment.IsDevelopment())
-    // {
-    //     hb.Use(async (ctx, next) =>
-    //     {
-    //         if (ctx.Connection.LocalPort != 7031)
-    //         {
-    //             ctx.Response.StatusCode = 404;
-    //             return;
-    //         }
-    //         await next();
-    //     });
-    // }
-
-    hb.UseHangfireDashboard("", new DashboardOptions
+    app.UseHangfireDashboard("/hangfire");
+}
+else
+{
+    app.UseHangfireDashboard("/hangfire", new DashboardOptions
     {
         Authorization = [new BasicAuthDashboardAuthorization(app.Configuration)]
     });
-
-});
+}
 
 RecurringJob.AddOrUpdate<NotionDatabaseSyncJobService>(
     "SyncTagsAndArticleListAsync",

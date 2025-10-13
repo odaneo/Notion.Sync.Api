@@ -12,7 +12,8 @@ namespace Notion.Sync.Api.Common
             foreach (var result in articlesJson.EnumerateArray())
             {
                 var articleId = GetArticleIdFromJson(result);
-                var title = GetTitleFromJson(result);
+                var title = GetArticleTitleFromJson(result);
+                var slug = GetSlugFromJson(result);
                 bool published = GetIsPublishedFromJson(result);
                 ICollection<string?> tagsIds = GetTagIdsFromJson(result).ToList();
                 ICollection<string?> subTagsIds = GetSubTagIdsFromJson(result).ToList();
@@ -23,6 +24,7 @@ namespace Notion.Sync.Api.Common
                         NotionId = GetNotionIdFromJson(result),
                         ArticleId = articleId,
                         Title = title,
+                        Slug = slug,
                         Published = published,
                         LastEditedTime = GetLastEditedTimeFromJson(result),
                         TagsIds = tagsIds,
@@ -88,6 +90,15 @@ namespace Notion.Sync.Api.Common
             return result
                     .GetProperty("properties")
                     .GetProperty("Slug")
+                    .GetProperty("rich_text")
+                    .EnumerateArray()
+                    .FirstOrDefault()
+                    .GetProperty("plain_text").GetString();
+        }
+        private static string? GetArticleTitleFromJson(JsonElement result)
+        {
+            return result.GetProperty("properties")
+                    .GetProperty("Title")
                     .GetProperty("rich_text")
                     .EnumerateArray()
                     .FirstOrDefault()

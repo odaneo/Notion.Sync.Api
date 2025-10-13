@@ -76,6 +76,7 @@ namespace Notion.Sync.Api.Business.Services
                     if (existing != null)
                     {
                         existing.Title = article.Title;
+                        existing.Slug = article.Slug;
                         existing.Published = article.Published;
                         existing.LastEditedTime = article.LastEditedTime;
 
