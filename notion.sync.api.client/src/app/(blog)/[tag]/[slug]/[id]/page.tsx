@@ -19,11 +19,11 @@ export default async function ArticlePage({ params }: PageProps) {
     detail = data ?? null;
   }
   if (!detail) {
-    return <div className="text-slate-600 dark:text-slate-300">未找到文章</div>;
+    return <div className="text-slate-600">未找到文章</div>;
   }
 
   return (
-    <article className="prose prose-slate max-w-none dark:prose-invert">
+    <article className="prose prose-slate max-w-none">
       <h2 className="mb-2 text-2xl font-semibold tracking-tight">
         {detail.Title}
       </h2>
@@ -32,7 +32,7 @@ export default async function ArticlePage({ params }: PageProps) {
           {detail.SubTags.map((t) => (
             <span
               key={t.Id}
-              className="rounded-full border border-slate-200 px-2.5 py-0.5 text-xs text-slate-600 dark:border-slate-700 dark:text-slate-300"
+              className="rounded-full border border-slate-200 px-2.5 py-0.5 text-xs text-slate-600"
             >
               {t.Title}
             </span>
@@ -41,11 +41,11 @@ export default async function ArticlePage({ params }: PageProps) {
       ) : null}
       {detail.Content ? (
         <div
-          className="leading-7 text-slate-700 dark:text-slate-200"
+          className="leading-7 text-slate-700"
           dangerouslySetInnerHTML={{ __html: detail.Content }}
         />
       ) : (
-        <p className="text-slate-600 dark:text-slate-300">暂无内容</p>
+        <p className="text-slate-600">暂无内容</p>
       )}
     </article>
   );

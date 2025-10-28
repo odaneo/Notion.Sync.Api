@@ -1,26 +1,59 @@
 @import "tailwindcss";
 
+/* Light theme palette (emerald + slate) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* App surfaces */
+  --bg-app: #f8fafc;        /* slate-50 */
+  --bg-surface: #ffffff;     /* white */
+
+  /* Text */
+  --text-primary: #0f172a;   /* slate-900 */
+  --text-secondary: #475569; /* slate-600 */
+
+  /* Accents */
+  --accent: #10b981;         /* emerald-500 */
+  --accent-600: #059669;     /* emerald-600 */
+  --accent-100: #d1fae5;     /* emerald-100 */
+
+  /* Borders */
+  --border: #e2e8f0;         /* slate-200 */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg-app);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background: var(--bg-app);
+  color: var(--text-primary);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* Unify border color to subtle slate */
+*, *::before, *::after { border-color: var(--border); }
+
+/* Links use emerald accent */
+a { color: var(--accent-600); }
+a:hover { color: var(--accent); }
+
+/* Text selection with soft emerald */
+::selection {
+  background: var(--accent-100);
+  color: #065f46; /* emerald-800 */
+}
+
+/* Article content defaults (when using .prose) */
+.prose { color: var(--text-secondary); }
+.prose h1, .prose h2, .prose h3, .prose h4 { color: var(--text-primary); }
+.prose a { color: var(--accent-600); text-decoration: underline; }
+.prose a:hover { color: var(--accent); }
+.prose code { background: #f1f5f9; padding: 0.15rem 0.35rem; border-radius: 0.25rem; }
+.prose blockquote { border-left: 3px solid var(--accent); padding-left: 0.875rem; color: var(--text-secondary); }
