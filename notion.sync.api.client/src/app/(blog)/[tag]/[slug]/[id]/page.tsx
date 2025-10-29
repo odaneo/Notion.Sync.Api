@@ -1,5 +1,7 @@
 import { supabase } from "@/utils/supabase/server";
 import { GetArticleWithSubTagsResponseType } from "@/type/api.type";
+import { ExtendedRecordMap } from "notion-types";
+import NotionSSR from "@/components/NotionSSR";
 
 export const dynamic = "force-dynamic";
 
@@ -40,10 +42,11 @@ export default async function ArticlePage({ params }: PageProps) {
         </div>
       ) : null}
       {detail.Content ? (
-        <div
-          className="leading-7 text-slate-700"
-          dangerouslySetInnerHTML={{ __html: detail.Content }}
-        />
+        <div className="leading-7 text-slate-700">
+          <NotionSSR
+            recordMap={JSON.parse(detail.Content) as ExtendedRecordMap}
+          />
+        </div>
       ) : (
         <p className="text-slate-600">暂无内容</p>
       )}
