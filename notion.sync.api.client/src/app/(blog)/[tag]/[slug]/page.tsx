@@ -33,7 +33,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
       <div className="mb-4 flex flex-wrap gap-3">
         {detail.SubTags?.map((t) => (
-          <span key={t.Id} className="badge badge-primary">
+          <span key={t.Id} className="badge badge-primary rounded">
             {t.Title}
           </span>
         ))}

@@ -1,5 +1,6 @@
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
+  - '@vercel/speed-insights'
   - canvas
   - sharp
   - unrs-resolver

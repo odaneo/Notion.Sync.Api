@@ -1,5 +1,4 @@
 "use client";
-
 import type { ExtendedRecordMap } from "notion-types";
 import { NotionRenderer } from "react-notion-x";
 import dynamic from "next/dynamic";

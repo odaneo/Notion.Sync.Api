@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabase } from "@/utils/supabase/server";
 import { GetTagsWithArticlesResponseType } from "@/type/api.type";
+import MenuList from "@/components/MenuList";
 
 export const dynamic = "force-dynamic";
 
@@ -44,9 +45,12 @@ export default async function BlogLayout({ children }: LayoutProps) {
                         )}`;
 
                         return (
-                          <li key={a.Id}>
-                            <Link href={href}>{a.Title}</Link>
-                          </li>
+                          <MenuList
+                            key={a.Id}
+                            href={href}
+                            title={a.Title}
+                            slug={a.Slug}
+                          />
                         );
                       })}
                     </ul>

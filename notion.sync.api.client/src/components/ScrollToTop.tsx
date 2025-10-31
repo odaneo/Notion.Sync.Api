@@ -1,5 +1,4 @@
 "use client";
-
 import { ArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
 

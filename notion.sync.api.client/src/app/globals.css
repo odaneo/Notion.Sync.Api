@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes:
-    nord,
-    dark --prefersdark;
+  themes: wireframe;
 }
 
 @theme inline {
@@ -13,5 +11,23 @@
 @layer base {
   :root {
     --notion-max-width: 900px !important;
+  }
+
+  html {
+    overflow-y: scroll;
+  }
+
+  :root {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  :root body {
+    position: absolute;
+  }
+
+  body {
+    width: 100vw;
+    overflow: hidden;
   }
 }

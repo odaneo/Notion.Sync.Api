@@ -13,7 +13,7 @@ export default function UpdatedAtJST({ date }: { date: string }) {
   return (
     <time
       dateTime={d.toISOString()}
-      className="badge badge-soft ml-auto"
+      className="badge badge-dash ml-auto rounded"
       title={d.toISOString()}
     >
       {"更新于"}：{formatted}
