@@ -2,7 +2,7 @@ export type ArticlesType = {
   Id: string;
   Title: string;
   Slug: string;
-  LastEditedTime: Date;
+  LastEditedTime: string;
   SubTags?: SubTagsType[];
 };
 
@@ -22,6 +22,7 @@ export type GetArticleWithSubTagsResponseType = {
   Content: string;
   Title: string;
   Slug: string;
-  LastEditedTime: Date;
+  LastEditedTime: string;
+  Id: string;
   SubTags?: SubTagsType[];
 };
