@@ -106,12 +106,11 @@ namespace Notion.Sync.Api.Common
         }
         private static string? GetTitleFromJson(JsonElement result)
         {
-            return result.GetProperty("properties")
+            var arr = result.GetProperty("properties")
                     .GetProperty("Name")
                     .GetProperty("title")
-                    .EnumerateArray()
-                    .FirstOrDefault()
-                    .GetProperty("plain_text").GetString();
+                    .EnumerateArray();
+            return string.Join("", arr.Select(x => x.GetProperty("plain_text").GetString()));
         }
         private static string? GetNotionIdFromJson(JsonElement result)
         {
