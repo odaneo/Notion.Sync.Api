@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { supabase } from "@/utils/supabase/server";
 import { GetTagsWithArticlesResponseType } from "@/type/api.type";
 import MenuList from "@/components/MenuList";
