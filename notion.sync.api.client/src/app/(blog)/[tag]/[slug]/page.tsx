@@ -26,7 +26,7 @@ export default async function ArticlePage({ params }: PageProps) {
   }
 
   return (
-    <article>
+    <article className="overflow-x-auto">
       <h2 className="mb-3 text-2xl font-semibold tracking-tight">
         {detail.Title}
       </h2>

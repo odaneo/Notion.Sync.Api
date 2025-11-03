@@ -22,14 +22,13 @@ export default async function BlogLayout({ children }: LayoutProps) {
         <div className="drawer-content">
           <label
             htmlFor="my-drawer-3"
-            className="btn drawer-button w-full h-10 sticky top-[var(--header)] justify-start bg-transparent backdrop-blur-md border-transparent lg:hidden"
+            className="btn drawer-button w-full h-10 z-5 sticky top-[var(--header)] justify-start bg-transparent border-transparent lg:hidden"
           >
             <div className="flex flex-col gap-[3px]">
               <span className="block w-4 h-[2px] bg-gray-600"></span>
               <span className="block w-4 h-[2px] bg-gray-600"></span>
               <span className="block w-4 h-[2px] bg-gray-600"></span>
             </div>
-            侧边菜单
           </label>
 
           <div className="card">
@@ -42,45 +41,7 @@ export default async function BlogLayout({ children }: LayoutProps) {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu block bg-base-200 rounded-box w-60 overflow-y-auto max-h-[calc(100dvh-var(--header))]">
-            {tags.length === 0 && (
-              <li>
-                <a>暂无分类</a>
-              </li>
-            )}
-            {tags.map((tag) => (
-              <li key={tag.Slug}>
-                <details open>
-                  <summary>
-                    <h3 className="truncate font-semibold text-lg">
-                      {tag.Title}
-                    </h3>
-                    <span className="ml-auto text-slate-500">
-                      {tag.Articles?.length ?? 0}
-                    </span>
-                  </summary>
-                  {tag.Articles?.length ? (
-                    <ul>
-                      {tag.Articles.map((a) => {
-                        const href = `/${encodeURIComponent(tag.Slug)}/${encodeURIComponent(
-                          a.Slug
-                        )}`;
-
-                        return (
-                          <MenuList
-                            key={a.Id}
-                            href={href}
-                            title={a.Title}
-                            slug={a.Slug}
-                          />
-                        );
-                      })}
-                    </ul>
-                  ) : null}
-                </details>
-              </li>
-            ))}
-          </ul>
+          {tags && <MenuList tags={tags} />}
         </div>
       </div>
     </main>
