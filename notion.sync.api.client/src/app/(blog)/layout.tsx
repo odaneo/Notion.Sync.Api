@@ -16,10 +16,33 @@ export default async function BlogLayout({ children }: LayoutProps) {
   const tags = Array.isArray(tagsData) ? tagsData : [];
 
   return (
-    <main className="mx-auto max-w-7xl p-6">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
-        <aside className="col-span-3">
-          <ul className="menu bg-base-200 rounded-box w-full">
+    <main className="mx-auto max-w-7xl">
+      <div className="drawer lg:drawer-open">
+        <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content">
+          <label
+            htmlFor="my-drawer-3"
+            className="btn drawer-button w-full h-10 sticky top-[var(--header)] justify-start bg-transparent backdrop-blur-md border-transparent lg:hidden"
+          >
+            <div className="flex flex-col gap-[3px]">
+              <span className="block w-4 h-[2px] bg-gray-600"></span>
+              <span className="block w-4 h-[2px] bg-gray-600"></span>
+              <span className="block w-4 h-[2px] bg-gray-600"></span>
+            </div>
+            侧边菜单
+          </label>
+
+          <div className="card">
+            <div className="card-body">{children}</div>
+          </div>
+        </div>
+        <div className="drawer-side h-[calc(100dvh-var(--header))] top-[var(--header)] bottom-0">
+          <label
+            htmlFor="my-drawer-3"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <ul className="menu block bg-base-200 rounded-box w-60 overflow-y-auto max-h-[calc(100dvh-var(--header))]">
             {tags.length === 0 && (
               <li>
                 <a>暂无分类</a>
@@ -58,13 +81,7 @@ export default async function BlogLayout({ children }: LayoutProps) {
               </li>
             ))}
           </ul>
-        </aside>
-
-        <section className="col-span-9">
-          <div className="card">
-            <div className="card-body">{children}</div>
-          </div>
-        </section>
+        </div>
       </div>
     </main>
   );

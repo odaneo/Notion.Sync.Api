@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(`${process.env.HOME_URL}`),
   title: {
-    default: "脏书包｜前沿技术与深度思考",
+    default: "刘小可的脏书包｜前沿技术与深度思考",
     template: "%s - 脏书包",
   },
   description:
@@ -41,14 +41,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: "脏书包",
-    title: "脏书包｜前沿技术与深度思考",
+    siteName: "刘小可的脏书包",
+    title: "刘小可的脏书包｜前沿技术与深度思考",
     description: "前端、云原生、架构与性能优化的实战笔记。",
     url: `${process.env.HOME_URL}`,
   },
   twitter: {
     card: "summary_large_image",
-    title: "脏书包｜前沿技术与深度思考",
+    title: "刘小可的脏书包｜前沿技术与深度思考",
     description: "前端、云原生、架构与性能优化的实战笔记。",
   },
   robots: { index: true, follow: true },
@@ -64,23 +64,34 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="flex items-center gap-4 mx-auto max-w-7xl p-6">
-          <Link href="/" aria-label="脏书包">
-            <h1 className="text-3xl font-bold text-gray-800 leading-tight">
-              脏书包
-            </h1>
-            <h2 className="text-gray-500 text-base mt-1">
-              前沿技术 · 前端工程 · 云原生实践与深度思考
-            </h2>
-            <p className="sr-only">
-              关键词：Next.js、React、TypeScript、DevOps、Databricks、AWS、架构与性能优化
-            </p>
-          </Link>
-        </header>
-        {children}
-        <ScrollToTop />
-        <SpeedInsights />
-        <SeoWebsiteJsonld />
+        <div
+          className="h-screen overflow-y-auto"
+          style={{ scrollbarGutter: "stable" }}
+        >
+          <header className="sticky top-0 w-full z-50 bg-white bg-white/70 backdrop-blur-md">
+            <div className="mx-auto max-w-7xl p-4 flex flex-col">
+              <Link
+                href="/"
+                aria-label="刘小可的脏书包｜前沿技术与深度思考"
+                className="flex items-end justify-start gap-4 h-10"
+              >
+                <h1 className="text-3xl font-bold text-gray-800 leading-tight min-w-56">
+                  刘小可的脏书包
+                </h1>
+                <h2 className="text-gray-500 text-sm lg:text-base mt-1">
+                  前沿技术与深度思考
+                </h2>
+                <p className="sr-only">
+                  关键词：Next.js、React、TypeScript、DevOps、Databricks、AWS、架构与性能优化
+                </p>
+              </Link>
+            </div>
+          </header>
+          {children}
+          <ScrollToTop />
+          <SpeedInsights />
+          <SeoWebsiteJsonld />
+        </div>
       </body>
     </html>
   );

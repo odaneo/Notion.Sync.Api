@@ -10,24 +10,7 @@
 
 @layer base {
   :root {
-    --notion-max-width: 900px !important;
-  }
-
-  html {
-    overflow-y: scroll;
-  }
-
-  :root {
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  :root body {
-    position: absolute;
-  }
-
-  body {
-    width: 100vw;
-    overflow: hidden;
+    --notion-max-width: 950px !important;
+    --header: 4.5rem;
   }
 }
