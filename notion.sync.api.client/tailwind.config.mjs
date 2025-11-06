@@ -1,4 +1,6 @@
-module.exports = {
+import lineClamp from "@tailwindcss/line-clamp";
+
+export default {
   theme: {},
-  plugins: [require("@tailwindcss/line-clamp")],
+  plugins: [lineClamp],
 };

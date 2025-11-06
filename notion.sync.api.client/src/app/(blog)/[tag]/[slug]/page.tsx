@@ -10,6 +10,13 @@ type PageProps = {
   params: Promise<{ tag: string; slug: string }>;
 };
 
+export async function generateMetadata({ params }: PageProps) {
+  const { tag, slug } = await params;
+  return {
+    alternates: { canonical: `/${tag}/${slug}` },
+  };
+}
+
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
 
@@ -27,11 +34,11 @@ export default async function ArticlePage({ params }: PageProps) {
 
   return (
     <article className="overflow-x-auto">
-      <h2 className="mb-3 text-2xl font-semibold tracking-tight">
+      <h2 className="mb-3 text-2xl font-semibold tracking-tight px-4">
         {detail.Title}
       </h2>
 
-      <div className="mb-4 flex flex-wrap gap-3">
+      <div className="mb-4 flex flex-wrap gap-3 px-4">
         {detail.SubTags?.map((t) => (
           <span key={t.Id} className="badge badge-primary rounded">
             {t.Title}
