@@ -10,24 +10,35 @@ type PageProps = {
   params: Promise<{ tag: string; slug: string }>;
 };
 
+async function getArticleWithSubTags(slug: string) {
+  if (slug) {
+    const { data } = await supabase
+      .rpc("get_article_by_slug", { article_slug: slug })
+      .single()
+      .overrideTypes<GetArticleWithSubTagsResponseType>();
+    return data ?? null;
+  }
+  return null;
+}
+
 export async function generateMetadata({ params }: PageProps) {
   const { tag, slug } = await params;
+
+  let detail: GetArticleWithSubTagsResponseType | null =
+    await getArticleWithSubTags(slug);
+
   return {
     alternates: { canonical: `/${tag}/${slug}` },
+    title: detail ? detail.Title : null,
   };
 }
 
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
 
-  let detail: GetArticleWithSubTagsResponseType | null = null;
-  if (slug) {
-    const { data } = await supabase
-      .rpc("get_article_by_slug", { article_slug: slug })
-      .single()
-      .overrideTypes<GetArticleWithSubTagsResponseType>();
-    detail = data ?? null;
-  }
+  let detail: GetArticleWithSubTagsResponseType | null =
+    await getArticleWithSubTags(slug);
+
   if (!detail) {
     return <p className="text-slate-500">未找到文章</p>;
   }
