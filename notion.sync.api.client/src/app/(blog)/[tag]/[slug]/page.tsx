@@ -24,7 +24,7 @@ async function getArticleWithSubTags(slug: string) {
 export async function generateMetadata({ params }: PageProps) {
   const { tag, slug } = await params;
 
-  let detail: GetArticleWithSubTagsResponseType | null =
+  const detail: GetArticleWithSubTagsResponseType | null =
     await getArticleWithSubTags(slug);
 
   return {
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: PageProps) {
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
 
-  let detail: GetArticleWithSubTagsResponseType | null =
+  const detail: GetArticleWithSubTagsResponseType | null =
     await getArticleWithSubTags(slug);
 
   if (!detail) {
