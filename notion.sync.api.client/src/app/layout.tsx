@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
 import ScrollToTop from "@/components/ScrollToTop";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Link from "next/link";
 import SeoWebsiteJsonld from "@/components/SeoWebsiteJsonld";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const notoTabs = Noto_Sans_SC({
   subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "700"],
+  variable: "--font-noto-sans",
 });
 
 const geistMono = Geist_Mono({
@@ -60,14 +62,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html data-theme="wireframe" lang="zh-CN">
+    <html
+      data-theme="wireframe"
+      lang="zh-CN"
+      style={{ scrollbarGutter: "stable" }}
+    >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${notoTabs.variable} ${geistMono.variable} antialiased`}
       >
-        <div
-          className="h-screen overflow-y-auto"
-          style={{ scrollbarGutter: "stable" }}
-        >
+        <div>
           <header className="sticky top-0 w-full z-50 bg-white bg-white/70 backdrop-blur-md">
             <div className="mx-auto max-w-7xl p-4 flex flex-col">
               <Link

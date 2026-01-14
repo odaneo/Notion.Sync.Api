@@ -4,13 +4,20 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-noto-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
 }
 
 @layer base {
   :root {
     --notion-max-width: 950px !important;
     --header: 4.5rem;
+  }
+  html {
+    font-family: var(--font-sans);
+  }
+  code,
+  pre {
+    font-family: var(--font-mono);
   }
 }
