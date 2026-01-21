@@ -23,11 +23,11 @@ export default function MenuList({
       if (!anchor) return;
 
       const input = document.getElementById(
-        "my-drawer-3"
+        "my-drawer-3",
       ) as HTMLInputElement | null;
       if (input) input.checked = false;
     },
-    []
+    [],
   );
 
   return (
@@ -53,17 +53,19 @@ export default function MenuList({
               <ul>
                 {tag.Articles.map((a) => {
                   const href = `/${encodeURIComponent(tag.Slug)}/${encodeURIComponent(
-                    a.Slug
+                    a.Slug,
                   )}`;
                   const isActive = pathname?.split("/")[2] === a.Slug;
                   return (
                     <li key={a.Id}>
-                      <Link
-                        className={`${isActive ? "menu-active" : ""} line-clamp-2 break-words`}
-                        href={href}
-                      >
-                        {a.Title}
-                      </Link>
+                      <div>
+                        <Link
+                          className={`${isActive ? "menu-active" : ""} line-clamp-2 break-words`}
+                          href={href}
+                        >
+                          {a.Title}
+                        </Link>
+                      </div>
                     </li>
                   );
                 })}
