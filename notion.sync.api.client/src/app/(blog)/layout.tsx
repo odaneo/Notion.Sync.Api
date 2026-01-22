@@ -16,7 +16,7 @@ export default async function BlogLayout({ children }: LayoutProps) {
   const tags = Array.isArray(tagsData) ? tagsData : [];
 
   return (
-    <main className="mx-auto max-w-7xl">
+    <main>
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
-import ScrollToTop from "@/components/ScrollToTop";
+import ScrollToTop from "@/components/app/ScrollToTop";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Link from "next/link";
-import SeoWebsiteJsonld from "@/components/SeoWebsiteJsonld";
+import SeoWebsiteJsonld from "@/components/app/SeoWebsiteJsonld";
+import LayoutNav from "@/components/app/LayoutNav";
+import { LayoutNavConst } from "@/const/LayoutNavConst";
 
 const notoTabs = Noto_Sans_SC({
   subsets: ["latin"],
@@ -70,9 +72,9 @@ export default function RootLayout({
       <body
         className={`${notoTabs.variable} ${geistMono.variable} antialiased`}
       >
-        <div>
-          <header className="sticky top-0 w-full z-50 bg-white bg-white/70 backdrop-blur-md">
-            <div className="navbar mx-auto max-w-7xl">
+        <div className="mx-auto max-w-4xl">
+          <header className="sticky top-0 w-full z-50 bg-white backdrop-blur-md">
+            <div className="navbar">
               <div className="navbar-start">
                 <div className="dropdown">
                   <div
@@ -99,21 +101,15 @@ export default function RootLayout({
                     tabIndex={-1}
                     className="menu dropdown-content bg-base-100 rounded-box z-1 mt-3 w-18 p-2 shadow"
                   >
-                    <li>
-                      <Link href="/" aria-label="首页">
-                        首页
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/" aria-label="博客">
-                        博客
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/" aria-label="标签">
-                        标签
-                      </Link>
-                    </li>
+                    {LayoutNavConst.map(({ key, name, href }) => {
+                      return (
+                        <li key={key}>
+                          <Link href={href} aria-label={name}>
+                            {name}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
                 <Link
@@ -130,35 +126,7 @@ export default function RootLayout({
                 </Link>
               </div>
               <div className="navbar-center hidden lg:flex">
-                <ul className="menu menu-horizontal px-1">
-                  <li>
-                    <Link
-                      href="/"
-                      aria-label="首页"
-                      className="hover:!bg-transparent hover:underline hover:underline-offset-4 transition-all"
-                    >
-                      首页
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/"
-                      aria-label="博客"
-                      className="hover:!bg-transparent hover:underline hover:underline-offset-4 transition-all"
-                    >
-                      博客
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/"
-                      aria-label="标签"
-                      className="hover:!bg-transparent hover:underline hover:underline-offset-4 transition-all"
-                    >
-                      标签
-                    </Link>
-                  </li>
-                </ul>
+                <LayoutNav />
               </div>
             </div>
           </header>
