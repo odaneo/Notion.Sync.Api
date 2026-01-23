@@ -16,6 +16,7 @@ namespace Notion.Sync.Api.Models
         public string Title { set; get; }
         public string Slug { set; get; }
         public bool Published { set; get; } = false;
+        public bool Recommend { set; get; } = false;
         public DateTime LastEditedTime { get; set; }
         public ICollection<NotionArticleSubTag> NotionArticleSubTags { get; set; } = [];
         public ICollection<NotionArticleTag> NotionArticleTags { get; set; } = [];

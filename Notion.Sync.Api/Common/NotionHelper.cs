@@ -15,6 +15,7 @@ namespace Notion.Sync.Api.Common
                 var title = GetArticleTitleFromJson(result);
                 var slug = GetSlugFromJson(result);
                 bool published = GetIsPublishedFromJson(result);
+                bool recommend = GetIsRecommendFromJson(result);
                 ICollection<string?> tagsIds = GetTagIdsFromJson(result).ToList();
                 ICollection<string?> subTagsIds = GetSubTagIdsFromJson(result).ToList();
 
@@ -26,6 +27,7 @@ namespace Notion.Sync.Api.Common
                         Title = title,
                         Slug = slug,
                         Published = published,
+                        Recommend = recommend,
                         LastEditedTime = GetLastEditedTimeFromJson(result),
                         TagsIds = tagsIds,
                         SubTagsIds = subTagsIds
@@ -44,6 +46,7 @@ namespace Notion.Sync.Api.Common
             {
                 var slug = GetSlugFromJson(result);
                 var title = GetTitleFromJson(result);
+                var lucideIconName = GetLucideIconNameFromJson(result);
                 ICollection<SubTagDto> subTags = GetSubTagIdsFromJson(result)
                             .Where(id => id != null && subTagMap.TryGetValue(id, out _))
                             .Select(id => subTagMap[id!])
@@ -54,6 +57,7 @@ namespace Notion.Sync.Api.Common
                     NotionId = GetNotionIdFromJson(result),
                     Title = title,
                     Slug = slug,
+                    LucideIconName = lucideIconName,
                     LastEditedTime = GetLastEditedTimeFromJson(result),
                     SubTags = subTags
                 };
@@ -90,6 +94,16 @@ namespace Notion.Sync.Api.Common
             return result
                     .GetProperty("properties")
                     .GetProperty("Slug")
+                    .GetProperty("rich_text")
+                    .EnumerateArray()
+                    .FirstOrDefault()
+                    .GetProperty("plain_text").GetString();
+        }
+        private static string? GetLucideIconNameFromJson(JsonElement result)
+        {
+            return result
+                    .GetProperty("properties")
+                    .GetProperty("LucideIconName")
                     .GetProperty("rich_text")
                     .EnumerateArray()
                     .FirstOrDefault()
@@ -137,6 +151,13 @@ namespace Notion.Sync.Api.Common
                       .GetProperty("Published")
                       .GetProperty("select")
                       .GetProperty("name").ToString() == "发布";
+        }
+        private static bool GetIsRecommendFromJson(JsonElement result)
+        {
+            return result.GetProperty("properties")
+                      .GetProperty("Recommend")
+                      .GetProperty("select")
+                      .GetProperty("name").ToString() == "True";
         }
         private static IEnumerable<string?> GetTagIdsFromJson(JsonElement result)
         {

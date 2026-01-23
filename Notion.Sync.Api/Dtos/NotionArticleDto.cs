@@ -7,6 +7,7 @@
         public string Title { set; get; }
         public string Slug { set; get; }
         public bool Published { set; get; } = false;
+        public bool Recommend { set; get; } = false;
         public DateTime LastEditedTime { get; set; }
         public ICollection<string> TagsIds { set; get; } = [];
         public ICollection<string> SubTagsIds { set; get; } = [];
