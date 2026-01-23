@@ -1,8 +1,6 @@
 import { supabase } from "@/utils/supabase/server";
 import { GetTagsWithArticlesResponseType } from "@/type/api.type";
-import MenuList from "@/components/MenuList";
-
-export const dynamic = "force-dynamic";
+import MenuList from "@/components/blog/MenuList";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -17,12 +15,12 @@ export default async function BlogLayout({ children }: LayoutProps) {
 
   return (
     <main>
-      <div className="drawer lg:drawer-open">
+      <div className="drawer sm:drawer-open">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
           <label
             htmlFor="my-drawer-3"
-            className="btn drawer-button w-full h-10 z-5 sticky top-[var(--header)] justify-start bg-transparent border-transparent lg:hidden"
+            className="btn drawer-button w-full h-10 z-5 sticky top-[var(--header)] justify-start bg-transparent border-transparent sm:hidden"
           >
             <div className="flex flex-col gap-[3px]">
               <span className="block w-4 h-[2px] bg-gray-600"></span>

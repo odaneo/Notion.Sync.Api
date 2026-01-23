@@ -14,7 +14,7 @@ export default function MenuList({
   const handleMenuClick = useCallback(
     (e: React.MouseEvent<HTMLUListElement>) => {
       if (typeof window === "undefined") return;
-      const isMobile = window.matchMedia("(max-width: 1023.98px)").matches;
+      const isMobile = window.matchMedia("(max-width: 639.98px)").matches;
       if (!isMobile) return;
 
       const target = e.target as HTMLElement;

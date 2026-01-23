@@ -7,6 +7,7 @@ import Link from "next/link";
 import SeoWebsiteJsonld from "@/components/app/SeoWebsiteJsonld";
 import LayoutNav from "@/components/app/LayoutNav";
 import { LayoutNavConst } from "@/const/LayoutNavConst";
+import { Menu, Github } from "lucide-react";
 
 const notoTabs = Noto_Sans_SC({
   subsets: ["latin"],
@@ -23,7 +24,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(`${process.env.HOME_URL}`),
   title: {
-    default: "刘小可的脏书包｜前沿技术与深度思考",
+    default: "Neo的脏书包｜前沿技术与深度思考",
     template: "%s - 脏书包",
   },
   description:
@@ -45,14 +46,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: "刘小可的脏书包",
-    title: "刘小可的脏书包｜前沿技术与深度思考",
+    siteName: "Neo的脏书包",
+    title: "Neo的脏书包｜前沿技术与深度思考",
     description: "前端、云原生、架构与性能优化的实战笔记。",
     url: `${process.env.HOME_URL}`,
   },
   twitter: {
     card: "summary_large_image",
-    title: "刘小可的脏书包｜前沿技术与深度思考",
+    title: "Neo的脏书包｜前沿技术与深度思考",
     description: "前端、云原生、架构与性能优化的实战笔记。",
   },
   robots: { index: true, follow: true },
@@ -70,32 +71,19 @@ export default function RootLayout({
       style={{ scrollbarGutter: "stable" }}
     >
       <body
-        className={`${notoTabs.variable} ${geistMono.variable} antialiased`}
+        className={`${notoTabs.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        <div className="mx-auto max-w-4xl">
-          <header className="sticky top-0 w-full z-50 bg-white backdrop-blur-md">
+        <div className="mx-auto max-w-4xl flex-1 w-full">
+          <header className="sticky top-0 w-full z-50 backdrop-blur-xs">
             <div className="navbar">
               <div className="navbar-start">
                 <div className="dropdown">
                   <div
                     tabIndex={0}
                     role="button"
-                    className="btn btn-ghost lg:hidden"
+                    className="btn btn-ghost sm:hidden"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 6h16M4 12h8m-8 6h16"
-                      />
-                    </svg>
+                    <Menu />
                   </div>
                   <ul
                     tabIndex={-1}
@@ -114,27 +102,61 @@ export default function RootLayout({
                 </div>
                 <Link
                   href="/"
-                  aria-label="刘小可的脏书包｜前沿技术与深度思考"
+                  aria-label="Neo的脏书包｜前沿技术与深度思考"
                   className="flex items-end justify-start gap-4 h-10"
                 >
                   <h1 className="text-3xl font-bold text-gray-800 leading-tight min-w-56">
-                    刘小可的脏书包
+                    Neo的脏书包
                   </h1>
                   <p className="sr-only">
                     关键词：Next.js、React、TypeScript、DevOps、Databricks、AWS、架构与性能优化、前沿技术与深度思考
                   </p>
                 </Link>
               </div>
-              <div className="navbar-center hidden lg:flex">
+              <div className="navbar-center hidden sm:flex">
                 <LayoutNav />
+              </div>
+              <div className="navbar-end">
+                <Link
+                  href={"https://github.com/odaneo"}
+                  target="_blank"
+                  className="btn btn-ghost btn-circle"
+                >
+                  <Github />
+                </Link>
               </div>
             </div>
           </header>
           {children}
-          <ScrollToTop />
-          <SpeedInsights />
-          <SeoWebsiteJsonld />
         </div>
+        <footer className="mx-auto max-w-4xl text-base-content p-6 w-full">
+          <div className="footer sm:footer-horizontal">
+            <nav>
+              <Link
+                className="link link-hover hover:underline-offset-3"
+                href={"/contact"}
+              >
+                联系
+              </Link>
+            </nav>
+          </div>
+          <aside className="mt-10 text-center">
+            <p>
+              Copyright © {new Date().getFullYear()} -
+              <Link
+                className="link link-hover hover:underline-offset-3"
+                href={"https://odaneo.com"}
+              >
+                {" "}
+                Neo.{" "}
+              </Link>
+              保留所有权利
+            </p>
+          </aside>
+        </footer>
+        <ScrollToTop />
+        <SpeedInsights />
+        <SeoWebsiteJsonld />
       </body>
     </html>
   );

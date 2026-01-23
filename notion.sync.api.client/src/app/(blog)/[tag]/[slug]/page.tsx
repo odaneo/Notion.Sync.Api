@@ -1,10 +1,10 @@
 import { supabase } from "@/utils/supabase/server";
 import { GetArticleWithSubTagsResponseType } from "@/type/api.type";
 import { ExtendedRecordMap } from "notion-types";
-import NotionSSR from "@/components/NotionSSR";
-import UpdatedAtJST from "@/components/UpdatedAtJST";
+import NotionSSR from "@/components/blog/NotionSSR";
+import UpdatedAtJST from "@/components/blog/UpdatedAtJST";
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 type PageProps = {
   params: Promise<{ tag: string; slug: string }>;

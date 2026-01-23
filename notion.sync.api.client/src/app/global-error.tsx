@@ -13,6 +13,14 @@ export default function GlobalError({
     console.error(error);
   }, [error]);
 
+  const handleReset = () => {
+    if (typeof reset === "function") {
+      reset();
+    } else {
+      window.location.reload();
+    }
+  };
+
   return (
     <html>
       <body>
@@ -20,7 +28,7 @@ export default function GlobalError({
           <h1 className="text-4xl font-bold text-error">
             Something went wrong!
           </h1>
-          <button className="btn btn-primary mt-4" onClick={() => reset()}>
+          <button className="btn btn-primary mt-4" onClick={handleReset}>
             Try again
           </button>
         </div>
