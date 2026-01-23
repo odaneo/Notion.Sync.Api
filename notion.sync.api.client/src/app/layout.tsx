@@ -24,8 +24,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(`${process.env.HOME_URL}`),
   title: {
-    default: "脏书包｜前沿技术与深度思考",
-    template: "%s - 脏书包",
+    default: "街街的脏书包｜前沿技术与深度思考",
+    template: "%s - 街街的脏书包",
   },
   description:
     "聚焦前沿技术、前端工程与云原生实践，记录可落地的经验与深度思考。面向工程师与技术爱好者：Next.js、React、TypeScript、DevOps、Databricks、AWS、架构与性能优化。",
@@ -46,14 +46,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: "脏书包",
-    title: "脏书包｜前沿技术与深度思考",
+    siteName: "街街的脏书包",
+    title: "街街的脏书包｜前沿技术与深度思考",
     description: "前端、云原生、架构与性能优化的实战笔记。",
     url: `${process.env.HOME_URL}`,
   },
   twitter: {
     card: "summary_large_image",
-    title: "脏书包｜前沿技术与深度思考",
+    title: "街街的脏书包｜前沿技术与深度思考",
     description: "前端、云原生、架构与性能优化的实战笔记。",
   },
   robots: { index: true, follow: true },
@@ -74,7 +74,7 @@ export default function RootLayout({
         className={`${notoTabs.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <div className="mx-auto max-w-4xl flex-1 w-full">
-          <header className="sticky top-0 w-full z-50 backdrop-blur-xs">
+          <header className="sticky top-0 w-full z-50 backdrop-blur-sm">
             <div className="navbar">
               <div className="navbar-start">
                 <div className="dropdown">
@@ -102,11 +102,11 @@ export default function RootLayout({
                 </div>
                 <Link
                   href="/"
-                  aria-label="脏书包｜前沿技术与深度思考"
+                  aria-label="街街的脏书包｜前沿技术与深度思考"
                   className="flex items-end justify-start gap-4 h-10"
                 >
                   <h1 className="text-3xl font-bold text-gray-800 leading-tight min-w-56">
-                    脏书包
+                    街街的脏书包
                   </h1>
                   <p className="sr-only">
                     关键词：Next.js、React、TypeScript、DevOps、Databricks、AWS、架构与性能优化、前沿技术与深度思考

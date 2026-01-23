@@ -3,6 +3,7 @@ export type ArticlesType = {
   Title: string;
   Slug: string;
   LastEditedTime: string;
+  Tags: TagsType[];
   SubTags?: SubTagsType[];
 };
 
@@ -18,6 +19,14 @@ export type SubTagsType = {
   Slug: string;
 };
 
+export type TagsType = {
+  Id: string;
+  Slug: string;
+  Title: string;
+  ArticleCount: number;
+  LucideIconName: string;
+};
+
 export type GetArticleWithSubTagsResponseType = {
   Content: string;
   Title: string;
@@ -25,4 +34,9 @@ export type GetArticleWithSubTagsResponseType = {
   LastEditedTime: string;
   Id: string;
   SubTags?: SubTagsType[];
+};
+
+export type GetTagsAndRecommendArticlesResponseType = {
+  Tags: TagsType[];
+  RecommendArticles: ArticlesType[];
 };

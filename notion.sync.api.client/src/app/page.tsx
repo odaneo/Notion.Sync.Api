@@ -1,15 +1,21 @@
-import { GetTagsWithArticlesResponseType } from "@/type/api.type";
+import { GetTagsAndRecommendArticlesResponseType } from "@/type/api.type";
 import { supabase } from "@/utils/supabase/server";
 import Image from "next/image";
-import { LayoutDashboard } from "lucide-react";
 import MyAvatar from "../../public/avatar.jpg";
+import LucideIcon from "@/components/LucideIcon";
+import dynamicIconImports from "lucide-react/dynamicIconImports";
+import Link from "next/link";
+import UpdatedAtJST from "@/components/blog/UpdatedAtJST";
 
 export default async function AppPage() {
-  const { data: tagsData } = await supabase
-    .rpc("get_tags_with_articles_json")
-    .overrideTypes<GetTagsWithArticlesResponseType[]>();
+  const { data } = await supabase
+    .rpc("get_tags_and_recommend_articles")
+    .single<GetTagsAndRecommendArticlesResponseType>();
 
-  const tags = Array.isArray(tagsData) ? tagsData : [];
+  const tags = Array.isArray(data?.Tags) ? data?.Tags : [];
+  const recommendArticles = Array.isArray(data?.RecommendArticles)
+    ? data?.RecommendArticles
+    : [];
 
   return (
     <>
@@ -19,26 +25,30 @@ export default async function AppPage() {
             <Image alt="avatar" width={192} height={192} src={MyAvatar} />
           </div>
         </div>
-        <h3 className="mx-4">
+        <p className="mx-4">
           我叫 Neo，是一名旅居东京的全栈工程师，擅长
           React、AWS、C#，计划回国中。头像是我的猫，名字叫街街。
-        </h3>
+        </p>
       </div>
       <div className="my-6">
         <h3 className="text-2xl ml-4 mb-3 italic">文章分类</h3>
         <div className="flex flex-wrap flex-col sm:flex-row gap-y-2">
-          {tags?.map(({ Slug, Title, Articles }) => {
+          {tags?.map(({ Slug, Title, LucideIconName, ArticleCount }) => {
             return (
               <div key={Slug} className="px-2 sm:w-1/3 flex justify-center">
                 <div className="stats hover:shadow cursor-pointer">
                   <div className="stat">
                     <div className="stat-figure text-primary">
-                      <LayoutDashboard className="h-8 w-8" />
+                      <LucideIcon
+                        name={LucideIconName as keyof typeof dynamicIconImports}
+                        color="var(--color-info)"
+                        className="h-8 w-8"
+                      />
                     </div>
                     <div className="stat-value text-lg font-medium">
                       {Title}
                     </div>
-                    <div className="stat-title">{Articles.length}篇文章</div>
+                    <div className="stat-title">{ArticleCount}篇文章</div>
                   </div>
                 </div>
               </div>
@@ -48,6 +58,38 @@ export default async function AppPage() {
       </div>
       <div className="my-6">
         <h3 className="text-2xl ml-4 mb-3 italic">精选文章</h3>
+        <div className="flex flex-col gap-y-2 mx-10">
+          {recommendArticles.map(
+            ({ Id, Title, Slug, LastEditedTime, Tags, SubTags }) => {
+              return (
+                <div key={Id}>
+                  <Link
+                    href={`/${Tags[0].Slug}/${Slug}`}
+                    className="text-lg link link-hover hover:underline-offset-3"
+                  >
+                    {Title}
+                  </Link>
+                  <div className="mt-2 mb-4 flex flex-wrap gap-3">
+                    {Tags?.map((t) => (
+                      <span
+                        key={t.Id}
+                        className="badge badge-soft badge-info rounded"
+                      >
+                        {t.Title}
+                      </span>
+                    ))}
+                    {SubTags?.map((t) => (
+                      <span key={t.Id} className="badge badge-primary rounded">
+                        {t.Title}
+                      </span>
+                    ))}
+                    {LastEditedTime && <UpdatedAtJST date={LastEditedTime} />}
+                  </div>
+                </div>
+              );
+            },
+          )}
+        </div>
       </div>
     </>
   );

@@ -7,7 +7,7 @@ export default function UpdatedAtJST({ date }: { date: string }) {
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
-    timeZoneName: "short",
+    // timeZoneName: "short",
   });
 
   return (
