@@ -24,7 +24,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(`${process.env.HOME_URL}`),
   title: {
-    default: "Neo的脏书包｜前沿技术与深度思考",
+    default: "脏书包｜前沿技术与深度思考",
     template: "%s - 脏书包",
   },
   description:
@@ -46,14 +46,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: "Neo的脏书包",
-    title: "Neo的脏书包｜前沿技术与深度思考",
+    siteName: "脏书包",
+    title: "脏书包｜前沿技术与深度思考",
     description: "前端、云原生、架构与性能优化的实战笔记。",
     url: `${process.env.HOME_URL}`,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Neo的脏书包｜前沿技术与深度思考",
+    title: "脏书包｜前沿技术与深度思考",
     description: "前端、云原生、架构与性能优化的实战笔记。",
   },
   robots: { index: true, follow: true },
@@ -102,11 +102,11 @@ export default function RootLayout({
                 </div>
                 <Link
                   href="/"
-                  aria-label="Neo的脏书包｜前沿技术与深度思考"
+                  aria-label="脏书包｜前沿技术与深度思考"
                   className="flex items-end justify-start gap-4 h-10"
                 >
                   <h1 className="text-3xl font-bold text-gray-800 leading-tight min-w-56">
-                    Neo的脏书包
+                    脏书包
                   </h1>
                   <p className="sr-only">
                     关键词：Next.js、React、TypeScript、DevOps、Databricks、AWS、架构与性能优化、前沿技术与深度思考

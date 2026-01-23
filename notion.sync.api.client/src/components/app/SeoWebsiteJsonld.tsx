@@ -10,7 +10,7 @@ export default function SeoWebsiteJsonld() {
         __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Neo的脏书包",
+          name: "脏书包",
           url: `${process.env.HOME_URL}`,
           potentialAction: {
             "@type": "SearchAction",
