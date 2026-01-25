@@ -6,7 +6,9 @@ export default function ScrollToTop() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const toggleVisible = () => setVisible(window.scrollY > 200);
+    const isMobile = window.matchMedia("(max-width: 639.98px)").matches;
+
+    const toggleVisible = () => setVisible(!isMobile && window.scrollY > 200);
     window.addEventListener("scroll", toggleVisible);
     return () => window.removeEventListener("scroll", toggleVisible);
   }, []);

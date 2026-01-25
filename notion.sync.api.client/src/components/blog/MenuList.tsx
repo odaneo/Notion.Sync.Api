@@ -1,5 +1,4 @@
 "use client";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { GetTagsWithArticlesResponseType } from "@/type/api.type";
 import { useCallback } from "react";
@@ -9,8 +8,6 @@ export default function MenuList({
 }: {
   tags: GetTagsWithArticlesResponseType[];
 }) {
-  const pathname = usePathname();
-
   const handleMenuClick = useCallback(
     (e: React.MouseEvent<HTMLUListElement>) => {
       if (typeof window === "undefined") return;
@@ -31,10 +28,7 @@ export default function MenuList({
   );
 
   return (
-    <ul
-      className="menu block bg-base-200 rounded-box w-60 overflow-y-auto max-h-[calc(100dvh-var(--header))]"
-      onClick={handleMenuClick}
-    >
+    <ul className="menu block w-full" onClick={handleMenuClick}>
       {tags?.length === 0 && (
         <li>
           <a>暂无分类</a>
@@ -44,9 +38,9 @@ export default function MenuList({
         <li key={tag.Slug}>
           <details open>
             <summary>
-              <h3 className="truncate font-semibold text-lg">{tag.Title}</h3>
+              <h3 className="truncate font-semibold text-2xl">{tag.Title}</h3>
               <span className="ml-auto text-slate-500">
-                {tag.Articles?.length ?? 0}
+                {tag.Articles?.length ?? 0} 篇文章
               </span>
             </summary>
             {tag.Articles?.length ? (
@@ -55,16 +49,23 @@ export default function MenuList({
                   const href = `/${encodeURIComponent(tag.Slug)}/${encodeURIComponent(
                     a.Slug,
                   )}`;
-                  const isActive = pathname?.split("/")[2] === a.Slug;
                   return (
                     <li key={a.Id}>
                       <div>
                         <Link
-                          className={`${isActive ? "menu-active" : ""} line-clamp-2 break-words`}
+                          className={`line-clamp-2 break-words text-lg`}
                           href={href}
                         >
                           {a.Title}
                         </Link>
+                        {a.SubTags?.map((t) => (
+                          <span
+                            key={t.Id}
+                            className="badge badge-primary rounded"
+                          >
+                            {t.Title}
+                          </span>
+                        ))}
                       </div>
                     </li>
                   );

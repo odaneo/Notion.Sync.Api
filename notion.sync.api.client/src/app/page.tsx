@@ -4,8 +4,7 @@ import Image from "next/image";
 import MyAvatar from "../../public/avatar.jpg";
 import LucideIcon from "@/components/LucideIcon";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
-import Link from "next/link";
-import UpdatedAtJST from "@/components/blog/UpdatedAtJST";
+import ArticleList from "@/components/ArticleList";
 
 export default async function AppPage() {
   const { data } = await supabase
@@ -59,36 +58,13 @@ export default async function AppPage() {
       <div className="my-6">
         <h3 className="text-2xl ml-4 mb-3 italic">精选文章</h3>
         <div className="flex flex-col gap-y-2 mx-10">
-          {recommendArticles.map(
-            ({ Id, Title, Slug, LastEditedTime, Tags, SubTags }) => {
-              return (
-                <div key={Id}>
-                  <Link
-                    href={`/${Tags[0].Slug}/${Slug}`}
-                    className="text-lg link link-hover hover:underline-offset-3"
-                  >
-                    {Title}
-                  </Link>
-                  <div className="mt-2 mb-4 flex flex-wrap gap-3">
-                    {Tags?.map((t) => (
-                      <span
-                        key={t.Id}
-                        className="badge badge-soft badge-info rounded"
-                      >
-                        {t.Title}
-                      </span>
-                    ))}
-                    {SubTags?.map((t) => (
-                      <span key={t.Id} className="badge badge-primary rounded">
-                        {t.Title}
-                      </span>
-                    ))}
-                    {LastEditedTime && <UpdatedAtJST date={LastEditedTime} />}
-                  </div>
-                </div>
-              );
-            },
-          )}
+          {recommendArticles.map(({ Id, ...props }) => {
+            return (
+              <div key={Id}>
+                <ArticleList {...props} />
+              </div>
+            );
+          })}
         </div>
       </div>
     </>
