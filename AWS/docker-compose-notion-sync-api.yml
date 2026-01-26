@@ -1,6 +1,6 @@
 services:
   notion-sync-api:
-    image: ghcr.io/odaneo/notion.sync.api:latest
+    image: 481665124377.dkr.ecr.ap-northeast-1.amazonaws.com/notion.sync.api:latest
     container_name: notion-sync-api
     restart: unless-stopped
     ports:

@@ -9,6 +9,13 @@
             "log_stream_name": "{instance_id}", // /opt/aws/amazon-cloudwatch-agent/etc
             "timestamp_format": "%Y-%m-%dT%H:%M:%S.%fZ",
             "timezone": "UTC"
+          },
+          {
+            "file_path": "/var/lib/docker/containers/*/*.log",
+            "log_group_name": "/aws/ec2/NginxProxy",
+            "log_stream_name": "{instance_id}",
+            "timestamp_format": "%Y-%m-%dT%H:%M:%S.%fZ",
+            "timezone": "UTC"
           }
         ]
       }
