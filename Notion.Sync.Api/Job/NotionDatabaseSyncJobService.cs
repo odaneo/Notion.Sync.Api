@@ -101,6 +101,26 @@ namespace Notion.Sync.Api.Job
 
             return jsonResults;
         }
+        private async Task<(string Title, string LastEditedTime)> GetTitleAndLastEditedTimeByArticleId(string articleId)
+        {
+            var url = $"https://api.notion.com/v1/pages/{articleId}";
+
+            var response = await httpClient.GetAsync(url);
+            var json = await response.Content.ReadAsStringAsync();
+            var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+
+            string lastEditedTime = root.GetProperty("last_edited_time").GetString()!;
+
+            var titleArray = root.GetProperty("properties")
+                    .GetProperty("title")
+                    .GetProperty("title")
+                    .EnumerateArray();
+
+            string title = string.Join("", titleArray.Select(t => t.GetProperty("plain_text").GetString()));
+
+            return (title, lastEditedTime);
+        }
         private async Task InvokeLambda()
         {
             var config = new AmazonLambdaConfig
