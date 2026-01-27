@@ -1,34 +1,34 @@
 import { ArticlesType } from "@/type/api.type";
 import Link from "next/link";
-import UpdatedAtJST from "./blog/UpdatedAtJST";
+import UpdatedAtJST from "./UpdatedAtJST";
 
 export default function ArticleList({
-  Title,
-  Slug,
-  LastEditedTime,
-  Tags,
-  SubTags,
-}: Omit<ArticlesType, "Id">) {
+  title,
+  slug,
+  lastEditedTime,
+  tags,
+  subTags,
+}: Omit<ArticlesType, "id">) {
   return (
     <>
       <Link
-        href={`/${Tags[0].Slug}/${Slug}`}
+        href={`/blog/${tags[0].slug}/${slug}`}
         className="text-lg link link-hover hover:underline-offset-3"
       >
-        {Title}
+        {title}
       </Link>
       <div className="mt-2 mb-4 flex flex-wrap gap-3">
-        {Tags?.map((t) => (
-          <span key={t.Id} className="badge badge-soft badge-info rounded">
-            {t.Title}
+        {tags?.map((t) => (
+          <span key={t.id} className="badge badge-soft badge-info rounded">
+            {t.title}
           </span>
         ))}
-        {SubTags?.map((t) => (
-          <span key={t.Id} className="badge badge-primary rounded">
-            {t.Title}
+        {subTags?.map((t) => (
+          <span key={t.id} className="badge badge-primary rounded">
+            {t.title}
           </span>
         ))}
-        {LastEditedTime && <UpdatedAtJST date={LastEditedTime} />}
+        {lastEditedTime && <UpdatedAtJST date={lastEditedTime} />}
       </div>
     </>
   );

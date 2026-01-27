@@ -13,13 +13,13 @@ export async function GET() {
   ];
 
   tags.forEach((tag) => {
-    tag.Articles?.forEach((article) => {
+    tag.articles?.forEach((article) => {
       fields.push({
-        loc: `${process.env.HOME_URL}/${encodeURIComponent(
-          tag.Slug
-        )}/${encodeURIComponent(article.Slug)}`,
-        lastmod: article.LastEditedTime
-          ? new Date(article.LastEditedTime).toISOString()
+        loc: `${process.env.HOME_URL}/blog/${encodeURIComponent(
+          tag.slug,
+        )}/${encodeURIComponent(article.slug)}`,
+        lastmod: article.lastEditedTime
+          ? new Date(article.lastEditedTime).toISOString()
           : new Date().toISOString(),
       });
     });
@@ -28,7 +28,7 @@ export async function GET() {
   const res = await getServerSideSitemap(fields);
   res.headers.set(
     "Cache-Control",
-    "public, max-age=600, s-maxage=600, stale-while-revalidate=60"
+    "public, max-age=600, s-maxage=600, stale-while-revalidate=60",
   );
   return res;
 }

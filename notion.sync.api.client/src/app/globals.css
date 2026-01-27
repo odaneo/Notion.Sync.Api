@@ -11,7 +11,6 @@
 @layer base {
   :root {
     --notion-max-width: 950px !important;
-    --header: 4.5rem;
   }
   html {
     font-family: var(--font-sans);

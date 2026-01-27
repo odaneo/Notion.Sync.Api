@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <section aria-busy="true" aria-live="polite" className="space-y-4">
+    <section aria-busy="true" aria-live="polite" className="mt-5 space-y-4">
       <div className="h-10 w-1/2 animate-pulse rounded bg-base-200" />
 
       <div className="flex flex-wrap gap-2">

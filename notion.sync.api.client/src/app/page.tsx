@@ -5,15 +5,16 @@ import MyAvatar from "../../public/avatar.jpg";
 import LucideIcon from "@/components/LucideIcon";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
 import ArticleList from "@/components/ArticleList";
+import Link from "next/link";
 
 export default async function AppPage() {
   const { data } = await supabase
     .rpc("get_tags_and_recommend_articles")
     .single<GetTagsAndRecommendArticlesResponseType>();
 
-  const tags = Array.isArray(data?.Tags) ? data?.Tags : [];
-  const recommendArticles = Array.isArray(data?.RecommendArticles)
-    ? data?.RecommendArticles
+  const tags = Array.isArray(data?.tags) ? data?.tags : [];
+  const recommendArticles = Array.isArray(data?.recommendArticles)
+    ? data?.recommendArticles
     : [];
 
   return (
@@ -32,35 +33,39 @@ export default async function AppPage() {
       <div className="my-6">
         <h3 className="text-2xl ml-4 mb-3 italic">文章分类</h3>
         <div className="flex flex-wrap flex-col sm:flex-row gap-y-2">
-          {tags?.map(({ Slug, Title, LucideIconName, ArticleCount }) => {
+          {tags?.map(({ slug, title, lucideIconName, articleCount }) => {
             return (
-              <div key={Slug} className="px-2 sm:w-1/3 flex justify-center">
-                <div className="stats hover:shadow cursor-pointer">
-                  <div className="stat">
-                    <div className="stat-figure text-primary">
-                      <LucideIcon
-                        name={LucideIconName as keyof typeof dynamicIconImports}
-                        color="var(--color-info)"
-                        className="h-8 w-8"
-                      />
+              <div key={slug} className="px-2 sm:w-1/3 flex justify-center">
+                <Link href={`/tag/${slug}`}>
+                  <div className="stats hover:shadow cursor-pointer">
+                    <div className="stat">
+                      <div className="stat-figure text-primary">
+                        <LucideIcon
+                          name={
+                            lucideIconName as keyof typeof dynamicIconImports
+                          }
+                          color="var(--color-info)"
+                          className="h-8 w-8"
+                        />
+                      </div>
+                      <div className="stat-value text-lg font-medium">
+                        {title}
+                      </div>
+                      <div className="stat-title">{articleCount}篇文章</div>
                     </div>
-                    <div className="stat-value text-lg font-medium">
-                      {Title}
-                    </div>
-                    <div className="stat-title">{ArticleCount}篇文章</div>
                   </div>
-                </div>
+                </Link>
               </div>
             );
           })}
         </div>
       </div>
       <div className="my-6">
-        <h3 className="text-2xl ml-4 mb-3 italic">精选文章</h3>
+        <h3 className="text-2xl ml-4 mb-5 italic">精选文章</h3>
         <div className="flex flex-col gap-y-2 mx-10">
-          {recommendArticles.map(({ Id, ...props }) => {
+          {recommendArticles.map(({ id, ...props }) => {
             return (
-              <div key={Id}>
+              <div key={id}>
                 <ArticleList {...props} />
               </div>
             );

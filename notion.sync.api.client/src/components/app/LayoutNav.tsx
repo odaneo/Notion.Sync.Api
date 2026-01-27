@@ -8,7 +8,9 @@ export default function LayoutNav() {
   return (
     <ul className="menu menu-horizontal px-1">
       {LayoutNavConst?.map(({ name, key, href }) => {
-        const isActive = pathname === href;
+        const path = "/" + pathname?.split("/")[1] || "";
+
+        const isActive = path === href;
         return (
           <li key={key}>
             <Link

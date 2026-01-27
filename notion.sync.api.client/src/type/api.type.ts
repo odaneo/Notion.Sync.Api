@@ -1,42 +1,42 @@
 export type ArticlesType = {
-  Id: string;
-  Title: string;
-  Slug: string;
-  LastEditedTime: string;
-  Tags: TagsType[];
-  SubTags?: SubTagsType[];
+  id: string;
+  title: string;
+  slug: string;
+  lastEditedTime: string;
+  tags: TagsType[];
+  subTags?: SubTagsType[];
 };
 
 export type GetTagsWithArticlesResponseType = {
-  Slug: string;
-  Title: string;
-  Articles: ArticlesType[];
+  slug: string;
+  title: string;
+  articles: ArticlesType[];
 };
 
 export type SubTagsType = {
-  Id: string;
-  Title: string;
-  Slug: string;
+  id: string;
+  title: string;
+  slug: string;
 };
 
 export type TagsType = {
-  Id: string;
-  Slug: string;
-  Title: string;
-  ArticleCount: number;
-  LucideIconName: string;
+  id: string;
+  slug: string;
+  title: string;
+  articleCount: number;
+  lucideIconName: string;
 };
 
 export type GetArticleWithSubTagsResponseType = {
-  Content: string;
-  Title: string;
-  Slug: string;
-  LastEditedTime: string;
-  Id: string;
-  SubTags?: SubTagsType[];
+  content: string;
+  title: string;
+  slug: string;
+  lastEditedTime: string;
+  id: string;
+  subTags?: SubTagsType[];
 };
 
 export type GetTagsAndRecommendArticlesResponseType = {
-  Tags: TagsType[];
-  RecommendArticles: ArticlesType[];
+  tags: TagsType[];
+  recommendArticles: ArticlesType[];
 };
