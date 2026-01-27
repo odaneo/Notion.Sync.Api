@@ -70,7 +70,7 @@ namespace Notion.Sync.Api.Job
 
             logger.LogInformation("Successfully retrieved articles from Notion.");
 
-            ICollection<NotionArticleDto> articles = NotionHelper.GetNotionArticleDtoList(articlesJson);
+            ICollection<NotionArticleDto> articles = NotionHelper.GetNotionArticleDtoList(articlesJson, GetTitleAndLastEditedTimeByArticleId);
 
             try
             {
@@ -101,25 +101,33 @@ namespace Notion.Sync.Api.Job
 
             return jsonResults;
         }
-        private async Task<(string Title, string LastEditedTime)> GetTitleAndLastEditedTimeByArticleId(string articleId)
+        private async Task<(string Title, DateTime LastEditedTime)> GetTitleAndLastEditedTimeByArticleId(string articleId)
         {
-            var url = $"https://api.notion.com/v1/pages/{articleId}";
+            try
+            {
+                var url = $"https://api.notion.com/v1/pages/{articleId}";
 
-            var response = await httpClient.GetAsync(url);
-            var json = await response.Content.ReadAsStringAsync();
-            var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
+                var response = await httpClient.GetAsync(url);
+                var json = await response.Content.ReadAsStringAsync();
+                var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
 
-            string lastEditedTime = root.GetProperty("last_edited_time").GetString()!;
+                DateTime lastEditedTime = root.GetProperty("last_edited_time").GetDateTime()!;
 
-            var titleArray = root.GetProperty("properties")
-                    .GetProperty("title")
-                    .GetProperty("title")
-                    .EnumerateArray();
+                var titleArray = root.GetProperty("properties")
+                        .GetProperty("title")
+                        .GetProperty("title")
+                        .EnumerateArray();
 
-            string title = string.Join("", titleArray.Select(t => t.GetProperty("plain_text").GetString()));
+                string title = string.Join("", titleArray.Select(t => t.GetProperty("plain_text").GetString()));
 
-            return (title, lastEditedTime);
+                return (title, lastEditedTime);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error getting title and last edited time for articleId {ArticleId}", articleId);
+                return ("", DateTime.Now);
+            }
         }
         private async Task InvokeLambda()
         {

@@ -5,14 +5,14 @@ namespace Notion.Sync.Api.Common
 {
     public static class NotionHelper
     {
-        public static ICollection<NotionArticleDto> GetNotionArticleDtoList(JsonElement articlesJson)
+        public static ICollection<NotionArticleDto> GetNotionArticleDtoList(JsonElement articlesJson, Func<string, Task<(string Title, DateTime LastEditedTime)>> asyncProcessor)
         {
             ICollection<NotionArticleDto> notionArticleList = [];
 
             foreach (var result in articlesJson.EnumerateArray())
             {
                 var articleId = GetArticleIdFromJson(result);
-                var title = GetArticleTitleFromJson(result);
+                var (title, lastEditedTime) = asyncProcessor(articleId!).GetAwaiter().GetResult();
                 var slug = GetSlugFromJson(result);
                 bool published = GetIsPublishedFromJson(result);
                 bool recommend = GetIsRecommendFromJson(result);
@@ -28,7 +28,7 @@ namespace Notion.Sync.Api.Common
                         Slug = slug,
                         Published = published,
                         Recommend = recommend,
-                        LastEditedTime = GetLastEditedTimeFromJson(result),
+                        LastEditedTime = lastEditedTime,
                         TagsIds = tagsIds,
                         SubTagsIds = subTagsIds
                     });
