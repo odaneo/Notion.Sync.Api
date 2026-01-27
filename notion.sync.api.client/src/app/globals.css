@@ -19,4 +19,11 @@
   pre {
     font-family: var(--font-mono);
   }
+  .notion-simple-table {
+    border: 1px solid var(--fg-color-2) !important;
+  }
+  .notion-simple-table td,
+  .notion-simple-table th {
+    border: 1px solid var(--fg-color-2) !important;
+  }
 }

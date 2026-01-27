@@ -33,6 +33,7 @@ export type GetArticleWithSubTagsResponseType = {
   slug: string;
   lastEditedTime: string;
   id: string;
+  tags?: TagsType[];
   subTags?: SubTagsType[];
 };
 

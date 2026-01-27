@@ -148,7 +148,7 @@ export default function RootLayout({
                 href={"https://odaneo.com"}
               >
                 {" "}
-                Neo.{" "}
+                odaneo.com{" "}
               </Link>
               保留所有权利
             </p>

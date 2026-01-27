@@ -20,7 +20,9 @@ export default function ArticleList({
       <div className="mt-2 mb-4 flex flex-wrap gap-3">
         {tags?.map((t) => (
           <span key={t.id} className="badge badge-soft badge-info rounded">
-            {t.title}
+            <Link key={t.id} href={`/tag/${t.slug}`}>
+              {t.title}
+            </Link>
           </span>
         ))}
         {subTags?.map((t) => (

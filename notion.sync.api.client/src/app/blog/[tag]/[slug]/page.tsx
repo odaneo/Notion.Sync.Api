@@ -3,6 +3,7 @@ import { GetArticleWithSubTagsResponseType } from "@/type/api.type";
 import { ExtendedRecordMap } from "notion-types";
 import NotionSSR from "@/components/blog/NotionSSR";
 import UpdatedAtJST from "@/components/UpdatedAtJST";
+import Link from "next/link";
 
 // export const dynamic = "force-dynamic";
 
@@ -50,6 +51,13 @@ export default async function ArticlePage({ params }: PageProps) {
       </h2>
 
       <div className="mb-4 flex flex-wrap gap-3 px-4">
+        {detail.tags?.map((t) => (
+          <span key={t.id} className="badge badge-soft badge-info rounded">
+            <Link key={t.id} href={`/tag/${t.slug}`}>
+              {t.title}
+            </Link>
+          </span>
+        ))}
         {detail.subTags?.map((t) => (
           <span key={t.id} className="badge badge-primary rounded">
             {t.title}
