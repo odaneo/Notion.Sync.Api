@@ -19,19 +19,22 @@ export default async function AppPage() {
 
   return (
     <>
-      <div className="mx-auto max-w-2xl flex mt-10">
+      <h1 className="sr-only">
+        街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
+      </h1>
+      <section className="mx-auto max-w-2xl flex mt-10">
         <div className="avatar ml-4">
           <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2">
-            <Image alt="avatar" width={192} height={192} src={MyAvatar} />
+            <Image alt="街街的头像" width={192} height={192} src={MyAvatar} />
           </div>
         </div>
         <p className="mx-4">
           我叫 Neo，是一名旅居东京的全栈工程师，擅长
           React、AWS、C#，计划回国中。头像是我的猫，名字叫街街。
         </p>
-      </div>
-      <div className="my-6">
-        <h3 className="text-2xl ml-4 mb-3 italic">文章分类</h3>
+      </section>
+      <section className="my-6">
+        <h2 className="text-2xl ml-4 mb-3 italic">文章分类</h2>
         <div className="flex flex-wrap flex-col sm:flex-row gap-y-2">
           {tags?.map(({ slug, title, lucideIconName, articleCount }) => {
             return (
@@ -48,9 +51,9 @@ export default async function AppPage() {
                           className="h-8 w-8"
                         />
                       </div>
-                      <div className="stat-value text-lg font-medium">
+                      <h3 className="stat-value text-lg font-medium">
                         {title}
-                      </div>
+                      </h3>
                       <div className="stat-title">{articleCount}篇文章</div>
                     </div>
                   </div>
@@ -59,19 +62,19 @@ export default async function AppPage() {
             );
           })}
         </div>
-      </div>
-      <div className="my-6">
-        <h3 className="text-2xl ml-4 mb-5 italic">精选文章</h3>
-        <div className="flex flex-col gap-y-2 mx-10">
+      </section>
+      <section className="my-6">
+        <h2 className="text-2xl ml-4 mb-5 italic">精选文章</h2>
+        <ul className="flex flex-col gap-y-2 mx-10">
           {recommendArticles.map(({ id, ...props }) => {
             return (
-              <div key={id}>
+              <li key={id}>
                 <ArticleList {...props} />
-              </div>
+              </li>
             );
           })}
-        </div>
-      </div>
+        </ul>
+      </section>
     </>
   );
 }

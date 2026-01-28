@@ -1,6 +1,28 @@
 import { supabase } from "@/utils/supabase/server";
 import { GetTagsWithArticlesResponseType } from "@/type/api.type";
 import MenuList from "@/components/tag/MenuList";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "所有标签",
+  alternates: { canonical: "/tag" },
+  description:
+    "探索街街的脏书包的所有技术文章分类：包含 AWS、Git、日本职场、前端、全栈等核心标签，系统化呈现全栈开发知识体系。",
+  openGraph: {
+    type: "website",
+    siteName: "街街的脏书包",
+    title: "所有标签｜前沿技术与深度思考",
+    description:
+      "探索街街的脏书包的所有技术文章分类：包含 AWS、Git、日本职场、前端、全栈等核心标签，系统化呈现全栈开发知识体系。",
+    url: `${process.env.HOME_URL}/tag`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "所有标签｜前沿技术与深度思考",
+    description:
+      "探索街街的脏书包的所有技术文章分类：包含 AWS、Git、日本职场、前端、全栈等核心标签，系统化呈现全栈开发知识体系。",
+  },
+};
 
 export default async function Tag() {
   const { data: tagsData } = await supabase
@@ -10,9 +32,14 @@ export default async function Tag() {
   const tags = Array.isArray(tagsData) ? tagsData : [];
 
   return (
-    <main className="mt-5 w-full">
-      <h3 className="text-2xl ml-4 mb-3 italic">所有标签</h3>
-      {tags && <MenuList tags={tags} />}
-    </main>
+    <>
+      <h1 className="sr-only">
+        街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
+      </h1>
+      <main className="mt-5 w-full">
+        <h2 className="text-2xl ml-4 mb-3 italic">所有标签</h2>
+        {tags && <MenuList tags={tags} />}
+      </main>
+    </>
   );
 }

@@ -15,7 +15,7 @@ export default function ArticleList({
         href={`/blog/${tags[0].slug}/${slug}`}
         className="text-lg link link-hover hover:underline-offset-3"
       >
-        {title}
+        <h3>{title}</h3>
       </Link>
       <div className="mt-2 mb-4 flex flex-wrap gap-3">
         {tags?.map((t) => (

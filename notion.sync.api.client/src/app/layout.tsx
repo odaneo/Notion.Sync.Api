@@ -48,13 +48,15 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "街街的脏书包",
     title: "街街的脏书包｜前沿技术与深度思考",
-    description: "前端、云原生、架构与性能优化的实战笔记。",
+    description:
+      "聚焦前沿技术、前端工程与云原生实践，记录可落地的经验与深度思考。面向工程师与技术爱好者：Next.js、React、TypeScript、DevOps、Databricks、AWS、架构与性能优化。",
     url: `${process.env.HOME_URL}`,
   },
   twitter: {
     card: "summary_large_image",
     title: "街街的脏书包｜前沿技术与深度思考",
-    description: "前端、云原生、架构与性能优化的实战笔记。",
+    description:
+      "聚焦前沿技术、前端工程与云原生实践，记录可落地的经验与深度思考。面向工程师与技术爱好者：Next.js、React、TypeScript、DevOps、Databricks、AWS、架构与性能优化。",
   },
   robots: { index: true, follow: true },
 };
@@ -105,12 +107,9 @@ export default function RootLayout({
                   aria-label="街街的脏书包｜前沿技术与深度思考"
                   className="flex items-end justify-start gap-4 h-10"
                 >
-                  <h1 className="text-3xl font-bold text-gray-800 leading-tight min-w-56">
+                  <div className="text-3xl font-bold text-gray-800 leading-tight min-w-56">
                     街街的脏书包
-                  </h1>
-                  <p className="sr-only">
-                    关键词：Next.js、React、TypeScript、DevOps、Databricks、AWS、架构与性能优化、前沿技术与深度思考
-                  </p>
+                  </div>
                 </Link>
               </div>
               <div className="navbar-center hidden sm:flex">

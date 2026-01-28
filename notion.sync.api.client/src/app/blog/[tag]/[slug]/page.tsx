@@ -31,6 +31,19 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     alternates: { canonical: `/blog/${tag}/${slug}` },
     title: detail ? detail.title : null,
+    description: `${detail?.title}`,
+    openGraph: {
+      type: "article",
+      siteName: "街街的脏书包",
+      title: detail?.title,
+      description: `${detail?.title}`,
+      url: `${process.env.HOME_URL}/blog/${tag}/${slug}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: detail?.title,
+      description: `${detail?.title}`,
+    },
   };
 }
 
@@ -46,9 +59,9 @@ export default async function ArticlePage({ params }: PageProps) {
 
   return (
     <article className="overflow-x-auto mt-5">
-      <h2 className="mb-3 text-2xl font-semibold tracking-tight px-4">
+      <h1 className="mb-3 text-2xl font-semibold tracking-tight px-4">
         {detail.title}
-      </h2>
+      </h1>
 
       <div className="mb-4 flex flex-wrap gap-3 px-4">
         {detail.tags?.map((t) => (

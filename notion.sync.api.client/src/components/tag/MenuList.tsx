@@ -36,7 +36,7 @@ export default function MenuList({
                           className={`line-clamp-2 break-words text-lg flex-1`}
                           href={href}
                         >
-                          {a.title}
+                          <h4>{a.title}</h4>
                         </Link>
                         {a.subTags?.map((t) => (
                           <span
