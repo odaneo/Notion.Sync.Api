@@ -26,4 +26,13 @@
   .notion-simple-table th {
     border: 1px solid var(--fg-color-1) !important;
   }
+  .notion-h1 {
+    font-size: 1.5em !important;
+  }
+  .notion-h2 {
+    font-size: 1.25em !important;
+  }
+  .notion-h3 {
+    font-size: 1.1em !important;
+  }
 }

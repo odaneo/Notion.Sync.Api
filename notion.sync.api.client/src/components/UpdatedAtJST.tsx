@@ -1,22 +1,30 @@
-export default function UpdatedAtJST({ date }: { date: string }) {
-  const d = new Date(date);
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/zh-cn";
 
-  const formatted = d.toLocaleString("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    // timeZoneName: "short",
-  });
+dayjs.extend(relativeTime);
+
+dayjs.locale("zh-cn");
+
+export default function UpdatedAtJST({
+  date,
+  relative = true,
+}: {
+  date: string;
+  relative?: boolean;
+}) {
+  const d = dayjs(date);
+
+  const displayValue = relative ? d.fromNow() : d.format("YYYY-MM-DD HH:mm");
+  const fullTimeTitle = d.format("YYYY-MM-DD HH:mm:ss");
 
   return (
     <time
       dateTime={d.toISOString()}
       className="badge badge-dash ml-auto rounded"
-      title={d.toISOString()}
+      title={fullTimeTitle}
     >
-      {formatted}
+      {displayValue}
     </time>
   );
 }

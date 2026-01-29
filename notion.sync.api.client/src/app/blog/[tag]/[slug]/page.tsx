@@ -76,7 +76,9 @@ export default async function ArticlePage({ params }: PageProps) {
             {t.title}
           </span>
         ))}
-        {detail.lastEditedTime && <UpdatedAtJST date={detail.lastEditedTime} />}
+        {detail.lastEditedTime && (
+          <UpdatedAtJST date={detail.lastEditedTime} relative={false} />
+        )}
       </div>
 
       {detail.content ? (
