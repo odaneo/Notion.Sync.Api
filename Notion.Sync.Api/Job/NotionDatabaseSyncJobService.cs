@@ -83,8 +83,16 @@ namespace Notion.Sync.Api.Job
 
                 throw new Exception("Failed to article list");
             }
+            try
+            {
+                await InvokeNodejs();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message, "Failed to invoke Node.js service.");
 
-            await InvokeNodejs();
+                throw new Exception("Failed to invoke Node.js service.");
+            }
 
             //if (!isDev)
             //{

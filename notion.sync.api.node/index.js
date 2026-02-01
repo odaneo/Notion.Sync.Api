@@ -53,7 +53,18 @@ app.get("/update_notion_articles", async (_, res) => {
 			}
 		}
 
-		res.status(200).json({ success, failed });
+		const responseCatch = await fetch(`${process.env.REVALIDATE_URL}`, {
+			method: "GET",
+			headers: {
+				"x-revalidation-secret": `${process.env.LAMBDA_KEY}`,
+				"Content-Type": "application/json",
+				"User-Agent":
+					"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+			},
+		});
+		const dataCatch = await responseCatch.json();
+
+		res.status(200).json({ success, failed, count: dataCatch.count });
 	} catch (globalErr) {
 		res.status(500).json({
 			name: globalErr.name,
