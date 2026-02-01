@@ -53,18 +53,25 @@ app.get("/update_notion_articles", async (_, res) => {
 			}
 		}
 
-		const responseCatch = await fetch(`${process.env.REVALIDATE_URL}`, {
-			method: "GET",
-			headers: {
-				"x-revalidation-secret": `${process.env.LAMBDA_KEY}`,
-				"Content-Type": "application/json",
-				"User-Agent":
-					"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-			},
-		});
-		const dataCatch = await responseCatch.json();
+		let dataCatch;
 
-		res.status(200).json({ success, failed, count: dataCatch.count });
+		try {
+			const responseCatch = await fetch(`${process.env.REVALIDATE_URL}`, {
+				method: "GET",
+				headers: {
+					"x-revalidation-secret": `${process.env.LAMBDA_KEY}`,
+					"Content-Type": "application/json",
+					"User-Agent":
+						"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+				},
+			});
+			dataCatch = await responseCatch.json();
+			console.log(dataCatch);
+		} catch (e) {
+			console.error(`Failed to update ${rawId}:`, e.message);
+		}
+
+		res.status(200).json({ success, failed, count: dataCatch?.count });
 	} catch (globalErr) {
 		res.status(500).json({
 			name: globalErr.name,
