@@ -24,13 +24,13 @@ const PORT = 3000;
 
 app.get("/update_notion_articles", async (_, res) => {
 	if (!process.env.NOTION_TOKEN_V2) {
-		return res.status(500).send("NOTION_TOKEN_V2 missing");
+		return res.status(500).send("[NODE]: NOTION_TOKEN_V2 missing");
 	}
 	try {
 		const { rows } = await exec(getSql);
 
 		if (!rows || rows.length === 0) {
-			return res.status(404).send("No articles found");
+			return res.status(404).send("[NODE]: No articles found");
 		}
 
 		let success = 0;
@@ -45,11 +45,11 @@ app.get("/update_notion_articles", async (_, res) => {
 				if (recordMap) {
 					await exec(updateSql, [JSON.stringify(recordMap), rawId]);
 					success++;
-					console.log(`Updated article ${rawId}`);
+					console.log(`[NODE]: Updated article ${rawId}`);
 				}
 			} catch (err) {
 				failed++;
-				console.error(`Failed to update ${rawId}:`, err.message);
+				console.error(`[NODE]: Failed to update ${rawId}:`, err.message);
 			}
 		}
 
@@ -68,14 +68,14 @@ app.get("/update_notion_articles", async (_, res) => {
 			if (!responseCatch.ok) {
 				const errorDetail = await responseCatch.text();
 				console.error(
-					`Error details: (Status ${responseCatch.status}):`,
+					`[NODE]: Error details: (Status ${responseCatch.status}):`,
 					errorDetail,
 				);
 			} else {
 				dataCatch = await responseCatch.json();
 			}
 		} catch (e) {
-			console.error(`Failed to update cache:`, e.message);
+			console.error(`[NODE]: Failed to update cache:`, e.message);
 		}
 
 		res.status(200).json({ success, failed, count: dataCatch?.count });
@@ -89,5 +89,5 @@ app.get("/update_notion_articles", async (_, res) => {
 });
 
 app.listen(PORT, () => {
-	console.log(`node --env-file=.env index.js http://localhost:${PORT}`);
+	console.log(`[NODE]: node --env-file=.env index.js http://localhost:${PORT}`);
 });
