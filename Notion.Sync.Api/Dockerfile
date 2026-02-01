@@ -41,6 +41,7 @@ ARG NOTION_ACTIVE_USER
 ARG NOTION_TOKEN_V2
 ARG SECRET_ID
 ARG AWS_REGION
+ARG REVALIDATE_URL
 
 USER root
 WORKDIR /app
@@ -53,7 +54,8 @@ RUN mkdir -p ./node-app && \
     echo "NOTION_ACTIVE_USER=${NOTION_ACTIVE_USER}" >> ./node-app/.env && \
     echo "NOTION_TOKEN_V2=${NOTION_TOKEN_V2}" >> ./node-app/.env && \
     echo "SECRET_ID=${SECRET_ID}" >> ./node-app/.env && \
-    echo "AWS_REGION=${AWS_REGION}" >> ./node-app/.env
+    echo "AWS_REGION=${AWS_REGION}" >> ./node-app/.env && \
+    echo "REVALIDATE_URL=${REVALIDATE_URL}" >> ./node-app/.env
 
 WORKDIR /app
 COPY --from=publish /app/publish .
