@@ -34,3 +34,12 @@ jobs:
           tags: |
             ${{ env.IMAGE }}:latest
             ${{ env.IMAGE }}:${{ github.sha }}
+          build-args: |
+            ENV=production
+            DB_HOST=${{ secrets.DB_HOST }}
+            DB_NAME=${{ secrets.DB_NAME }}
+            DB_PORT=${{ secrets.DB_PORT }}
+            LAMBDA_KEY=${{ secrets.LAMBDA_KEY }}
+            NOTION_ACTIVE_USER=${{ secrets.NOTION_ACTIVE_USER }}
+            NOTION_TOKEN_V2=${{ secrets.NOTION_TOKEN_V2 }}
+            SECRET_ID=${{ secrets.SECRET_ID }}

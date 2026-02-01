@@ -32,7 +32,31 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./Notion.Sync.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+ARG ENV
+ARG DB_HOST
+ARG DB_NAME
+ARG DB_PORT
+ARG LAMBDA_KEY
+ARG NOTION_ACTIVE_USER
+ARG NOTION_TOKEN_V2
+ARG SECRET_ID
+
+USER root
+WORKDIR /app
+RUN mkdir -p ./node-app && \
+    echo "ENV=${ENV}" >> ./node-app/.env && \
+    echo "DB_HOST=${DB_HOST}" >> ./node-app/.env && \
+    echo "DB_NAME=${DB_NAME}" >> ./node-app/.env && \   
+    echo "DB_PORT=${DB_PORT}" >> ./node-app/.env && \
+    echo "LAMBDA_KEY=${LAMBDA_KEY}" >> ./node-app/.env && \
+    echo "NOTION_ACTIVE_USER=${NOTION_ACTIVE_USER}" >> ./node-app/.env && \
+    echo "NOTION_TOKEN_V2=${NOTION_TOKEN_V2}" >> ./node-app/.env && \
+    echo "SECRET_ID=${SECRET_ID}" >> ./node-app/.env
+
 WORKDIR /app
 COPY --from=publish /app/publish .
 COPY --from=node-build /src/node-app ./node-app
+RUN chown -R $APP_UID:$APP_UID /app
+
+USER $APP_UID
 ENTRYPOINT ["bash", "-c", "dotnet Notion.Sync.Api.dll & cd ./node-app && node --env-file=.env index.js & wait -n"]
