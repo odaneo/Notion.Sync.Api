@@ -63,4 +63,4 @@ COPY --from=node-build /src/node-app ./node-app
 RUN chown -R $APP_UID:$APP_UID /app
 
 USER $APP_UID
-ENTRYPOINT ["bash", "-c", "dotnet Notion.Sync.Api.dll & cd ./node-app && node --env-file=.env index.js & wait -n"]
+ENTRYPOINT ["bash", "-c", "dotnet Notion.Sync.Api.dll & cd ./node-app && node --env-file=.env index.js 2>&1 & wait -n"]
