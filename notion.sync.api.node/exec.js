@@ -12,7 +12,9 @@ const DB_NAME = process.env.DB_NAME;
 
 let pool;
 
-const sm = new SecretsManagerClient({});
+const sm = new SecretsManagerClient({
+	region: process.env.AWS_REGION,
+});
 
 function buildConnStr({ username, password }) {
 	const user = encodeURIComponent(username);

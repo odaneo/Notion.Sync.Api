@@ -43,3 +43,4 @@ jobs:
             NOTION_ACTIVE_USER=${{ secrets.NOTION_ACTIVE_USER }}
             NOTION_TOKEN_V2=${{ secrets.NOTION_TOKEN_V2 }}
             SECRET_ID=${{ secrets.SECRET_ID }}
+            AWS_REGION=${{ env.AWS_REGION }}
