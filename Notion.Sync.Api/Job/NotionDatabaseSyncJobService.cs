@@ -136,8 +136,6 @@ namespace Notion.Sync.Api.Job
         {
             string url = "http://localhost:3000/update_notion_articles";
 
-            _httpClient.Timeout = TimeSpan.FromMinutes(10);
-
             try
             {
                 logger.LogInformation("Sending request to Node.js sync service...");
