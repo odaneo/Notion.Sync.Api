@@ -4,7 +4,8 @@
   "main": "index.js",
   "type": "module",
   "dependencies": {
-    "@aws-lambda-powertools/parameters": "^2.25.1",
+    "@aws-sdk/client-secrets-manager": "^3.980.0",
+    "express": "^5.2.1",
     "notion-client": "^7.4.3",
     "pg": "^8.16.3"
   },

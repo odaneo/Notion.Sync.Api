@@ -12,6 +12,7 @@ namespace Notion.Sync.Api.Job
 {
     public class NotionDatabaseSyncJobService(HttpClient httpClient, IConfiguration configuration, ITagService tagService, INotionArticleService notionArticleService, ILogger<NotionDatabaseSyncJobService> logger)
     {
+        private static readonly HttpClient _httpClient = new HttpClient();
         public async Task SyncTagsAndArticleListAsync()
         {
             string notionToken;
@@ -83,10 +84,12 @@ namespace Notion.Sync.Api.Job
                 throw new Exception("Failed to article list");
             }
 
-            if (!isDev)
-            {
-                await InvokeLambda();
-            }
+            await InvokeNodejs();
+
+            //if (!isDev)
+            //{
+            //    await InvokeLambda();
+            //}
         }
         private async Task<JsonElement> GetListFromNotionDatabase(string id)
         {
@@ -127,6 +130,37 @@ namespace Notion.Sync.Api.Job
             {
                 logger.LogError(ex, "Error getting title and last edited time for articleId {ArticleId}", articleId);
                 return ("", DateTime.Now);
+            }
+        }
+        private async Task InvokeNodejs()
+        {
+            string url = "http://localhost:3000/update_notion_articles";
+
+            _httpClient.Timeout = TimeSpan.FromMinutes(10);
+
+            try
+            {
+                logger.LogInformation("Sending request to Node.js sync service...");
+
+                var response = await _httpClient.GetAsync(url);
+
+                response.EnsureSuccessStatusCode();
+
+                string jsonResult = await response.Content.ReadAsStringAsync();
+
+                logger.LogInformation($"Sync task finished successfully. Result: {jsonResult}");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.LogError($"HTTP Request failed: {ex.Message}");
+            }
+            catch (TaskCanceledException)
+            {
+                logger.LogError("Error: The request timed out. The sync process took too long.");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"An unexpected error occurred: {ex.Message}");
             }
         }
         private async Task InvokeLambda()

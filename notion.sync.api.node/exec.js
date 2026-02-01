@@ -1,13 +1,18 @@
-import { getSecret } from "@aws-lambda-powertools/parameters/secrets";
+import {
+	SecretsManagerClient,
+	GetSecretValueCommand,
+} from "@aws-sdk/client-secrets-manager";
 import { Pool } from "pg";
 
+const IS_LOCAL = process.env.ENV === "LOCAL";
 const SECRET_ID = process.env.SECRET_ID;
 const DB_HOST = process.env.DB_HOST;
 const DB_PORT = process.env.DB_PORT ?? "5432";
 const DB_NAME = process.env.DB_NAME;
-const SECRET_TTL_MS = Number(process.env.SECRET_TTL_MS ?? 60000);
 
 let pool;
+
+const sm = new SecretsManagerClient({});
 
 function buildConnStr({ username, password }) {
 	const user = encodeURIComponent(username);
@@ -15,16 +20,28 @@ function buildConnStr({ username, password }) {
 	return `postgresql://${user}:${pass}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 }
 
-async function buildPool({ forceSecret = false } = {}) {
-	const opts = forceSecret
-		? { forceFetch: true }
-		: { cacheExpiryInMillis: SECRET_TTL_MS };
-	const { username, password } = JSON.parse(await getSecret(SECRET_ID, opts));
-	const connectionString = buildConnStr({ username, password });
-	return new Pool({
-		connectionString,
-		ssl: { rejectUnauthorized: false },
-	});
+async function buildPool() {
+	if (IS_LOCAL) {
+		const connectionString = buildConnStr({
+			username: "postgres",
+			password: "postgres",
+		});
+		return new Pool({
+			connectionString,
+			ssl: false,
+		});
+	} else {
+		const res = await sm.send(
+			new GetSecretValueCommand({ SecretId: SECRET_ID }),
+		);
+		const { username, password } = JSON.parse(res.SecretString);
+		const connectionString = buildConnStr({ username, password });
+
+		return new Pool({
+			connectionString,
+			ssl: { rejectUnauthorized: false },
+		});
+	}
 }
 
 async function getPool({ rebuild = false } = {}) {
@@ -47,7 +64,7 @@ async function exec(sql, params = []) {
 			e?.code === "28P01" ||
 			/password|auth|expired|invalid/i.test(e?.message ?? "");
 		if (authError) {
-			pool = await buildPool({ forceSecret: true });
+			pool = await buildPool();
 			return await pool.query(sql, params);
 		}
 		throw e;

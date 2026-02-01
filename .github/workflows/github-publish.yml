@@ -28,7 +28,7 @@ jobs:
           | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
       - uses: docker/build-push-action@v6
         with:
-          context: ./Notion.Sync.Api
+          context: .
           file: ./Notion.Sync.Api/Dockerfile
           push: true
           tags: |

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notion.Sync.Api", "Notion.S
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "notion.sync.api.client", "notion.sync.api.client\notion.sync.api.client.esproj", "{FDA891E9-E0FD-6F20-0AD0-30B6EC515CC4}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "notion.sync.api.aws.lambda.layer", "notion.sync.api.aws.lambda.layer\notion.sync.api.aws.lambda.layer.esproj", "{A5293C44-E77A-8214-482C-4B33CABD828C}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "notion.sync.api.node", "notion.sync.api.node\notion.sync.api.node.esproj", "{A5293C44-E77A-8214-482C-4B33CABD828C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
