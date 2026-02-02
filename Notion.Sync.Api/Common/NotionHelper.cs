@@ -16,6 +16,7 @@ namespace Notion.Sync.Api.Common
                 var slug = GetSlugFromJson(result);
                 bool published = GetIsPublishedFromJson(result);
                 bool recommend = GetIsRecommendFromJson(result);
+                var description = GetDescriptionFromJson(result);
                 ICollection<string?> tagsIds = GetTagIdsFromJson(result).ToList();
                 ICollection<string?> subTagsIds = GetSubTagIdsFromJson(result).ToList();
 
@@ -28,6 +29,7 @@ namespace Notion.Sync.Api.Common
                         Slug = slug,
                         Published = published,
                         Recommend = recommend,
+                        Description = description,
                         LastEditedTime = lastEditedTime,
                         TagsIds = tagsIds,
                         SubTagsIds = subTagsIds
@@ -47,6 +49,7 @@ namespace Notion.Sync.Api.Common
                 var slug = GetSlugFromJson(result);
                 var title = GetTitleFromJson(result);
                 var lucideIconName = GetLucideIconNameFromJson(result);
+                var description = GetDescriptionFromJson(result);
                 ICollection<SubTagDto> subTags = GetSubTagIdsFromJson(result)
                             .Where(id => id != null && subTagMap.TryGetValue(id, out _))
                             .Select(id => subTagMap[id!])
@@ -58,6 +61,7 @@ namespace Notion.Sync.Api.Common
                     Title = title,
                     Slug = slug,
                     LucideIconName = lucideIconName,
+                    Description = description,
                     LastEditedTime = GetLastEditedTimeFromJson(result),
                     SubTags = subTags
                 };
@@ -158,6 +162,15 @@ namespace Notion.Sync.Api.Common
                       .GetProperty("Recommend")
                       .GetProperty("select")
                       .GetProperty("name").ToString() == "True";
+        }
+        private static string? GetDescriptionFromJson(JsonElement result)
+        {
+            return result.GetProperty("properties")
+                      .GetProperty("Description")
+                      .GetProperty("rich_text")
+                      .EnumerateArray()
+                      .FirstOrDefault()
+                      .GetProperty("plain_text").GetString();
         }
         private static IEnumerable<string?> GetTagIdsFromJson(JsonElement result)
         {

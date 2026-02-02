@@ -41,6 +41,7 @@ namespace Notion.Sync.Api.Business.Services
                         existingTag.Slug = tag.Slug;
                         existingTag.LastEditedTime = tag.LastEditedTime;
                         existingTag.LucideIconName = tag.LucideIconName;
+                        existingTag.Description = tag.Description;
                         _subTagRepository.RemoveRange(existingTag.SubTags);
                         existingTag.SubTags = tag.SubTags;
                     }

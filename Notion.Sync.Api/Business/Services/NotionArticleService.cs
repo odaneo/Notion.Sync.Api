@@ -79,6 +79,7 @@ namespace Notion.Sync.Api.Business.Services
                         existing.Slug = article.Slug;
                         existing.Published = article.Published;
                         existing.Recommend = article.Recommend;
+                        existing.Description = article.Description;
                         existing.LastEditedTime = article.LastEditedTime;
 
                         if (existing.Article == null)

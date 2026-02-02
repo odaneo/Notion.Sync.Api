@@ -10,6 +10,7 @@ namespace Notion.Sync.Api.Models
         public string? Title { get; set; }
         [MaxLength(255)]
         public string? Slug { get; set; }
+        public string? Description { get; set; }
         public string? LucideIconName { get; set; }
         public DateTime LastEditedTime { get; set; }
         public ICollection<SubTag> SubTags { get; set; } = [];

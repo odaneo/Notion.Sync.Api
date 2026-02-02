@@ -14,4 +14,9 @@ export const LayoutNavConst = [
     key: "tag",
     href: "/tag",
   },
+  {
+    name: "联系",
+    key: "contact",
+    href: "/contact",
+  },
 ] as const;

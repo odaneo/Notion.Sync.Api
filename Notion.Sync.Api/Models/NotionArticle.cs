@@ -15,6 +15,7 @@ namespace Notion.Sync.Api.Models
         [MaxLength(255)]
         public string Title { set; get; }
         public string Slug { set; get; }
+        public string? Description { get; set; }
         public bool Published { set; get; } = false;
         public bool Recommend { set; get; } = false;
         public DateTime LastEditedTime { get; set; }
