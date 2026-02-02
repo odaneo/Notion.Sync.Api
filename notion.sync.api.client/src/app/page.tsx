@@ -17,15 +17,65 @@ export default async function AppPage() {
     ? data?.recommendArticles
     : [];
 
+  const homeJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${process.env.HOME_URL}/#website`,
+        url: process.env.HOME_URL,
+        name: "街街的脏书包",
+        description:
+          "聚焦前沿技术、前端工程与云原生实践，记录可落地的经验与深度思考。面向工程师与技术爱好者：Next.js、React、TypeScript、DevOps、Databricks、AWS、架构与性能优化。",
+        publisher: { "@id": `${process.env.HOME_URL}/#person` },
+      },
+      {
+        "@type": "Person",
+        "@id": `${process.env.HOME_URL}/#person`,
+        name: "odaneo",
+        jobTitle: "Full Stack Engineer",
+        url: process.env.HOME_URL,
+        image: `${process.env.HOME_URL}/avatar.jpg`,
+        description: "一名旅居东京的全栈工程师，擅长 React、AWS、C#。",
+        sameAs: ["https://github.com/odaneo"],
+      },
+      {
+        "@type": "CollectionPage",
+        "@id": `${process.env.HOME_URL}/#collection`,
+        url: process.env.HOME_URL,
+        name: "街街的脏书包 - 精选文章",
+        mainEntity: {
+          "@type": "ItemList",
+          itemListElement: recommendArticles.map((article, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: `${process.env.HOME_URL}/blog/${article.tags[0].slug}/${article.slug}`,
+            name: article.title,
+          })),
+        },
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+      />
       <h1 className="sr-only">
         街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
       </h1>
       <section className="mx-auto max-w-2xl flex mt-10">
         <div className="avatar ml-4">
           <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2">
-            <Image alt="街街的头像" width={192} height={192} src={MyAvatar} />
+            <Image
+              alt="街街的头像"
+              width={192}
+              height={192}
+              src={MyAvatar}
+              priority
+            />
           </div>
         </div>
         <p className="mx-4">

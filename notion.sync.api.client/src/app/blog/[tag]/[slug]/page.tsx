@@ -33,10 +33,15 @@ export async function generateMetadata({ params }: PageProps) {
   const detail: GetArticleWithSubTagsResponseType | null =
     await getArticleWithSubTags(slug);
 
+  const allKeywords = [...(detail?.tags || []), ...(detail?.subTags || [])]
+    .map((t) => t.title)
+    .join(", ");
+
   return {
     alternates: { canonical: `/blog/${tag}/${slug}` },
     title: detail ? detail.title : null,
     description: `${detail?.description}`,
+    keywords: allKeywords,
     openGraph: {
       type: "article",
       siteName: "街街的脏书包",
@@ -53,7 +58,7 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function ArticlePage({ params }: PageProps) {
-  const { slug } = await params;
+  const { tag, slug } = await params;
 
   const detail: GetArticleWithSubTagsResponseType | null =
     await getArticleWithSubTags(slug);
@@ -62,8 +67,41 @@ export default async function ArticlePage({ params }: PageProps) {
     return <p className="text-slate-500">未找到文章</p>;
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: detail.title,
+    description: detail.description,
+    datePublished: detail.lastEditedTime,
+    dateModified: detail.lastEditedTime,
+    author: {
+      "@type": "Person",
+      name: "odaneo",
+      url: `${process.env.HOME_URL}/contact`,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "街街的脏书包",
+      logo: {
+        "@type": "ImageObject",
+        url: `${process.env.HOME_URL}/favicon.ico`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${process.env.HOME_URL}/blog/${tag}/${slug}`,
+    },
+    keywords: [...(detail.tags || []), ...(detail.subTags || [])]
+      .map((t) => t.title)
+      .join(", "),
+  };
+
   return (
     <article className="overflow-x-auto mt-5">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <h1 className="mb-3 text-2xl font-semibold tracking-tight px-4">
         {detail.title}
       </h1>

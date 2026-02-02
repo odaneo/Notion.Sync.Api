@@ -58,8 +58,56 @@ export default async function TagPage({ params }: PageProps) {
 
   const article = Array.isArray(data?.articles) ? data?.articles : [];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        name: `标签：${data.tag?.title} - 街街的脏书包`,
+        description: data.tag?.description,
+        url: `${process.env.HOME_URL}/tag/${tag}`,
+        mainEntity: {
+          "@type": "ItemList",
+          itemListElement: article.map((post, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: `${process.env.HOME_URL}/blog/${tag}/${post.slug}`,
+            name: post.title,
+          })),
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "首页",
+            item: process.env.HOME_URL,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "标签",
+            item: `${process.env.HOME_URL}/tag`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: data.tag?.title,
+            item: `${process.env.HOME_URL}/tag/${tag}`,
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <h1 className="sr-only">
         街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
       </h1>

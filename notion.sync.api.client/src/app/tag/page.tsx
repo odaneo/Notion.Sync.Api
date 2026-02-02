@@ -31,8 +31,28 @@ export default async function Tag() {
 
   const tags = Array.isArray(tagsData) ? tagsData : [];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "所有标签 - 街街的脏书包",
+    description:
+      "探索街街的脏书包的所有技术文章分类：包含 AWS、Git、日本职场、前端、全栈等核心标签，系统化呈现全栈开发知识体系。",
+    url: `${process.env.HOME_URL}/tag`,
+    numberOfItems: tags.length,
+    itemListElement: tags.map((tag, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `${process.env.HOME_URL}/tag/${tag.slug}`,
+      name: tag.title,
+    })),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <h1 className="sr-only">
         街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
       </h1>

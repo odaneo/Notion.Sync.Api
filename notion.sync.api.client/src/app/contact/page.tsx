@@ -25,8 +25,51 @@ export const metadata: Metadata = {
 };
 
 export default async function Contact() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ContactPage",
+        "@id": `${process.env.HOME_URL}/contact/#webpage`,
+        url: `${process.env.HOME_URL}/contact`,
+        name: "联系我 - 街街的脏书包",
+        description:
+          "可以通过邮件或 GitHub 与我取得联系。欢迎交流全栈开发心得、Next.js 实战问题、云原生架构设计或任何有趣的技术话题，期待与志同道合的朋友共同进步。",
+        mainEntity: { "@id": `${process.env.HOME_URL}/#person` },
+        breadcrumb: {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "首页",
+              item: process.env.HOME_URL,
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "联系我",
+              item: `${process.env.HOME_URL}/contact`,
+            },
+          ],
+        },
+      },
+      {
+        "@type": "Person",
+        "@id": `${process.env.HOME_URL}/#person`,
+        name: "odaneo",
+        email: "mailto:odaneo@outlook.com",
+        image: `${process.env.HOME_URL}/avatar.jpg`,
+        sameAs: ["https://github.com/odaneo"],
+      },
+    ],
+  };
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <h1 className="sr-only">
         街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
       </h1>

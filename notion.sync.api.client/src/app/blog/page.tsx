@@ -29,8 +29,52 @@ export default async function Blog() {
     .overrideTypes<ArticlesType[]>();
 
   const articleData = Array.isArray(data) ? data : [];
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${process.env.HOME_URL}/blog/#collection`,
+        url: `${process.env.HOME_URL}/blog`,
+        name: "最新技术分享 - 街街的脏书包",
+        description:
+          "精选全栈开发技术文章：涵盖 Next.js、React、TypeScript 核心原理，AWS 云架构实战，以及作者对技术趋势的深度思考。助你构建高性能、可扩展的现代 Web 应用。",
+        mainEntity: {
+          "@type": "ItemList",
+          itemListElement: articleData.map((article, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: `${process.env.HOME_URL}/blog/${article.tags[0].slug}/${article.slug}`,
+            name: article.title,
+          })),
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "首页",
+            item: process.env.HOME_URL,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "最新技术分享",
+            item: `${process.env.HOME_URL}/blog`,
+          },
+        ],
+      },
+    ],
+  };
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <h1 className="sr-only">
         街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
       </h1>
