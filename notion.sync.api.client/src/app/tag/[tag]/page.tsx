@@ -6,6 +6,13 @@ type PageProps = {
   params: Promise<{ tag: string }>;
 };
 
+export const dynamicParams = true;
+export const dynamic = "force-static";
+export const revalidate = 3600;
+export async function generateStaticParams() {
+  return [];
+}
+
 async function getTagDetailWithArticles(tag: string) {
   if (tag) {
     const { data } = await supabase
