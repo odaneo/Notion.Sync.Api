@@ -1,6 +1,7 @@
 import { Mail, Github } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
+import Minesweeper from "@/components/Minesweeper";
 
 export const metadata: Metadata = {
   title: "联系我",
@@ -44,6 +45,9 @@ export default async function Contact() {
           </div>
         </div>
       </main>
+      <div className="flex h-full w-full flex-col items-center select-none">
+        <Minesweeper />
+      </div>
     </>
   );
 }

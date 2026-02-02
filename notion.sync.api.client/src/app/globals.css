@@ -35,4 +35,190 @@
   .notion-h3 {
     font-size: 1.1em !important;
   }
+  .help-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.5rem;
+    border: 1px solid rgba(226, 232, 240, 0.2);
+    background: rgba(148, 163, 184, 0.12);
+    border-radius: 2px;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .help-cell-stack {
+    position: relative;
+    width: 2.7rem;
+    height: 2.7rem;
+  }
+
+  .help-cursor {
+    position: absolute;
+    left: 0.35rem;
+    bottom: -0.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .help-cursor svg {
+    width: 1rem;
+    height: 1rem;
+    fill: #e2e8f0;
+    filter: drop-shadow(0 1px 0 rgba(15, 23, 42, 0.5));
+  }
+
+  .help-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.65);
+    color: #e2e8f0;
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+  }
+
+  .help-cell-result {
+    position: relative;
+    width: 2.7rem;
+    height: 2.7rem;
+  }
+
+  .help-arrow {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .help-arrow svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: rgba(226, 232, 240, 0.85);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .help-cell {
+    position: absolute;
+    inset: 0.35rem;
+    border-radius: 2px;
+    box-shadow: inset 2px 2px 0 rgba(15, 23, 42, 0.35);
+  }
+
+  .help-cell-closed {
+    background: #94a3b8;
+  }
+
+  .help-cell-open {
+    background: #f8fafc;
+  }
+
+  .help-number-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    color: #2563eb;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    font-family: inherit;
+  }
+
+  .help-ripple {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 4px;
+    animation: help-ripple 2s ease-out infinite;
+  }
+
+  .help-ripple-hold {
+    animation: help-ripple-hold 2.4s ease-out infinite;
+  }
+
+  .help-hold-shake {
+    animation: help-hold-pulse 3s ease-in-out infinite;
+  }
+
+  .help-flag {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+    filter: drop-shadow(0 1px 0 rgba(15, 23, 42, 0.4));
+    width: auto;
+    height: auto;
+  }
+
+  .help-question {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.2rem;
+    height: 1.2rem;
+    transform: translate(-50%, -50%);
+    fill: none;
+    stroke: #e2e8f0;
+    stroke-width: 1.8;
+  }
+
+  @keyframes help-ripple {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.7;
+    }
+    60% {
+      transform: scale(1.08);
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes help-ripple-hold {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.7;
+    }
+    45% {
+      transform: scale(1.08);
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes help-hold-pulse {
+    0%,
+    45% {
+      transform: scale(1);
+      background: #94a3b8;
+    }
+    60%,
+    85% {
+      transform: scale(0.94);
+      background: #7b8aa3;
+    }
+    100% {
+      transform: scale(1);
+      background: #94a3b8;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .help-ripple,
+    .help-ripple-hold,
+    .help-cell-open,
+    .help-hold-shake,
+    .help-open-number {
+      animation: none;
+    }
+  }
 }
