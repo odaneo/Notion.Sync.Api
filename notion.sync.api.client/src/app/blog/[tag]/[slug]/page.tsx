@@ -5,11 +5,16 @@ import NotionSSR from "@/components/blog/NotionSSR";
 import UpdatedAtJST from "@/components/UpdatedAtJST";
 import Link from "next/link";
 
-// export const dynamic = "force-dynamic";
-
 type PageProps = {
   params: Promise<{ tag: string; slug: string }>;
 };
+
+export const dynamicParams = true;
+export const dynamic = "force-static";
+export const revalidate = 3600;
+export async function generateStaticParams() {
+  return [];
+}
 
 async function getArticleWithSubTags(slug: string) {
   if (slug) {
