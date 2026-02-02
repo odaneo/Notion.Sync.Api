@@ -36,18 +36,18 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     alternates: { canonical: `/blog/${tag}/${slug}` },
     title: detail ? detail.title : null,
-    description: `${detail?.title}`,
+    description: `${detail?.description}`,
     openGraph: {
       type: "article",
       siteName: "街街的脏书包",
       title: detail?.title,
-      description: `${detail?.title}`,
+      description: `${detail?.description}`,
       url: `${process.env.HOME_URL}/blog/${tag}/${slug}`,
     },
     twitter: {
       card: "summary_large_image",
       title: detail?.title,
-      description: `${detail?.title}`,
+      description: `${detail?.description}`,
     },
   };
 }

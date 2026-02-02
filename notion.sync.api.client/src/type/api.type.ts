@@ -24,6 +24,7 @@ export type TagsType = {
   slug: string;
   title: string;
   articleCount: number;
+  description: string;
   lucideIconName: string;
 };
 
@@ -33,6 +34,7 @@ export type GetArticleWithSubTagsResponseType = {
   slug: string;
   lastEditedTime: string;
   id: string;
+  description: string;
   tags?: TagsType[];
   subTags?: SubTagsType[];
 };

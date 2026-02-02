@@ -31,18 +31,18 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     title: `标签：${data?.tag?.title}`,
     alternates: { canonical: `/tag/${tag}` },
-    description: `浏览关于${data?.tag?.title}的深度技术文章列表。`,
+    description: `${data?.tag?.description}`,
     openGraph: {
       type: "website",
       siteName: "街街的脏书包",
       title: `标签：${data?.tag?.title}｜前沿技术与深度思考`,
-      description: `浏览关于${data?.tag?.title}的深度技术文章列表。`,
+      description: `${data?.tag?.description}`,
       url: `${process.env.HOME_URL}/tag/${tag}`,
     },
     twitter: {
       card: "summary_large_image",
       title: `标签：${data?.tag?.title}｜前沿技术与深度思考`,
-      description: `浏览关于${data?.tag?.title}的深度技术文章列表。`,
+      description: `${data?.tag?.description}`,
     },
   };
 }
