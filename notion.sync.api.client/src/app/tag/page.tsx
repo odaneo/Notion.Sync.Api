@@ -3,6 +3,8 @@ import { GetTagsWithArticlesResponseType } from "@/type/api.type";
 import MenuList from "@/components/tag/MenuList";
 import type { Metadata } from "next";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "所有标签",
   alternates: { canonical: "/tag" },

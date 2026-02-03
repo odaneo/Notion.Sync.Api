@@ -3,6 +3,8 @@ import { ArticlesType } from "@/type/api.type";
 import ArticleList from "@/components/ArticleList";
 import type { Metadata } from "next";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "最新技术分享",
   alternates: { canonical: "/blog" },
