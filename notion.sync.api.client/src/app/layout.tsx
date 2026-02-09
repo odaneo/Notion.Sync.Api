@@ -75,6 +75,7 @@ export default function RootLayout({
       <body
         className={`${notoTabs.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
+        <SeoWebsiteJsonld />
         <div className="mx-auto max-w-4xl flex-1 w-full">
           <header className="sticky top-0 w-full z-50 backdrop-blur-sm">
             <div className="navbar">
@@ -155,7 +156,6 @@ export default function RootLayout({
         </footer>
         <ScrollToTop />
         <SpeedInsights />
-        <SeoWebsiteJsonld />
       </body>
     </html>
   );
