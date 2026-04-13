@@ -1,3 +1,9 @@
 <Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.2752196">
+  <PropertyGroup>
+    <ShouldRunNpmInstall>false</ShouldRunNpmInstall>
+  </PropertyGroup>
 
+  <Target Name="PnpmInstall" BeforeTargets="Build">
+    <Exec Command="pnpm install" />
+  </Target>
 </Project>
