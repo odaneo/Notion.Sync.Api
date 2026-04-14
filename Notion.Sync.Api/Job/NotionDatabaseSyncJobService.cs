@@ -115,7 +115,7 @@ namespace Notion.Sync.Api.Job
 
             return jsonResults;
         }
-        private async Task<(string Title, DateTime LastEditedTime)> GetTitleAndLastEditedTimeByArticleId(string articleId)
+        private async Task<(bool Found, string Title, DateTime LastEditedTime)> GetTitleAndLastEditedTimeByArticleId(string articleId)
         {
             try
             {
@@ -126,6 +126,15 @@ namespace Notion.Sync.Api.Job
                 var doc = JsonDocument.Parse(json);
                 var root = doc.RootElement;
 
+                if (!response.IsSuccessStatusCode
+                    && response.StatusCode == System.Net.HttpStatusCode.NotFound
+                    && root.TryGetProperty("code", out var code)
+                    && code.GetString() == "object_not_found")
+                {
+                    logger.LogWarning("Skip articleId {ArticleId} because the referenced Notion page was not found or not shared with the integration.", articleId);
+                    return (false, "", default);
+                }
+
                 DateTime lastEditedTime = root.GetProperty("last_edited_time").GetDateTime()!;
 
                 var titleArray = root.GetProperty("properties")
@@ -135,12 +144,12 @@ namespace Notion.Sync.Api.Job
 
                 string title = string.Join("", titleArray.Select(t => t.GetProperty("plain_text").GetString()));
 
-                return (title, lastEditedTime);
+                return (true, title, lastEditedTime);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error getting title and last edited time for articleId {ArticleId}", articleId);
-                return ("", DateTime.Now);
+                return (false, "", default);
             }
         }
         private async Task InvokeNodejs()

@@ -5,14 +5,18 @@ namespace Notion.Sync.Api.Common
 {
     public static class NotionHelper
     {
-        public static ICollection<NotionArticleDto> GetNotionArticleDtoList(JsonElement articlesJson, Func<string, Task<(string Title, DateTime LastEditedTime)>> asyncProcessor)
+        public static ICollection<NotionArticleDto> GetNotionArticleDtoList(JsonElement articlesJson, Func<string, Task<(bool Found, string Title, DateTime LastEditedTime)>> asyncProcessor)
         {
             ICollection<NotionArticleDto> notionArticleList = [];
 
             foreach (var result in articlesJson.EnumerateArray())
             {
                 var articleId = GetArticleIdFromJson(result);
-                var (title, lastEditedTime) = asyncProcessor(articleId!).GetAwaiter().GetResult();
+                var (found, title, lastEditedTime) = asyncProcessor(articleId!).GetAwaiter().GetResult();
+                if (!found)
+                {
+                    continue;
+                }
                 var slug = GetSlugFromJson(result);
                 bool published = GetIsPublishedFromJson(result);
                 bool recommend = GetIsRecommendFromJson(result);
