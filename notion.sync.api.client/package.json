@@ -25,7 +25,7 @@
     "notion-utils": "^7.7.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-notion-x": "^7.7.1"
+    "react-notion-x": "^7.10.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
