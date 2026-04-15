@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist_Mono, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
 import ScrollToTop from "@/components/app/ScrollToTop";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import Link from "next/link";
 import SeoWebsiteJsonld from "@/components/app/SeoWebsiteJsonld";
 import LayoutNav from "@/components/app/LayoutNav";
@@ -155,7 +154,6 @@ export default function RootLayout({
           </aside>
         </footer>
         <ScrollToTop />
-        <SpeedInsights />
       </body>
     </html>
   );
