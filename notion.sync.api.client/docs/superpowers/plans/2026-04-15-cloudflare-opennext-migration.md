@@ -158,7 +158,7 @@ export default defineCloudflareConfig();
 ```json
 {
   "dev": "next dev --turbopack",
-  "build": "next build --turbopack",
+  "build": "next build",
   "start": "next start",
   "lint": "eslint",
   "lint:fix": "eslint --fix",
