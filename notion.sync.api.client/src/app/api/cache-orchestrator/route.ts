@@ -1,8 +1,7 @@
 import { revalidatePath } from "next/cache";
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/utils/supabase/server";
 import { GetTagsWithArticlesResponseType } from "@/type/api.type";
-import { waitUntil } from "cloudflare:workers";
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -62,7 +61,7 @@ export async function GET(req: NextRequest) {
       }
     };
 
-    waitUntil(batchWarmup());
+    after(batchWarmup);
 
     return NextResponse.json({
       status: "success",
