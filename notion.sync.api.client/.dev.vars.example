@@ -1,4 +1,3 @@
 HOME_URL=https://example.com
 SUPABASE_URL=https://example.supabase.co
 SUPABASE_SECRET_KEY=replace-with-service-role-key
-LAMBDA_KEY=replace-with-revalidation-secret
