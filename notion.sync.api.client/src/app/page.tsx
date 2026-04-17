@@ -81,7 +81,7 @@ export default async function AppPage() {
           </div>
         </div>
         <p className="mx-4">
-          我叫 Neo，是一名旅居东京的全栈工程师，擅长
+          我叫 Curtis，是一名旅居东京的全栈工程师，擅长
           React、AWS、C#，计划回国中。头像是我的猫，名字叫街街。
         </p>
       </section>

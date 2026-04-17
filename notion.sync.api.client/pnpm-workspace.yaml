@@ -1,6 +1,10 @@
+packages:
+  - '.'
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
-  - '@vercel/speed-insights'
   - canvas
+  - esbuild
   - sharp
   - unrs-resolver
+  - workerd
