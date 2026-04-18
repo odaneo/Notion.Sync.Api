@@ -3,6 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 import { unstable_cache } from "next/cache";
 import {
   GetArticleWithSubTagsResponseType,
+  GetTagsAndRecommendArticlesResponseType,
+  GetTagsWithArticlesResponseType,
   TagsType,
   ArticlesType,
 } from "@/type/api.type";
@@ -13,6 +15,42 @@ export const supabase = createClient(
 );
 
 const CACHE_REVALIDATE = 3600;
+
+export const getTagsAndRecommendArticles = unstable_cache(
+  async () => {
+    const { data } = await supabase
+      .rpc("get_tags_and_recommend_articles")
+      .single<GetTagsAndRecommendArticlesResponseType>();
+
+    return data ?? null;
+  },
+  ["home-data"],
+  { revalidate: CACHE_REVALIDATE },
+);
+
+export const getAllArticles = unstable_cache(
+  async () => {
+    const { data } = await supabase
+      .rpc("get_all_articles")
+      .overrideTypes<ArticlesType[]>();
+
+    return data ?? null;
+  },
+  ["article-list"],
+  { revalidate: CACHE_REVALIDATE },
+);
+
+export const getTagsWithArticles = unstable_cache(
+  async () => {
+    const { data } = await supabase
+      .rpc("get_tags_with_articles_json")
+      .overrideTypes<GetTagsWithArticlesResponseType[]>();
+
+    return data ?? null;
+  },
+  ["tag-list"],
+  { revalidate: CACHE_REVALIDATE },
+);
 
 export const getArticleWithSubTags = unstable_cache(
   async (slug: string) => {

@@ -1,5 +1,4 @@
-import { GetTagsAndRecommendArticlesResponseType } from "@/type/api.type";
-import { supabase } from "@/utils/supabase/server";
+import { getTagsAndRecommendArticles } from "@/utils/supabase/server";
 import Image from "next/image";
 import MyAvatar from "../../public/avatar.jpg";
 import LucideIcon from "@/components/LucideIcon";
@@ -7,12 +6,8 @@ import dynamicIconImports from "lucide-react/dynamicIconImports";
 import ArticleList from "@/components/ArticleList";
 import Link from "next/link";
 
-export const revalidate = 3600;
-
 export default async function AppPage() {
-  const { data } = await supabase
-    .rpc("get_tags_and_recommend_articles")
-    .single<GetTagsAndRecommendArticlesResponseType>();
+  const data = await getTagsAndRecommendArticles();
 
   const tags = Array.isArray(data?.tags) ? data?.tags : [];
   const recommendArticles = Array.isArray(data?.recommendArticles)

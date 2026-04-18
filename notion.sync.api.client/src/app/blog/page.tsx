@@ -1,9 +1,6 @@
-import { supabase } from "@/utils/supabase/server";
-import { ArticlesType } from "@/type/api.type";
+import { getAllArticles } from "@/utils/supabase/server";
 import ArticleList from "@/components/ArticleList";
 import type { Metadata } from "next";
-
-export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "最新技术分享",
@@ -26,9 +23,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Blog() {
-  const { data } = await supabase
-    .rpc("get_all_articles")
-    .overrideTypes<ArticlesType[]>();
+  const data = await getAllArticles();
 
   const articleData = Array.isArray(data) ? data : [];
 
