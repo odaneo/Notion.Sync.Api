@@ -108,7 +108,7 @@ export default function RootLayout({
                   className="flex items-end justify-start gap-4 h-10"
                 >
                   <div className="text-3xl font-bold text-gray-800 leading-tight min-w-56">
-                    街街的脏书包
+                    街街的脏书包一点也不脏
                   </div>
                 </Link>
               </div>
