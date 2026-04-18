@@ -1,5 +1,4 @@
-import { supabase } from "@/utils/supabase/server";
-import { ArticlesType, TagsType } from "@/type/api.type";
+import { getTagDetailWithArticles } from "@/utils/supabase/server";
 import ArticleList from "@/components/ArticleList";
 
 type PageProps = {
@@ -7,20 +6,8 @@ type PageProps = {
 };
 
 export const dynamicParams = true;
-// export const dynamic = "force-static";
-export const revalidate = 3600;
 export async function generateStaticParams() {
   return [];
-}
-
-async function getTagDetailWithArticles(tag: string) {
-  if (tag) {
-    const { data } = await supabase
-      .rpc("get_tag_detail_with_articles", { tag_slug: tag })
-      .single<{ tag: TagsType; articles: ArticlesType[] }>();
-    return data ?? null;
-  }
-  return null;
 }
 
 export async function generateMetadata({ params }: PageProps) {

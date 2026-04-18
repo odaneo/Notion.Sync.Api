@@ -1,4 +1,4 @@
-import { supabase } from "@/utils/supabase/server";
+import { getArticleWithSubTags } from "@/utils/supabase/server";
 import { GetArticleWithSubTagsResponseType } from "@/type/api.type";
 import { ExtendedRecordMap } from "notion-types";
 import NotionSSR from "@/components/blog/NotionSSR";
@@ -10,21 +10,8 @@ type PageProps = {
 };
 
 export const dynamicParams = true;
-// export const dynamic = "force-static";
-export const revalidate = 3600;
 export async function generateStaticParams() {
   return [];
-}
-
-async function getArticleWithSubTags(slug: string) {
-  if (slug) {
-    const { data } = await supabase
-      .rpc("get_article_by_slug", { article_slug: slug })
-      .single()
-      .overrideTypes<GetArticleWithSubTagsResponseType>();
-    return data ?? null;
-  }
-  return null;
 }
 
 export async function generateMetadata({ params }: PageProps) {
