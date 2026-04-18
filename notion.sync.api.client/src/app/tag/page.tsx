@@ -1,9 +1,6 @@
-import { supabase } from "@/utils/supabase/server";
-import { GetTagsWithArticlesResponseType } from "@/type/api.type";
+import { getTagsWithArticles } from "@/utils/supabase/server";
 import MenuList from "@/components/tag/MenuList";
 import type { Metadata } from "next";
-
-export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "所有标签",
@@ -27,9 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Tag() {
-  const { data: tagsData } = await supabase
-    .rpc("get_tags_with_articles_json")
-    .overrideTypes<GetTagsWithArticlesResponseType[]>();
+  const tagsData = await getTagsWithArticles();
 
   const tags = Array.isArray(tagsData) ? tagsData : [];
 
