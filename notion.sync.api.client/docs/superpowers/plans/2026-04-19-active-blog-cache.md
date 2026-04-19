@@ -1,4 +1,6 @@
-# 主动博客缓存 Implementation Plan
+# 已废弃：主动博客缓存 Implementation Plan
+
+本计划已被 `docs/superpowers/plans/2026-04-19-active-blog-kv-no-revalidate.md` 取代。新计划采用无 revalidate 入口方案：AWS Hangfire 直接发布 Cloudflare KV，Next.js 通过短 TTL 页面缓存自然刷新。
 
 > **给 agentic workers:** REQUIRED SUB-SKILL: 使用 superpowers:subagent-driven-development 或 superpowers:executing-plans 按任务逐项执行。步骤使用 checkbox 语法跟踪。
 
