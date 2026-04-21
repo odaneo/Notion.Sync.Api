@@ -19,7 +19,8 @@
 - 不改 UI 样式和现有中文文案。
 - 不改 Notion 渲染组件。
 - 客户端改动位于 `notion.sync.api.client`。
-- 同步服务改动位于同级 `../Notion.Sync.Api`，当前已确认是 `net8.0` Hangfire 服务。
+- 本轮只修改前端仓库，不修改同级 `../Notion.Sync.Api` 后端目录。
+- 后端需要的 Cloudflare KV 写入内容在本文以接口契约形式描述，后端项目单独实现。
 
 ## 最终数据流
 
@@ -162,11 +163,29 @@ Cloudflare KV 里存 camelCase JSON，和当前 `src/type/api.type.ts` 对齐。
 
 ## Cloudflare KV REST API 对接
 
-同步服务使用 API Token 调 Cloudflare API。API Token 需要目标 account 下的 `Workers KV Storage Write` 权限。
+同步服务使用 API Token 调 Cloudflare API。API Token 需要目标 account 下的 `Workers KV Storage Write` 权限。这部分是后端对接契约，本轮不修改后端代码。
 
 ### 配置项
 
-生产环境通过 AWS Secrets Manager 注入到 `CloudflareKv:*` 配置前缀:
+后端同步服务需要使用这三个变量名:
+
+```text
+CLOUDFLARE_KV
+NOTION_SYNC_API_CACHE
+NOTION_SYNC_API_CLOUDFLARE_KV_PUBLISHER
+```
+
+变量含义约定:
+
+```text
+CLOUDFLARE_KV = Cloudflare account id
+NOTION_SYNC_API_CACHE = Cloudflare KV namespace id
+NOTION_SYNC_API_CLOUDFLARE_KV_PUBLISHER = Cloudflare KV 写入 API token
+```
+
+前端运行时不读取这三个变量。前端只通过 `wrangler.jsonc` 的 `BLOG_CACHE` KV binding 读取 Cloudflare KV。`NOTION_SYNC_API_CACHE` 是后端调用 Cloudflare REST API 时使用的 namespace id，不是前端环境变量。
+
+生产环境后端通过 AWS Secrets Manager 注入到 `CloudflareKv:*` 配置前缀:
 
 ```json
 {
@@ -246,15 +265,11 @@ Content-Type: text/plain
 
 同步服务:
 
-- 修改 `../Notion.Sync.Api/appsettings.json`: 增加 `AWS:SecretNameCloudflareKv`。
-- 修改 `../Notion.Sync.Api/Program.cs`: 从 Secrets Manager 加载 Cloudflare KV 配置，注册 KV client 和发布服务。
-- 创建 `../Notion.Sync.Api/Options/CloudflareKvOptions.cs`: Cloudflare KV 配置模型。
-- 创建 `../Notion.Sync.Api/Dtos/BlogCacheDtos.cs`: 与前台 TypeScript 类型对齐的缓存 DTO。
-- 创建 `../Notion.Sync.Api/Business/IServices/ICloudflareKvClient.cs`: 定义 KV 写入接口。
-- 创建 `../Notion.Sync.Api/Business/Services/CloudflareKvClient.cs`: 封装 Cloudflare KV REST API。
-- 创建 `../Notion.Sync.Api/Business/IServices/IBlogCachePublisher.cs`: 定义发布接口。
-- 创建 `../Notion.Sync.Api/Business/Services/BlogCachePublisher.cs`: 从 `AppDbContext` 生成快照并发布 KV。
-- 修改 `../Notion.Sync.Api/Job/NotionDatabaseSyncJobService.cs`: 在 Supabase 和 Node 内容同步成功后发布 KV。
+- 不在本轮修改后端文件。
+- 后端需要实现 `CloudflareKv:*` 配置读取。
+- 后端需要实现 Cloudflare KV `PUT values/{key}` 写入接口。
+- 后端需要按本文 JSON Schema 发布 `blog:v:<version>:*` 和 `blog:active`。
+- 后端发布顺序必须保证 `blog:active` 最后写入。
 
 ## 任务 1: 添加客户端 KV binding
 
@@ -277,21 +292,7 @@ pnpm exec wrangler kv namespace create BLOG_CACHE
 id = "<production namespace id>"
 ```
 
-- [ ] **步骤 2: 创建 preview KV namespace**
-
-运行:
-
-```bash
-pnpm exec wrangler kv namespace create BLOG_CACHE --preview
-```
-
-期望输出包含:
-
-```text
-preview_id = "<preview namespace id>"
-```
-
-- [ ] **步骤 3: 修改 Wrangler 配置**
+- [ ] **步骤 2: 修改 Wrangler 配置**
 
 在 `wrangler.jsonc` 顶层加入 `kv_namespaces`，保留现有 `services`、`r2_buckets`、`durable_objects` 和 `migrations`:
 
@@ -299,13 +300,12 @@ preview_id = "<preview namespace id>"
 "kv_namespaces": [
   {
     "binding": "BLOG_CACHE",
-    "id": "<production namespace id>",
-    "preview_id": "<preview namespace id>"
+    "id": "<production namespace id>"
   }
 ]
 ```
 
-- [ ] **步骤 4: 更新本地环境示例**
+- [ ] **步骤 3: 更新本地环境示例**
 
 将 `.dev.vars.example` 改为:
 
@@ -313,7 +313,7 @@ preview_id = "<preview namespace id>"
 HOME_URL=http://localhost:3000
 ```
 
-- [ ] **步骤 5: 重新生成 Cloudflare 类型**
+- [ ] **步骤 4: 重新生成 Cloudflare 类型**
 
 运行:
 
@@ -331,7 +331,7 @@ interface Env {
 }
 ```
 
-- [ ] **步骤 6: 验证客户端类型**
+- [ ] **步骤 5: 验证客户端类型**
 
 运行:
 
@@ -345,7 +345,7 @@ pnpm exec tsc --noEmit
 无 TypeScript error
 ```
 
-- [ ] **步骤 7: 提交客户端 binding 变更**
+- [ ] **步骤 6: 提交客户端 binding 变更**
 
 运行:
 
@@ -694,7 +694,7 @@ git add src/app/page.tsx src/app/blog/page.tsx src/app/tag/page.tsx src/app/tag/
 git commit -m "feat: serve blog pages from kv cache"
 ```
 
-## 任务 4: 移除客户端 Supabase 读取
+## 任务 4: 后续清理客户端 Supabase 读取
 
 **文件:**
 - 删除: `src/utils/supabase/server.ts`
@@ -702,6 +702,8 @@ git commit -m "feat: serve blog pages from kv cache"
 - 修改: `pnpm-lock.yaml`
 - 修改: `.dev.vars.example`
 - 生成: `cloudflare-env.d.ts`
+
+这个任务在后端已经稳定发布 KV 数据后执行。本轮前端先切换页面读取 KV，不删除 Supabase 旧工具和依赖，保留调试回退点。
 
 - [ ] **步骤 1: 确认 Supabase 工具不再被引用**
 
@@ -790,7 +792,11 @@ git add package.json pnpm-lock.yaml .dev.vars.example cloudflare-env.d.ts src/ut
 git commit -m "chore: remove frontend supabase reads"
 ```
 
-## 任务 5: 为 .NET 同步服务添加 Cloudflare KV 配置
+## 后端接口契约
+
+以下任务 5 到任务 9 是后端项目需要实现的接口契约和参考步骤，不在当前前端分支执行，也不在本轮提交中修改 `../Notion.Sync.Api`。
+
+## 任务 5: 为 .NET 同步服务添加 Cloudflare KV 配置契约
 
 **文件:**
 - 修改: `../Notion.Sync.Api/appsettings.json`

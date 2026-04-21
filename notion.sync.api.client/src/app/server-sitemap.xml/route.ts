@@ -1,12 +1,9 @@
 import { getServerSideSitemap } from "next-sitemap";
-import { supabase } from "@/utils/supabase/server";
-import { GetTagsWithArticlesResponseType } from "@/type/api.type";
+import { getTagsWithArticles } from "@/utils/blog-cache/server";
 import { Changefreq } from "@/type/sitemap.type";
 
 export async function GET() {
-  const { data: tagsData } = await supabase
-    .rpc("get_tags_with_articles_json")
-    .overrideTypes<GetTagsWithArticlesResponseType[]>();
+  const tagsData = await getTagsWithArticles();
   const tags = Array.isArray(tagsData) ? tagsData : [];
 
   const now = new Date().toISOString();
@@ -61,7 +58,7 @@ export async function GET() {
   const res = await getServerSideSitemap(fields);
   res.headers.set(
     "Cache-Control",
-    "public, max-age=600, s-maxage=600, stale-while-revalidate=60",
+    "public, max-age=300, s-maxage=300, stale-while-revalidate=60",
   );
   return res;
 }

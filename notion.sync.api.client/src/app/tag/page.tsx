@@ -1,6 +1,8 @@
-import { getTagsWithArticles } from "@/utils/supabase/server";
+import { getTagsWithArticles } from "@/utils/blog-cache/server";
 import MenuList from "@/components/tag/MenuList";
 import type { Metadata } from "next";
+
+export const revalidate = 120;
 
 export const metadata: Metadata = {
   title: "所有标签",

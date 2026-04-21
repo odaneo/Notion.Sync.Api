@@ -1,4 +1,4 @@
-import { getArticleWithSubTags } from "@/utils/supabase/server";
+import { getArticleWithSubTags } from "@/utils/blog-cache/server";
 import { GetArticleWithSubTagsResponseType } from "@/type/api.type";
 import { ExtendedRecordMap } from "notion-types";
 import NotionSSR from "@/components/blog/NotionSSR";
@@ -9,6 +9,7 @@ type PageProps = {
   params: Promise<{ tag: string; slug: string }>;
 };
 
+export const revalidate = 300;
 export const dynamicParams = true;
 export async function generateStaticParams() {
   return [];

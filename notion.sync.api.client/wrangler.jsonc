@@ -14,6 +14,12 @@
       "service": "notion-sync-api-client"
     }
   ],
+  "kv_namespaces": [
+    {
+      "binding": "BLOG_CACHE",
+      "id": "d2b7ded7bfcb41ccbe171e0e191f169f"
+    }
+  ],
   "r2_buckets": [
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",

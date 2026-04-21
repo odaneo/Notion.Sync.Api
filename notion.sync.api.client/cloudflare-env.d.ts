@@ -4,6 +4,7 @@
 declare namespace Cloudflare {
   interface Env {
     ASSETS: Fetcher;
+    BLOG_CACHE: KVNamespace;
     SUPABASE_URL: string;
     SUPABASE_SECRET_KEY: string;
     HOME_URL: string;
