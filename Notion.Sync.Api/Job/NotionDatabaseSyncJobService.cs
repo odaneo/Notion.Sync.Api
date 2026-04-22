@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace Notion.Sync.Api.Job
 {
-    public class NotionDatabaseSyncJobService(HttpClient httpClient, IConfiguration configuration, ITagService tagService, INotionArticleService notionArticleService, ILogger<NotionDatabaseSyncJobService> logger)
+    public class NotionDatabaseSyncJobService(HttpClient httpClient, IConfiguration configuration, ITagService tagService, INotionArticleService notionArticleService, IBlogCachePublisher blogCachePublisher, ILogger<NotionDatabaseSyncJobService> logger)
     {
         private static readonly HttpClient _httpClient = new HttpClient();
         public async Task SyncTagsAndArticleListAsync()
@@ -85,17 +85,12 @@ namespace Notion.Sync.Api.Job
             }
             if (!isDev)
             {
-                try
-                {
-                    await InvokeNodejs();
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex.Message, "Failed to invoke Node.js service.");
-
-                    throw new Exception("Failed to invoke Node.js service.");
-                }
+                await InvokeNodejs();
             }
+
+            logger.LogInformation("Publishing blog cache to Cloudflare KV.");
+            await blogCachePublisher.PublishAsync(CancellationToken.None);
+            logger.LogInformation("Cloudflare KV blog cache published successfully.");
 
             //if (!isDev)
             //{
@@ -170,15 +165,18 @@ namespace Notion.Sync.Api.Job
             }
             catch (HttpRequestException ex)
             {
-                logger.LogError($"HTTP Request failed: {ex.Message}");
+                logger.LogError(ex, "HTTP request to Node.js sync service failed.");
+                throw;
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
-                logger.LogError("Error: The request timed out. The sync process took too long.");
+                logger.LogError(ex, "Node.js sync service request timed out.");
+                throw;
             }
             catch (Exception ex)
             {
-                logger.LogError($"An unexpected error occurred: {ex.Message}");
+                logger.LogError(ex, "Unexpected error while invoking Node.js sync service.");
+                throw;
             }
         }
         private async Task InvokeLambda()

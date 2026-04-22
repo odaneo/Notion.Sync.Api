@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Notion.Sync.Api.Database;
 using Notion.Sync.Api.Extensions;
 using Notion.Sync.Api.Job;
+using Notion.Sync.Api.Options;
 using Serilog;
 using W4k.Extensions.Configuration.Aws.SecretsManager;
 
@@ -45,8 +46,14 @@ if (!isDev)
         .AddSecretsManager(
             builder.Configuration["AWS:SecretNameSupabase"]!,
             configurationKeyPrefix: "Supabase"
+        )
+        .AddSecretsManager(
+            builder.Configuration["AWS:SecretNameCloudflareKv"]!,
+            configurationKeyPrefix: "CloudflareKv"
         );
 }
+
+builder.Services.Configure<CloudflareKvOptions>(builder.Configuration.GetSection("CloudflareKv"));
 
 //DB
 var finalConnStr = builder.Configuration.BuildFinalConnString(isDev);
@@ -76,7 +83,10 @@ builder.Services.AddTransient<NotionDatabaseSyncJobService>();
 
 builder.Services.AddServices();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(
+    cfg => { },
+    AppDomain.CurrentDomain.GetAssemblies()
+);
 
 if (!isDev)
 {

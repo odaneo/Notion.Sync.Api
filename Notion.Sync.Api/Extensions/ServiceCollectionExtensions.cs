@@ -32,6 +32,8 @@ namespace Notion.Sync.Api.Extensions
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<INotionArticleService, NotionArticleService>();
             services.AddScoped<IArticleService, ArticleService>();
+            services.AddScoped<IBlogCachePublisher, BlogCachePublisher>();
+            services.AddHttpClient<ICloudflareKvClient, CloudflareKvClient>();
 
             return services;
         }
