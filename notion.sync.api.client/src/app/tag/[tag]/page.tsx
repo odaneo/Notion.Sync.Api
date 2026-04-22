@@ -1,10 +1,11 @@
-import { getTagDetailWithArticles } from "@/utils/supabase/server";
+import { getTagDetailWithArticles } from "@/utils/blog-cache/server";
 import ArticleList from "@/components/ArticleList";
 
 type PageProps = {
   params: Promise<{ tag: string }>;
 };
 
+export const revalidate = 120;
 export const dynamicParams = true;
 export async function generateStaticParams() {
   return [];

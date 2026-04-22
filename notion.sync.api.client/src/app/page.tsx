@@ -1,10 +1,12 @@
-import { getTagsAndRecommendArticles } from "@/utils/supabase/server";
+import { getTagsAndRecommendArticles } from "@/utils/blog-cache/server";
 import Image from "next/image";
 import MyAvatar from "../../public/avatar.jpg";
 import LucideIcon from "@/components/LucideIcon";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
 import ArticleList from "@/components/ArticleList";
 import Link from "next/link";
+
+export const revalidate = 120;
 
 export default async function AppPage() {
   const data = await getTagsAndRecommendArticles();
