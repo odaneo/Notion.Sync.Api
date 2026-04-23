@@ -5,8 +5,6 @@ declare namespace Cloudflare {
   interface Env {
     ASSETS: Fetcher;
     BLOG_CACHE: KVNamespace;
-    SUPABASE_URL: string;
-    SUPABASE_SECRET_KEY: string;
     HOME_URL: string;
   }
 }
@@ -18,9 +16,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 };
 declare namespace NodeJS {
   interface ProcessEnv
-    extends StringifyValues<
-      Pick<Cloudflare.Env, "SUPABASE_URL" | "SUPABASE_SECRET_KEY" | "HOME_URL">
-    > {}
+    extends StringifyValues<Pick<Cloudflare.Env, "HOME_URL">> {}
 }
 
 // Begin runtime types

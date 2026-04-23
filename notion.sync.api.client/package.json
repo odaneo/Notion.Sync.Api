@@ -17,8 +17,6 @@
   "dependencies": {
     "@ebinas/react-use-minesweeper": "^1.0.0",
     "@opennextjs/cloudflare": "^1.19.1",
-    "@supabase/ssr": "^0.7.0",
-    "@supabase/supabase-js": "^2.57.4",
     "canvas-confetti": "^1.9.4",
     "dayjs": "^1.11.19",
     "lucide-react": "^0.548.0",
