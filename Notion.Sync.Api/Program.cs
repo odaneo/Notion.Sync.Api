@@ -120,7 +120,7 @@ else
 RecurringJob.AddOrUpdate<NotionDatabaseSyncJobService>(
     "SyncTagsAndArticleListAsync",
     job => job.SyncTagsAndArticleListAsync(),
-    "*/30 * * * *",
+    "0 */4 * * *",
     new RecurringJobOptions
     {
         TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time")
