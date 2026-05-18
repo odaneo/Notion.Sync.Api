@@ -10,6 +10,7 @@ import {
   BlogCacheManifestType,
   TagDetailWithArticlesType,
 } from "@/type/blog-cache.type";
+import { getMockBlogCacheValue } from "./mock";
 
 const ACTIVE_VERSION_KEY = "blog:active";
 const ACTIVE_VERSION_CACHE_TTL = 30;
@@ -32,6 +33,10 @@ async function getActiveVersion() {
 }
 
 async function getVersionedJson<T>(name: string) {
+  if (process.env.NODE_ENV === "development") {
+    return getMockBlogCacheValue<T>(name);
+  }
+
   const version = await getActiveVersion();
 
   if (!version) {
