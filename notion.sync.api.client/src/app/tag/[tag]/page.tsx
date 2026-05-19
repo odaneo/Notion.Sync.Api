@@ -5,7 +5,7 @@ type PageProps = {
   params: Promise<{ tag: string }>;
 };
 
-export const revalidate = 120;
+export const revalidate = 14400;
 export const dynamicParams = true;
 export async function generateStaticParams() {
   return [];

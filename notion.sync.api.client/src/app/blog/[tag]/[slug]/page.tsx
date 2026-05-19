@@ -9,7 +9,7 @@ type PageProps = {
   params: Promise<{ tag: string; slug: string }>;
 };
 
-export const revalidate = 300;
+export const revalidate = 14400;
 export const dynamicParams = true;
 export async function generateStaticParams() {
   return [];

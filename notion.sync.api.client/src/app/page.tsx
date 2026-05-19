@@ -6,7 +6,7 @@ import dynamicIconImports from "lucide-react/dynamicIconImports";
 import ArticleList from "@/components/ArticleList";
 import Link from "next/link";
 
-export const revalidate = 120;
+export const revalidate = 3600;
 
 export default async function AppPage() {
   const data = await getTagsAndRecommendArticles();

@@ -2,7 +2,7 @@ import { getAllArticles } from "@/utils/blog-cache/server";
 import ArticleList from "@/components/ArticleList";
 import type { Metadata } from "next";
 
-export const revalidate = 120;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "最新技术分享",
