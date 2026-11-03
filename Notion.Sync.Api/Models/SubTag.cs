@@ -2,17 +2,16 @@
 
 namespace Notion.Sync.Api.Models
 {
+    [Microsoft.EntityFrameworkCore.Index(nameof(Slug), IsUnique = true)]
     public class SubTag
     {
         [Key]
-        public required string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString("N");
         [MaxLength(255)]
-        public string? Title { get; set; }
+        public required string Title { get; set; }
         [MaxLength(255)]
-        public string? Slug { get; set; }
+        public required string Slug { get; set; }
         public DateTime LastEditedTime { get; set; }
-        public string TagId { get; set; } = default!;
-        public Tag Tag { get; set; } = default!;
-        public ICollection<NotionArticleSubTag> NotionArticleSubTags { get; set; } = [];
+        public ICollection<ArticleSubTag> ArticleSubTags { get; set; } = [];
     }
 }

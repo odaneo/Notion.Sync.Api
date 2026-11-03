@@ -10,16 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="AutoMapper" Version="15.1.3" />
 	<PackageReference Include="AWSSDK.Core" Version="4.0.3.8" />
 	<PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.0" />
-	<PackageReference Include="AWSSDK.Lambda" Version="4.0.0.10" />
 	<PackageReference Include="AWSSDK.SecretsManager" Version="4.0.0.14" />
-	<PackageReference Include="Hangfire" Version="1.8.20" />
-	<PackageReference Include="Hangfire.AspNetCore" Version="1.8.20" />
-	<PackageReference Include="Hangfire.Dashboard.BasicAuthorization" Version="1.0.2" />
-	<PackageReference Include="Hangfire.MemoryStorage" Version="1.8.1.2" />
-	<PackageReference Include="Hangfire.PostgreSql" Version="1.20.12" />
 	<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
 	<PackageReference Include="Npgsql" Version="8.0.7" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
@@ -30,11 +23,18 @@
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.13">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.13">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
 	<PackageReference Include="W4k.Extensions.Configuration.Aws.SecretsManager" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Certificates/supabase-ca.crt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

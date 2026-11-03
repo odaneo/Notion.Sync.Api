@@ -14,7 +14,7 @@ namespace Notion.Sync.Api.Repository.Repositories
         }
         public async Task<Tag?> GetByIdAsync(string Id)
         {
-            return await _dbSet.Include(t => t.SubTags).FirstOrDefaultAsync(t => t.Id == Id);
+            return await _dbSet.FirstOrDefaultAsync(t => t.Id == Id);
         }
     }
 }
