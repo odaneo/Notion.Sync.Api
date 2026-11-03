@@ -28,21 +28,13 @@ namespace Notion.Sync.Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Content")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Articles");
-                });
-
-            modelBuilder.Entity("Notion.Sync.Api.Models.NotionArticle", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ArticleId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("ContentHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -50,13 +42,15 @@ namespace Notion.Sync.Api.Migrations
                     b.Property<DateTime>("LastEditedTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("Published")
-                        .HasColumnType("boolean");
-
                     b.Property<bool>("Recommend")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("SourcePath")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -67,16 +61,16 @@ namespace Notion.Sync.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ArticleId")
-                        .IsUnique();
-
                     b.HasIndex("Slug")
                         .IsUnique();
 
-                    b.ToTable("NotionArticles");
+                    b.HasIndex("SourcePath")
+                        .IsUnique();
+
+                    b.ToTable("Articles");
                 });
 
-            modelBuilder.Entity("Notion.Sync.Api.Models.NotionArticleSubTag", b =>
+            modelBuilder.Entity("Notion.Sync.Api.Models.ArticleSubTag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -84,7 +78,7 @@ namespace Notion.Sync.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("NotionArticleId")
+                    b.Property<string>("ArticleId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -96,13 +90,13 @@ namespace Notion.Sync.Api.Migrations
 
                     b.HasIndex("SubTagId");
 
-                    b.HasIndex("NotionArticleId", "SubTagId")
+                    b.HasIndex("ArticleId", "SubTagId")
                         .IsUnique();
 
-                    b.ToTable("NotionArticleSubTags");
+                    b.ToTable("ArticleSubTags");
                 });
 
-            modelBuilder.Entity("Notion.Sync.Api.Models.NotionArticleTag", b =>
+            modelBuilder.Entity("Notion.Sync.Api.Models.ArticleTag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -110,7 +104,7 @@ namespace Notion.Sync.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("NotionArticleId")
+                    b.Property<string>("ArticleId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -122,10 +116,10 @@ namespace Notion.Sync.Api.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.HasIndex("NotionArticleId", "TagId")
+                    b.HasIndex("ArticleId", "TagId")
                         .IsUnique();
 
-                    b.ToTable("NotionArticleTags");
+                    b.ToTable("ArticleTags");
                 });
 
             modelBuilder.Entity("Notion.Sync.Api.Models.SubTag", b =>
@@ -137,22 +131,64 @@ namespace Notion.Sync.Api.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Slug")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<string>("TagId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TagId");
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.ToTable("SubTags");
+                });
+
+            modelBuilder.Entity("Notion.Sync.Api.Models.SyncRun", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CacheInvalidatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CommitSha")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime?>("DatabaseAppliedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastError")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Repository")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("RequiresRevalidation")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("WorkflowRunNumber")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Repository", "CommitSha")
+                        .IsUnique();
+
+                    b.ToTable("SyncRuns", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_SyncRuns_CacheAfterDatabase", "\"CacheInvalidatedAt\" IS NULL OR \"DatabaseAppliedAt\" IS NOT NULL");
+                        });
                 });
 
             modelBuilder.Entity("Notion.Sync.Api.Models.Tag", b =>
@@ -170,101 +206,76 @@ namespace Notion.Sync.Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Slug")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("Notion.Sync.Api.Models.NotionArticle", b =>
+            modelBuilder.Entity("Notion.Sync.Api.Models.ArticleSubTag", b =>
                 {
                     b.HasOne("Notion.Sync.Api.Models.Article", "Article")
-                        .WithOne("NotionArticle")
-                        .HasForeignKey("Notion.Sync.Api.Models.NotionArticle", "ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Article");
-                });
-
-            modelBuilder.Entity("Notion.Sync.Api.Models.NotionArticleSubTag", b =>
-                {
-                    b.HasOne("Notion.Sync.Api.Models.NotionArticle", "NotionArticle")
-                        .WithMany("NotionArticleSubTags")
-                        .HasForeignKey("NotionArticleId")
+                        .WithMany("ArticleSubTags")
+                        .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Notion.Sync.Api.Models.SubTag", "SubTag")
-                        .WithMany("NotionArticleSubTags")
+                        .WithMany("ArticleSubTags")
                         .HasForeignKey("SubTagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("NotionArticle");
+                    b.Navigation("Article");
 
                     b.Navigation("SubTag");
                 });
 
-            modelBuilder.Entity("Notion.Sync.Api.Models.NotionArticleTag", b =>
+            modelBuilder.Entity("Notion.Sync.Api.Models.ArticleTag", b =>
                 {
-                    b.HasOne("Notion.Sync.Api.Models.NotionArticle", "NotionArticle")
-                        .WithMany("NotionArticleTags")
-                        .HasForeignKey("NotionArticleId")
+                    b.HasOne("Notion.Sync.Api.Models.Article", "Article")
+                        .WithMany("ArticleTags")
+                        .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Notion.Sync.Api.Models.Tag", "Tag")
-                        .WithMany("NotionArticleTags")
+                        .WithMany("ArticleTags")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("NotionArticle");
-
-                    b.Navigation("Tag");
-                });
-
-            modelBuilder.Entity("Notion.Sync.Api.Models.SubTag", b =>
-                {
-                    b.HasOne("Notion.Sync.Api.Models.Tag", "Tag")
-                        .WithMany("SubTags")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Article");
 
                     b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Notion.Sync.Api.Models.Article", b =>
                 {
-                    b.Navigation("NotionArticle")
-                        .IsRequired();
-                });
+                    b.Navigation("ArticleSubTags");
 
-            modelBuilder.Entity("Notion.Sync.Api.Models.NotionArticle", b =>
-                {
-                    b.Navigation("NotionArticleSubTags");
-
-                    b.Navigation("NotionArticleTags");
+                    b.Navigation("ArticleTags");
                 });
 
             modelBuilder.Entity("Notion.Sync.Api.Models.SubTag", b =>
                 {
-                    b.Navigation("NotionArticleSubTags");
+                    b.Navigation("ArticleSubTags");
                 });
 
             modelBuilder.Entity("Notion.Sync.Api.Models.Tag", b =>
                 {
-                    b.Navigation("NotionArticleTags");
-
-                    b.Navigation("SubTags");
+                    b.Navigation("ArticleTags");
                 });
 #pragma warning restore 612, 618
         }

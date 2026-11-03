@@ -1,38 +1,15 @@
-﻿services:
-  db:
-    container_name: db
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: notion
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - postgresql_data:/var/lib/postgresql/data
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Notion.Sync.Api/Dockerfile
     ports:
-      - 55432:5432
-    networks:
-      - db_notion
-
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
+      - "127.0.0.1:5021:7031"
     environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
-      PGADMIN_DEFAULT_PASSWORD: postgres
-      PGADMIN_LISTEN_PORT: 5050
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:7031"
+      Revalidation__Url: "http://host.docker.internal:3000/api/revalidate"
     volumes:
-      - pgadmin_working_dir:/var/lib/pgadmin
-    ports:
-      - 5050:5050
-    networks:
-      - db_notion
-
-networks:
-  db_notion:
-    driver: bridge
-
-volumes:
-  pgadmin_working_dir:
-    driver: local
-  postgresql_data:
-    driver: local
+      - "${APPDATA}/Microsoft/UserSecrets/af598fa0-4a2d-4362-8530-a0c49add5792:/home/app/.microsoft/usersecrets/af598fa0-4a2d-4362-8530-a0c49add5792:ro"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

@@ -1,0 +1,11 @@
+.git
+.dotnet-home
+**/bin
+**/obj
+**/node_modules
+**/.env*
+**/.dev.vars*
+**/secrets.json
+**/.next
+**/.open-next
+**/.wrangler

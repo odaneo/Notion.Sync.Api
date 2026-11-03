@@ -11,21 +11,16 @@ namespace Notion.Sync.Api.Database
         public DbSet<Tag> Tags { get; set; }
         public DbSet<SubTag> SubTags { get; set; }
         public DbSet<Article> Articles { get; set; }
-        public DbSet<NotionArticle> NotionArticles { get; set; }
-        public DbSet<NotionArticleTag> NotionArticleTags { get; set; }
-        public DbSet<NotionArticleSubTag> NotionArticleSubTags { get; set; }
+        public DbSet<ArticleTag> ArticleTags { get; set; }
+        public DbSet<ArticleSubTag> ArticleSubTags { get; set; }
+        public DbSet<SyncRun> SyncRuns { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tag>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity
-                    .HasMany(e => e.SubTags)
-                    .WithOne(e => e.Tag)
-                    .HasForeignKey(e => e.TagId)
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity
-                    .HasMany(e => e.NotionArticleTags)
+                    .HasMany(e => e.ArticleTags)
                     .WithOne(e => e.Tag)
                     .HasForeignKey(e => e.TagId)
                     .OnDelete(DeleteBehavior.Cascade);
@@ -34,40 +29,38 @@ namespace Notion.Sync.Api.Database
             {
                 entity.HasKey(e => e.Id);
                 entity
-                    .HasMany(e => e.NotionArticleSubTags)
+                    .HasMany(e => e.ArticleSubTags)
                     .WithOne(e => e.SubTag)
                     .HasForeignKey(e => e.SubTagId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
-            modelBuilder.Entity<NotionArticle>(entity =>
+            modelBuilder.Entity<Article>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity
-                    .HasMany(e => e.NotionArticleSubTags)
-                    .WithOne(e => e.NotionArticle)
-                    .HasForeignKey(e => e.NotionArticleId)
+                    .HasMany(e => e.ArticleSubTags)
+                    .WithOne(e => e.Article)
+                    .HasForeignKey(e => e.ArticleId)
                     .OnDelete(DeleteBehavior.Cascade);
                 entity
-                    .HasMany(e => e.NotionArticleTags)
-                    .WithOne(e => e.NotionArticle)
-                    .HasForeignKey(e => e.NotionArticleId)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity
-                    .HasOne(e => e.Article)
-                    .WithOne(e => e.NotionArticle)
-                    .HasForeignKey<NotionArticle>(e => e.ArticleId)
+                    .HasMany(e => e.ArticleTags)
+                    .WithOne(e => e.Article)
+                    .HasForeignKey(e => e.ArticleId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
-            modelBuilder.Entity<NotionArticleTag>(entity =>
+            modelBuilder.Entity<ArticleTag>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.HasIndex(e => new { e.NotionArticleId, e.TagId }).IsUnique();
+                entity.HasIndex(e => new { e.ArticleId, e.TagId }).IsUnique();
             });
-            modelBuilder.Entity<NotionArticleSubTag>(entity =>
+            modelBuilder.Entity<ArticleSubTag>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.HasIndex(e => new { e.NotionArticleId, e.SubTagId }).IsUnique();
+                entity.HasIndex(e => new { e.ArticleId, e.SubTagId }).IsUnique();
             });
+            modelBuilder.Entity<SyncRun>().ToTable("SyncRuns", table =>
+                table.HasCheckConstraint("CK_SyncRuns_CacheAfterDatabase",
+                    "\"CacheInvalidatedAt\" IS NULL OR \"DatabaseAppliedAt\" IS NOT NULL"));
         }
     }
 }
