@@ -68,7 +68,7 @@ GitHub Actions 复用仓库现有的 AWS OIDC 登录方式，使用只允许读�
 - [x] 日常同步使用用户确认的 Supabase Shared Session Pooler：`aws-1-ap-northeast-1.pooler.supabase.com:5432`，数据库 `postgres`，项目标识 `uwxiqiasdfhorahxqvmp`；管理员密码沿用用户提供的值，测试 writer 密码独立生成并保存到 User Secrets。
 - [x] 配置生产 `blog`、开发 `blog_test`，连接同一 Supabase 项目；schema 由部署配置固定。当前只创建 `blog_test`，没有执行生产迁移。
 - [x] 直接更新原有 `Article`：合并属性与 Markdown 正文（沿用 `Content` 字段），不存储草稿或 false 状态。
-- [x] 文章 ID 独立生成，Slug 和 SourcePath 唯一；源码识别与删除同步规则在后端阶段实现。
+- [x] 为 33 篇带博客属性的文章、9 个 Tag、31 个 SubTag 补齐固定 UUID，保存在笔记属性 `Id` 中，直接作为对应数据库主键；同步时保留该值，改名、移动或修改 Slug 不改变 Id。Slug 和 SourcePath 仍保持唯一。
 - [x] 更新现有两张关联模型为 `ArticleTag`、`ArticleSubTag`，分别支持文章与两类分类的多对多关系。
 - [x] 删除 `SubTag.TagId`、父子导航和外键；共享子标签、多标签关系已通过事务内验证。
 - [x] 新增 `SyncRun`，按仓库和提交版本唯一，分别保存入库与刷新结果，禁止先记录刷新成功再记录入库成功。
@@ -103,9 +103,10 @@ Session Pooler 端口及自定义角色用户名依据：[Supabase 连接说明]
 ## 三、后端与 GitHub Actions 计划
 
 - [ ] 增加 `POST /api/sync/obsidian`，仅接受认证后的完整已发布文章清单、相应内容包和提交版本；输入限制包括文件类型、大小和安全路径。
-- [ ] 从固定的笔记仓库和发布分支取得本次提交。Actions 先按 `Published: true` 筛选，仅打包这些文章及其引用的分类定义；排除草稿、图片、`.git`、`.obsidian` 等内容。不接受任意远程下载地址或 SQL。
-- [ ] 后端再次检查文章的 `Published` 确为布尔值 `true`，才解析 Slug、Description、Recommend、TagRefs、SubTags；标题默认取文件名，编辑时间取对应文件的 Git 提交时间，不采用 checkout 后的文件 mtime。`false` 或缺失字段的笔记直接忽略，不建立草稿同步通道。
-- [ ] 支持现有引用写法，例如 `[[Tags/后端|后端]]`、`[[后端]]` 和 `[[CSharp|CSharp]]`；解析失败、重名无法判定、Slug 冲突时终止本次同步并报告位置。
+- [ ] 从固定的笔记仓库和发布分支取得本次提交。Actions 先按 `Published: true` 筛选，仅打包这些文章及能找到的分类定义，缺失分类引用直接跳过；排除草稿、图片、`.git`、`.obsidian` 等内容。不接受任意远程下载地址或 SQL。
+- [ ] 后端再次检查文章的 `Published` 确为布尔值 `true`，才校验固定 `Id` 并解析 Slug、Description、Recommend、TagRefs、SubTags；文章及实际找到的分类 Id 必须有效且无重复，直接使用笔记中的值。标题默认取文件名，编辑时间取对应文件的 Git 提交时间，不采用 checkout 后的文件 mtime。`false` 或缺失字段的笔记直接忽略，不建立草稿同步通道。
+- [x] 33 篇文章的分类属性已整理为 YAML 列表；短链接、完整路径及带显示别名的写法均允许，例如 `[[前端]]`、`[[Tags/前端]]`、`[[Tags/前端|前端]]`；空列表为 `[]`，保留原分类 Id。
+- [ ] 分类解析分别限定 `TagRefs → Tags`、`SubTags → SubTags`，从引用目标读取固定 Id 建立关系。找不到的引用直接忽略，不报错、不创建分类、不阻断文章同步；无有效分类时关联为空。重复 Id 或 Slug 冲突仍按数据冲突处理。
 - [ ] 全量对齐当前 `Published: true` 清单，按哈希更新有变化的文章。只有完整已发布清单及内容包全部校验成功后，才在一个事务中更新文章、分类及关联，并删除已不在清单中的旧发布记录。
 - [ ] 同一目标串行处理，防止旧提交覆盖新提交；按提交版本幂等，网络中断后的重试不能重复制造文章。
 - [ ] 数据库提交后，调用固定的 Next.js 刷新地址。入库失败不刷新；刷新失败不谎报成功，记录待刷新状态，同一提交重试时继续完成刷新。
@@ -119,7 +120,7 @@ Session Pooler 端口及自定义角色用户名依据：[Supabase 连接说明]
 
 ## 四、前端与 Cloudflare 计划
 
-- [ ] 新建统一的服务端数据读取模块，用原生 `fetch` 调用 Supabase REST API，显式使用对应 schema。开发也读取 `blog_test`，移除 `NODE_ENV=development` 自动切 mock 的旧行为。
+- [ ] 新建统一的服务端数据读取模块，用原生 `fetch` 调用 Supabase REST API，显式使用对应 schema。开发也读取 `blog_test`，移除 `NODE_ENV=development` 自动切 mock 的旧行为。分类为空的文章仍正常渲染，不假设必有首个 Tag。
 - [ ] 数据读取使用明确的长期缓存配置，并统一标记博客缓存标签；首页、文章列表、分类、正文、metadata 和 sitemap 都走该模块。[Next.js 15 标签失效机制](https://nextjs.org/docs/15/app/api-reference/functions/revalidateTag)
 - [ ] 用 Markdown 渲染替换 recordMap / `react-notion-x`，覆盖现有代码块、表格、链接及已发布文章中的 Mermaid；原始 HTML 不直接执行，链接协议需校验。
 - [ ] 正文中的 Wiki 链接解析为已发布文章地址；未发布文章不输出私有笔记内容。目录、锚点和含中文/空格的路径纳入验证。
@@ -168,6 +169,7 @@ Session Pooler 端口及自定义角色用户名依据：[Supabase 连接说明]
 
 - [ ] `Published: true` 的新增和修改文章入库；false/缺失字段的笔记不入库；true 改为 false 后旧发布记录移除且无草稿记录；删除、改名/改 Slug、分类元数据变更均得到预期结果。
 - [ ] 一篇文章同时关联多个 Tag/SubTag；同一个 SubTag 可以出现在不同分类的文章中。
+- [ ] 分类引用兼容短链接、完整路径及显示别名；指定目录中找不到的引用静默跳过，即使全部找不到也能保存并渲染文章。
 - [ ] 重复提交、旧提交、错误密钥、非法内容包和部分解析失败，不产生重复数据、误删或越权写入。
 - [ ] 模拟刷新失败：数据库只应用一次，重试最终完成缓存失效；刷新成功前 Actions 不显示同步成功。
 - [ ] Worker 预览中确认：没有定时内容失效；同步后首页、列表、分类、正文与 sitemap 都能读取新版。

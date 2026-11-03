@@ -7,7 +7,7 @@ namespace Notion.Sync.Api.Models
     public class Article
     {
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString("N");
+        public required string Id { get; set; }
         [MaxLength(255)]
         public required string Title { get; set; }
         [MaxLength(255)]

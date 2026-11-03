@@ -18,6 +18,10 @@
 
 ## 表与 API 权限
 
+文章、Tag、SubTag 的主键直接使用笔记属性中的 `Id`（固定 UUID）；改名、移动或修改 Slug 时保留原 Id。
+
+分类属性使用列表，兼容短链接、完整路径和显示别名。`TagRefs` 只在 `Tags` 中查找，`SubTags` 只在 `SubTags` 中查找；找不到的引用忽略，不报错、不阻断文章同步。无有效分类时关联为空。
+
 - `Articles`：发布文章的属性与 Markdown；Slug、SourcePath 唯一。
 - `Tags`、`SubTags`：独立分类；通过 `ArticleTags`、`ArticleSubTags` 分别与文章多对多关联。
 - `SyncRuns`：按 Repository + CommitSha 唯一，记录入库及缓存刷新结果。
