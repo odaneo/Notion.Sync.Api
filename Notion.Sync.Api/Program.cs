@@ -7,6 +7,14 @@ using Microsoft.AspNetCore.RateLimiting;
 using Serilog;
 using W4k.Extensions.Configuration.Aws.SecretsManager;
 
+if (args.Contains("--migrate"))
+{
+    await using var db = new AppDbContextFactory().CreateDbContext(args.Where(arg => arg != "--migrate").ToArray());
+    await db.Database.MigrateAsync();
+    Console.WriteLine("Database migrations completed.");
+    return;
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

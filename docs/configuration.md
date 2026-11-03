@@ -4,11 +4,11 @@
 
 | 文件 | 内容 |
 | --- | --- |
-| `Notion.Sync.Api/appsettings.json` | 连接模板、迁移用户名、公开 CA、源仓库和分支 |
-| `appsettings.Development.json` | `blog_test`、测试用户名、本地刷新地址 |
-| `appsettings.Production.json` | `blog`、生产用户名、AWS Region/Secret 名称、生产刷新地址 |
+| `Notion.Sync.Api/appsettings.json` | 连接模板、公开 CA、源仓库和分支 |
+| `appsettings.Development.json` | `blog_test`、本地刷新地址 |
+| `appsettings.Production.json` | `blog`、AWS Region/Secret 名称、生产刷新地址 |
 
-开发不使用 AWS。用户名、地址、schema 和证书路径属于普通配置；生产 `Revalidation:Url` 尚需填写。
+开发不使用 AWS。地址、schema 和证书路径属于普通配置。
 
 ## 后端敏感值
 
@@ -16,18 +16,18 @@
 
 | 统一配置键 | 用途 | AWS Secret |
 | --- | --- | --- |
-| `Supabase:password` | 日常 writer 连接 | `notion-api-supabase` |
-| `SupabaseMigration:password` | 显式管理员迁移 | `notion-api-supabase-migration` |
+| `Supabase:username`、`Supabase:password` | 日常 writer 连接 | `notion-api-supabase` |
+| `SupabaseMigration:username`、`SupabaseMigration:password` | 显式管理员迁移 | `notion-api-supabase-migration` |
 | `Sync:Token` | Actions → .NET 认证 | `notion-api-obsidian-sync` |
 | `Revalidation:Token` | .NET → Next.js 刷新认证 | `notion-api-revalidation` |
 
-本地 JSON 分组为 `Supabase`、`SupabaseMigration`、`Sync`、`Revalidation`。AWS 数据库 Secret 只含 `password`，另两项只含 `Token`；加载前缀后两边配置键一致。Token 至少 32 字符，开发值已生成，生产使用独立值。
+本地 JSON 分组为 `Supabase`、`SupabaseMigration`、`Sync`、`Revalidation`。AWS 两个数据库 Secret 均含 `username`、`password`，另两项只含 `Token`；加载前缀后两边配置键一致。Token 至少 32 字符，开发值已生成，生产使用独立值。
 
 已有 `Kestrel:Certificates:Development:Password` 仅供本地 HTTPS，不需要上传 AWS。日常连接与迁移连接分别使用 `DbContext:ConnectionString`、`DbContext:MigrationConnectionString`。
 
 本地同步脚本自动读取同一份 User Secrets，无需额外设置 `SYNC_TOKEN`；接口仍校验 Token。脚本默认执行同步、模拟刷新及结果校验，仅为本次进程设置临时回调地址，不改配置文件。
 
-生产迁移 Secret 已由用户创建，其余生产 Secret 尚未配置或切换；现有线上运行 Secret 先保留旧版所需字段，上线时再换为 `blog_writer` 密码。API 身份不读取迁移 Secret。
+生产所需 Secret 已创建，两个数据库 Secret 的用户名与密码字段已配置。生产 `blog_writer` 已创建并验证登录；`blog` schema 尚待线上迁移。正常 API 不读取迁移 Secret。
 
 ## 笔记仓库 Actions
 
