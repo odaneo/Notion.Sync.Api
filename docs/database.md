@@ -1,6 +1,6 @@
 # 数据库开发与迁移
 
-沿用现有 Models、AppDbContext 和 EF Migrations。测试 schema 已应用九个迁移，生产尚未迁移；新同步接口和前端读取尚未接入。
+沿用现有 Models、AppDbContext 和 EF Migrations。测试 schema 已应用十个迁移，后端同步已实现；生产尚未迁移，前端下一阶段接入。
 
 ## 账号与连接
 
@@ -24,7 +24,7 @@
 
 - `Articles`：发布文章的属性与 Markdown；Slug、SourcePath 唯一。
 - `Tags`、`SubTags`：独立分类；通过 `ArticleTags`、`ArticleSubTags` 分别与文章多对多关联。
-- `SyncRuns`：按 Repository + CommitSha 唯一，记录入库及缓存刷新结果。
+- `SyncRuns`：按 Repository + CommitSha 唯一；`WorkflowRunNumber` 防止旧请求覆盖，`RequiresRevalidation` 记录待刷新状态。
 
 Supabase Data API 的 Exposed schemas 需加入对应 schema，读取请求通过 `Accept-Profile` 指定。`anon` 仅可查询五张内容表，不能修改，也不能读取 `SyncRuns` 和 `__EFMigrationsHistory`；授权与 RLS 由迁移配置。
 
@@ -42,3 +42,5 @@ dotnet ef migrations has-pending-model-changes --project .\Notion.Sync.Api -- --
 开发固定使用 `blog_test`。生产需显式指定 `--environment Production`，执行身份需能读取迁移 Secret。API 不自动迁移；本次迁移不应用到旧 `public` schema。
 
 `Notion.Sync.Api/Database/VerifyDevelopment.sql` 在管理员连接、`Search Path=blog_test` 下执行，验证关系、约束和权限，测试数据全部回滚。已验证内容表 GET 返回 200、写入被拒绝，内部表不可读。
+
+后端测试：`dotnet test tests/Notion.Sync.Api.Tests`。设置 `RUN_DATABASE_TESTS=1` 可在空的 `blog_test` 业务表中验证差异更新、并发、回滚及刷新重试，结束后清理样例。

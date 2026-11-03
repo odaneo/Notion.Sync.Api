@@ -1,5 +1,3 @@
-using Notion.Sync.Api.Repository.IRepositories;
-using Notion.Sync.Api.Repository.Repositories;
 using Npgsql;
 
 namespace Notion.Sync.Api.Extensions;
@@ -40,11 +38,4 @@ public static class ServiceCollectionExtensions
         return builder.ConnectionString;
     }
 
-    public static IServiceCollection AddServices(this IServiceCollection services)
-    {
-        services.AddScoped<ITagRepository, TagRepository>();
-        services.AddScoped<ISubTagRepository, SubTagRepository>();
-        services.AddScoped<IArticleRepository, ArticleRepository>();
-        return services;
-    }
 }

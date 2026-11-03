@@ -1,32 +1,32 @@
-# Obsidian 博客同步迁移
-
-当前正在 `codex/obsidian-sync-assessment` 分支分阶段迁移：
+# Obsidian 博客同步
 
 ```text
-Obsidian Published: true → GitHub Actions → .NET → Supabase PostgreSQL
-                                                    ↓ 入库成功后
-                                          Next.js / Cloudflare 缓存失效
+Obsidian → GitHub Actions → .NET → Supabase
+                              ↓ 入库后
+                       Next.js / Cloudflare 刷新
 ```
 
-目前已实现 DB 阶段：直接修改现有 Models 和 AppDbContext，沿用 EF Core Migrations。文章属性与 Markdown 合并到 Articles，文章与 Tag、SubTag 分别多对多，两类分类没有父子关系。
+后端与笔记仓库 Actions 已实现；前端的 Supabase 读取、Markdown 渲染和刷新接口留到下一阶段。当前分支不用于生产部署。
 
-- 开发：同一 Supabase 项目的 `blog_test`，账号 `blog_test_writer`。
-- 生产：计划使用 `blog`、`blog_writer`，本阶段没有执行生产迁移。
-- 日常/迁移连接均为 Session Pooler（5432），分别使用 `Supabase` / `SupabaseMigration` 凭据。
-- .NET 开发密码保存在约定的 User Secrets，普通配置放在 appsettings；前端本地统一使用 `.env.local`。生产敏感值分别放在 AWS Secrets Manager 和 Worker Secrets。
+- 每次发送完整发布快照，按 UUID 和 SHA-256 比较，只新增、更新、删除有差异的记录。
+- 仅同步布尔值 `Published: true`；草稿正文不进入内容包。
+- 分类支持短链接、完整路径、显示别名；找不到就忽略，文章可没有分类。
+- Actions 串行、数据库事务锁和运行序号防止旧请求覆盖；刷新失败可重试，不重复写业务数据。
+- 同步接口为 `POST /api/sync/obsidian`，使用 HTTPS 和 Bearer Token；同步工作流不使用 OIDC。
 
 ```powershell
-dotnet build .\Notion.Sync.Api
-dotnet ef migrations has-pending-model-changes --project .\Notion.Sync.Api -- --environment Development
-dotnet ef database update --project .\Notion.Sync.Api -- --environment Development
+node .\scripts\sync-local.cjs
+dotnet run --project .\Notion.Sync.Api --launch-profile http
+dotnet test .\tests\Notion.Sync.Api.Tests
+docker compose up --build
 ```
 
-迁移由设计时工厂使用管理员连接执行，普通 API 不自动迁移。测试 schema 已应用全部九个迁移，关系、约束、只读权限及环境写入隔离验证通过；当前没有真实文章数据。
+开发连接 Supabase `blog_test`，本地 Docker 只运行 .NET 并只读挂载指定 User Secrets。生产使用 `blog` 和 AWS Secrets Manager，迁移单独执行。
 
-Supabase API 已启用 `blog_test`，publishable key 已完成验证：五张业务表 GET 均为 200，写请求被拒绝，同步记录与迁移历史不可读。
+本地同步命令会临时启动 .NET，读取 Obsidian 工作区（包括未提交修改），自动从 User Secrets 取 Token，写入 `blog_test` 后校验重复快照跳过；需要刷新时模拟一次回调失败并验证重试，完成后退出。刷新使用本地模拟服务。默认笔记目录按当前用户主目录 + `Documents/Obsidian` 拼接，可用 `--vault <路径>` 指定；运行时会打印实际路径。GitHub Actions 仍只处理已提交内容。
 
-旧后端 Notion 定时同步、KV 发布及旧文章查询入口已经移除；新 Obsidian 同步接口、Markdown 前端和 Actions 在后续阶段接入。旧 Node helper、前端 KV 及旧 Docker 部署配置尚未切换，本分支目前不用于部署生产。
+自定义笔记目录：`node .\scripts\sync-local.cjs --vault "D:\Notes\Obsidian"`。
 
-- [配置位置、读取入口与使用时机](docs/configuration.md)
-- [数据库说明与验证](docs/database.md)
-- [完整分阶段计划](docs/plans/2026-11-02-obsidian-sync-migration.md)
+- [配置及上线前待填项](docs/configuration.md)
+- [数据库与迁移](docs/database.md)
+- [实施状态与下一阶段](docs/plans/2026-11-02-obsidian-sync-migration.md)

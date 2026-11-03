@@ -4,45 +4,52 @@
 
 | 文件 | 内容 |
 | --- | --- |
-| `Notion.Sync.Api/appsettings.json` | 共用连接模板、迁移用户名、公开 CA 路径 |
-| `Notion.Sync.Api/appsettings.Development.json` | 测试 schema、测试用户名 |
-| `Notion.Sync.Api/appsettings.Production.json` | 生产 schema、生产用户名、AWS Region 和 Secret 名称 |
+| `Notion.Sync.Api/appsettings.json` | 连接模板、迁移用户名、公开 CA、源仓库和分支 |
+| `appsettings.Development.json` | `blog_test`、测试用户名、本地刷新地址 |
+| `appsettings.Production.json` | `blog`、生产用户名、AWS Region/Secret 名称、生产刷新地址 |
 
-开发环境不需要 AWS。用户名、地址、schema、证书路径等普通配置不放入秘密文件，也不在多处重复声明。
+开发不使用 AWS。用户名、地址、schema 和证书路径属于普通配置；生产 `Revalidation:Url` 尚需填写。
 
-## 后端密码
+## 后端敏感值
 
-本地只放在 `C:\Users\...\secrets.json`：
+本地只放在项目指定的 User Secrets（`C:\Users\...\secrets.json`），生产按下表保存：
 
-```json
-{
-  "Supabase": { "password": "日常账号密码" },
-  "SupabaseMigration": { "password": "postgres 管理员密码" }
-}
-```
-
-已有的 `Kestrel:Certificates:Development:Password` 继续保留，供本地 HTTPS 使用。
-
-| 统一读取的配置键 | 用途 | 生产 AWS Secrets Manager |
+| 统一配置键 | 用途 | AWS Secret |
 | --- | --- | --- |
-| `Supabase:password` | API 日常连接，长期使用 | `notion-api-supabase` |
-| `SupabaseMigration:password` | 仅显式数据库迁移时使用 | `notion-api-supabase-migration` |
+| `Supabase:password` | 日常 writer 连接 | `notion-api-supabase` |
+| `SupabaseMigration:password` | 显式管理员迁移 | `notion-api-supabase-migration` |
+| `Sync:Token` | Actions → .NET 认证 | `notion-api-obsidian-sync` |
+| `Revalidation:Token` | .NET → Next.js 刷新认证 | `notion-api-revalidation` |
 
-AWS 两个 Secret 的目标内容均为 `{"password":"对应密码"}`，加载时分别加 `Supabase`、`SupabaseMigration` 前缀，与本地得到相同配置键。日常连接使用 `DbContext:ConnectionString`，迁移使用 `DbContext:MigrationConnectionString`。
+本地 JSON 分组为 `Supabase`、`SupabaseMigration`、`Sync`、`Revalidation`。AWS 数据库 Secret 只含 `password`，另两项只含 `Token`；加载前缀后两边配置键一致。Token 至少 32 字符，开发值已生成，生产使用独立值。
 
-迁移 Secret 已由用户创建，尚未读取验证。现有线上运行 Secret 先保持旧版所需字段，切换新版本时改用 `blog_writer` 密码并移除重复用户名。账号及迁移命令见 [数据库说明](database.md)。
+已有 `Kestrel:Certificates:Development:Password` 仅供本地 HTTPS，不需要上传 AWS。日常连接与迁移连接分别使用 `DbContext:ConnectionString`、`DbContext:MigrationConnectionString`。
 
-## 前端配置
+本地同步脚本自动读取同一份 User Secrets，无需额外设置 `SYNC_TOKEN`；接口仍校验 Token。脚本默认执行同步、模拟刷新及结果校验，仅为本次进程设置临时回调地址，不改配置文件。
 
-本地统一放在 `notion.sync.api.client/.env.local`，不再维护 `.env` 或 `.dev.vars`。生产普通配置放 Worker vars，敏感值放 Worker Secrets，变量名保持一致。
+生产迁移 Secret 已由用户创建，其余生产 Secret 尚未配置或切换；现有线上运行 Secret 先保留旧版所需字段，上线时再换为 `blog_writer` 密码。API 身份不读取迁移 Secret。
+
+## 笔记仓库 Actions
+
+| GitHub 配置 | 值 |
+| --- | --- |
+| Actions Secret `SYNC_API_URL` | 完整 HTTPS 同步接口地址 |
+| Actions Secret `SYNC_TOKEN` | 与生产 `Sync:Token` 相同的值 |
+
+同步 Token 是允许在 GitHub Secrets 保存一份的例外；数据库密码不交给 Actions。工作流在笔记仓库 `.github/workflows/sync-blog.yml`，只发布 `main`，不使用 OIDC。
+
+## 前端（下一阶段）
+
+本地统一使用 `notion.sync.api.client/.env.local`；生产普通配置放 Worker vars，敏感值放 Worker Secrets。
 
 | 变量 | 用途 |
 | --- | --- |
-| `HOME_URL` | 站点地址；构建环境也需提供 |
+| `HOME_URL` | 站点地址，构建环境也需提供 |
 | `SUPABASE_URL` | Supabase HTTP API 地址 |
 | `SUPABASE_SCHEMA` | 开发 `blog_test`，生产 `blog` |
-| `SUPABASE_PUBLISHABLE_KEY` | API 请求的 `apikey`；只读范围由表授权与 RLS 决定 |
+| `SUPABASE_PUBLISHABLE_KEY` | API 读取凭据，权限由授权与 RLS 控制 |
+| `REVALIDATE_TOKEN` | 与同环境的 .NET `Revalidation:Token` 配对 |
 
-前端目前尚未接入 Supabase；接入后以上配置长期使用，缓存重新取数时需要 API key。.NET 直接连接数据库不使用 API key。
+刷新接口需接受 Bearer Token，完成 Next.js 和相关 Cloudflare 缓存失效后返回 `{"revalidated":true}`；仅 HTTP 200 而没有确认内容不算成功。
 
-同步阶段再配置 `Sync:Token`、`Revalidation:Token`、`Revalidation:Url` 和前端 `REVALIDATE_TOKEN`。token 遵循上述秘密保存位置，开发与生产使用不同值；详见 [迁移计划](plans/2026-11-02-obsidian-sync-migration.md)。
+运行与测试见 [README](../README.md)，迁移命令见 [数据库说明](database.md)。

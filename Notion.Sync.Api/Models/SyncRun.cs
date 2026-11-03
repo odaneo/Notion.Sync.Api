@@ -10,6 +10,8 @@ public class SyncRun
     public required string Repository { get; set; }
     [MaxLength(64)]
     public required string CommitSha { get; set; }
+    public long WorkflowRunNumber { get; set; }
+    public bool RequiresRevalidation { get; set; }
     public DateTime StartedAt { get; set; }
     public DateTime? DatabaseAppliedAt { get; set; }
     public DateTime? CacheInvalidatedAt { get; set; }

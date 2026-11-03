@@ -171,8 +171,14 @@ namespace Notion.Sync.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("RequiresRevalidation")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("WorkflowRunNumber")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 

@@ -1,8 +1,0 @@
-{
-  "git.ignoreLimitWarning": true,
-  "editor.formatOnSave": false,
-  "[javascript]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "biomejs.biome"
-  }
-}
