@@ -16,7 +16,7 @@ export async function purgeCloudflare(tags: string[]) {
     `https://api.cloudflare.com/client/v4/zones/${CACHE_PURGE_ZONE_ID}/purge_cache`,
     {
       method: "POST",
-      redirect: "error",
+      redirect: "manual",
       cache: "no-store",
       signal: AbortSignal.timeout(10000),
       headers: {
@@ -26,7 +26,9 @@ export async function purgeCloudflare(tags: string[]) {
       body: JSON.stringify({ tags }),
     },
   );
-  const result = (await response.json()) as { success?: boolean } | null;
+  const result = response.ok
+    ? ((await response.json()) as { success?: boolean } | null)
+    : null;
   if (!response.ok || result?.success !== true)
     throw new Error(`Cloudflare cache purge failed (HTTP ${response.status}).`);
 }
