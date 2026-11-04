@@ -1,26 +1,27 @@
-import { getAllArticles } from "@/utils/blog-cache/server";
+import { articlePath, jsonLd as serializeJsonLd } from "@/lib/blog-path";
+import { getAllArticles } from "@/lib/blog";
 import ArticleList from "@/components/ArticleList";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+export const revalidate = false;
 
 export const metadata: Metadata = {
   title: "最新技术分享",
   alternates: { canonical: "/blog" },
-  description: `精选全栈开发技术文章：涵盖 Next.js、React、TypeScript 核心原理，AWS 云架构实战，以及作者对技术趋势的深度思考。助你构建高性能、可扩展的现代 Web 应用。`,
+  description: `精选全栈开发技术文章：涵盖C#、Next.js、React、TypeScript 核心原理，AWS 云架构实战，以及作者对技术趋势的深度思考。助你构建高性能、可扩展的现代 Web 应用。`,
   openGraph: {
     type: "website",
     siteName: "街街的脏书包",
     title: "最新技术分享｜前沿技术与深度思考",
     description:
-      "精选全栈开发技术文章：涵盖 Next.js、React、TypeScript 核心原理，AWS 云架构实战，以及作者对技术趋势的深度思考。助你构建高性能、可扩展的现代 Web 应用。",
+      "精选全栈开发技术文章：涵盖C#、Next.js、React、TypeScript 核心原理，AWS 云架构实战，以及作者对技术趋势的深度思考。助你构建高性能、可扩展的现代 Web 应用。",
     url: `${process.env.HOME_URL}/blog`,
   },
   twitter: {
     card: "summary_large_image",
     title: "最新技术分享｜前沿技术与深度思考",
     description:
-      "精选全栈开发技术文章：涵盖 Next.js、React、TypeScript 核心原理，AWS 云架构实战，以及作者对技术趋势的深度思考。助你构建高性能、可扩展的现代 Web 应用。",
+      "精选全栈开发技术文章：涵盖C#、Next.js、React、TypeScript 核心原理，AWS 云架构实战，以及作者对技术趋势的深度思考。助你构建高性能、可扩展的现代 Web 应用。",
   },
 };
 
@@ -38,13 +39,13 @@ export default async function Blog() {
         url: `${process.env.HOME_URL}/blog`,
         name: "最新技术分享 - 街街的脏书包",
         description:
-          "精选全栈开发技术文章：涵盖 Next.js、React、TypeScript 核心原理，AWS 云架构实战，以及作者对技术趋势的深度思考。助你构建高性能、可扩展的现代 Web 应用。",
+          "精选全栈开发技术文章：涵盖C#、Next.js、React、TypeScript 核心原理，AWS 云架构实战，以及作者对技术趋势的深度思考。助你构建高性能、可扩展的现代 Web 应用。",
         mainEntity: {
           "@type": "ItemList",
           itemListElement: articleData.map((article, index) => ({
             "@type": "ListItem",
             position: index + 1,
-            url: `${process.env.HOME_URL}/blog/${article.tags[0].slug}/${article.slug}`,
+            url: `${process.env.HOME_URL}${articlePath(article.slug)}`,
             name: article.title,
           })),
         },
@@ -72,10 +73,10 @@ export default async function Blog() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <h1 className="sr-only">
-        街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
+        街街的脏书包 - 专注于C#、Next.js、React、TypeScript、AWS 的全栈技术博客
       </h1>
       <main className="mt-5 w-full">
         <h2 className="text-2xl ml-4 mb-5 italic">最新技术分享</h2>

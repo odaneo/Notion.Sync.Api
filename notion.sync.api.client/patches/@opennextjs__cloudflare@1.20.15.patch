@@ -1,0 +1,30 @@
+diff --git a/dist/cli/build/bundle-server.js b/dist/cli/build/bundle-server.js
+index 7420316008e9651c5a1e41d2edcc3d00b8d023f8..0f0f766b6ab38288162de8e357a6220e456bd9ea 100644
+--- a/dist/cli/build/bundle-server.js
++++ b/dist/cli/build/bundle-server.js
+@@ -117,6 +117,8 @@ export async function bundleServer(buildOpts, projectOpts) {
+         ],
+         external: ["./middleware/handler.mjs"],
+         alias: {
++            // Native image processing cannot run in workerd. See opennextjs-cloudflare#1394.
++            sharp: path.join(buildOpts.outputDir, "cloudflare-templates/shims/throw.js"),
+             // When @vercel/og is not used, alias the edge entry to a throwing shim so the
+             // dynamic `import("next/dist/compiled/@vercel/og/index.edge.js")` call site
+             // emitted by Next.js does not drag the library (~800 KiB) and its
+diff --git a/dist/cli/build/patches/plugins/next-server.js b/dist/cli/build/patches/plugins/next-server.js
+index f57f2c9ffb356ee6eed19c61d623c8a461de2ef3..85fbfb4b290f51e0e295744bf3e633ce289e3f98 100644
+--- a/dist/cli/build/patches/plugins/next-server.js
++++ b/dist/cli/build/patches/plugins/next-server.js
+@@ -21,6 +21,12 @@ export function patchNextServer(updater, buildOpts) {
+             callback: async ({ contents }) => {
+                 const { outputDir } = buildOpts;
+                 contents = patchCode(contents, buildIdRule);
++                // Next 16.4 moved this require into an instance field; make it statically bundleable.
++                const middlewareManifest = normalizePath(path.join(outputDir, "server-functions/default", getPackagePath(buildOpts), ".next/server/middleware-manifest.json"));
++                contents = patchCode(contents, {
++                    rule: { pattern: { selector: "method_definition", context: "class { getMiddlewareManifest() { $$$_ } }" } },
++                    fix: `getMiddlewareManifest() { return this.minimalMode ? null : require('${middlewareManifest}'); }`,
++                });
+                 const outputPath = path.join(outputDir, "server-functions/default");
+                 const cacheHandler = path.join(outputPath, getPackagePath(buildOpts), "cache.cjs");
+                 contents = patchCode(contents, createCacheHandlerRule(cacheHandler));

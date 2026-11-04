@@ -1,4 +1,4 @@
-import dynamic from "next/dynamic";
+import { DynamicIcon } from "lucide-react/dynamic";
 import { LucideProps } from "lucide-react";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
 
@@ -7,9 +7,12 @@ interface IconProps extends LucideProps {
 }
 
 const LucideIcon = ({ name, ...props }: IconProps) => {
-  const LucideIcon = dynamic(dynamicIconImports[name]);
-
-  return <LucideIcon {...props} />;
+  return (
+    <DynamicIcon
+      name={Object.hasOwn(dynamicIconImports, name) ? name : "tag"}
+      {...props}
+    />
+  );
 };
 
 export default LucideIcon;

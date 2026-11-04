@@ -3,6 +3,7 @@ export type ArticlesType = {
   title: string;
   slug: string;
   lastEditedTime: string;
+  sourcePath: string;
   tags: TagsType[];
   subTags?: SubTagsType[];
 };
@@ -35,11 +36,7 @@ export type GetArticleWithSubTagsResponseType = {
   lastEditedTime: string;
   id: string;
   description: string;
+  sourcePath: string;
   tags?: TagsType[];
   subTags?: SubTagsType[];
-};
-
-export type GetTagsAndRecommendArticlesResponseType = {
-  tags: TagsType[];
-  recommendArticles: ArticlesType[];
 };

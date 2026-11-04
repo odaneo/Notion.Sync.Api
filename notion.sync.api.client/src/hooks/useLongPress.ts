@@ -54,16 +54,16 @@ const useLongPress = (
 
   return {
     onPointerDown: (e: any) => {
-      shouldPreventDefault && e.preventDefault();
+      if (shouldPreventDefault) e.preventDefault();
       handlePointerDown(e);
     },
     onPointerUp: (e: any) => {
-      shouldPreventDefault && e.preventDefault();
+      if (shouldPreventDefault) e.preventDefault();
       handlePointerUp(e);
     },
     onPointerLeave: (e: any) => {
-      shouldPreventDefault && e.preventDefault();
-      !!pressTimer.current && clearTimer();
+      if (shouldPreventDefault) e.preventDefault();
+      if (pressTimer.current) clearTimer();
     },
   };
 };

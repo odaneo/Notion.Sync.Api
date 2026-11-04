@@ -1,10 +1,12 @@
 packages:
-  - '.'
+  - .
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - canvas
   - esbuild
-  - sharp
   - unrs-resolver
   - workerd
+
+patchedDependencies:
+  '@opennextjs/cloudflare@1.20.15': patches/@opennextjs__cloudflare@1.20.15.patch

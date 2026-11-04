@@ -1,3 +1,4 @@
+import { articlePath } from "@/lib/blog-path";
 import { ArticlesType } from "@/type/api.type";
 import Link from "next/link";
 import UpdatedAtJST from "./UpdatedAtJST";
@@ -12,7 +13,7 @@ export default function ArticleList({
   return (
     <>
       <Link
-        href={`/blog/${tags[0].slug}/${slug}`}
+        href={articlePath(slug)}
         className="text-lg link link-hover hover:underline-offset-3"
       >
         <h3>{title}</h3>
@@ -20,7 +21,7 @@ export default function ArticleList({
       <div className="mt-2 mb-4 flex flex-wrap gap-3">
         {tags?.map((t) => (
           <span key={t.id} className="badge badge-soft badge-info rounded">
-            <Link key={t.id} href={`/tag/${t.slug}`}>
+            <Link key={t.id} href={`/tag/${encodeURIComponent(t.slug)}`}>
               {t.title}
             </Link>
           </span>
