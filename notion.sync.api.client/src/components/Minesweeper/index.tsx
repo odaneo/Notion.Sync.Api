@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import useConfetti from "@/hooks/useConfetti";
 import { useMinesweeper } from "@ebinas/react-use-minesweeper";
 import { GameInfoHeader } from "./GameInfoHeader";
@@ -8,6 +8,19 @@ import Board from "./Board";
 import GameToolBar from "./GameToolBar";
 import GameContextAction from "./GameContextAction";
 import HelpDialog from "./HelpDialog";
+
+function subscribeToStorage(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function hasSeenGuide() {
+  try {
+    return Boolean(localStorage.getItem("ms-guide-seen"));
+  } catch {
+    return false;
+  }
+}
 
 const Minesweeper = () => {
   const {
@@ -25,7 +38,13 @@ const Minesweeper = () => {
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [showGuideHint, setShowGuideHint] = useState(false);
+  const [guideDismissed, setGuideDismissed] = useState(false);
+  const guideSeen = useSyncExternalStore(
+    subscribeToStorage,
+    hasSeenGuide,
+    () => true,
+  );
+  const showGuideHint = !guideSeen && !guideDismissed;
 
   useEffect(() => {
     if (gameState !== "completed") return;
@@ -55,20 +74,10 @@ const Minesweeper = () => {
     }
   }, [gameMode]);
 
-  useEffect(() => {
-    const storageKey = "ms-guide-seen";
-    try {
-      if (localStorage.getItem(storageKey)) return;
-      setShowGuideHint(true);
-    } catch {
-      setShowGuideHint(true);
-    }
-  }, []);
-
   const openHelp = () => {
     setIsHelpOpen(true);
     if (showGuideHint) {
-      setShowGuideHint(false);
+      setGuideDismissed(true);
       try {
         localStorage.setItem("ms-guide-seen", "1");
       } catch {

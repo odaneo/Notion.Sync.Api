@@ -2,50 +2,37 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "notion-sync-api-client",
   "main": ".open-next/worker.js",
-  "compatibility_date": "2026-04-15",
+  "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat"],
   "keep_vars": true,
-  "vars": {
-    "NEXT_CACHE_DO_QUEUE_MAX_REVALIDATION": "1",
-    "MAX_REVALIDATE_CONCURRENCY": "1",
-    "NEXT_CACHE_DO_QUEUE_RETRY_INTERVAL_MS": "60000",
-    "NEXT_CACHE_DO_QUEUE_MAX_RETRIES": "3"
-  },
   "assets": {
     "directory": ".open-next/assets",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
   },
-  "services": [
-    {
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "notion-sync-api-client"
-    }
-  ],
-  "kv_namespaces": [
-    {
-      "binding": "BLOG_CACHE",
-      "id": "fbc386a46a4f4f9b91522d4b3f52fa68"
-    }
-  ],
   "r2_buckets": [
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
-      "bucket_name": "notion-sync-api-client-cache"
-    }
+      "bucket_name": "notion-sync-api-client-cache",
+    },
   ],
   "durable_objects": {
     "bindings": [
       {
-        "name": "NEXT_CACHE_DO_QUEUE",
-        "class_name": "DOQueueHandler"
-      }
-    ]
+        "name": "NEXT_TAG_CACHE_DO_SHARDED",
+        "class_name": "DOShardedTagCache",
+      },
+    ],
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["DOQueueHandler"]
-    }
+      "new_sqlite_classes": ["DOQueueHandler"],
+    },
+    {
+      "tag": "v2-on-demand-cache",
+      "deleted_classes": ["DOQueueHandler"],
+      "new_sqlite_classes": ["DOShardedTagCache"],
+    },
   ],
   "observability": {
     "enabled": false,
@@ -54,12 +41,12 @@
       "enabled": true,
       "head_sampling_rate": 1,
       "persist": true,
-      "invocation_logs": true
+      "invocation_logs": true,
     },
     "traces": {
       "enabled": true,
       "persist": true,
-      "head_sampling_rate": 1
-    }
-  }
+      "head_sampling_rate": 1,
+    },
+  },
 }

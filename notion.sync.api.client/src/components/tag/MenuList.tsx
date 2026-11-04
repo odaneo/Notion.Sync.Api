@@ -1,4 +1,4 @@
-"use client";
+import { articlePath } from "@/lib/blog-path";
 import Link from "next/link";
 import { GetTagsWithArticlesResponseType } from "@/type/api.type";
 
@@ -26,9 +26,7 @@ export default function MenuList({
             {tag.articles?.length ? (
               <ul>
                 {tag.articles.map((a) => {
-                  const href = `/blog/${encodeURIComponent(tag.slug)}/${encodeURIComponent(
-                    a.slug,
-                  )}`;
+                  const href = articlePath(a.slug);
                   return (
                     <li key={a.id}>
                       <div className="flex">

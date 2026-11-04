@@ -9,9 +9,6 @@
 }
 
 @layer base {
-  :root {
-    --notion-max-width: 950px !important;
-  }
   html {
     font-family: var(--font-sans);
   }
@@ -19,21 +16,91 @@
   pre {
     font-family: var(--font-mono);
   }
-  .notion-simple-table {
-    border: 1px solid var(--fg-color-1) !important;
+  .markdown {
+    line-height: 1.8;
+    overflow-wrap: anywhere;
   }
-  .notion-simple-table td,
-  .notion-simple-table th {
-    border: 1px solid var(--fg-color-1) !important;
+  .markdown > * + * {
+    margin-top: 1.15rem;
   }
-  .notion-h1 {
-    font-size: 1.5em !important;
+  .markdown h1,
+  .markdown h2,
+  .markdown h3,
+  .markdown h4 {
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1.75rem;
   }
-  .notion-h2 {
-    font-size: 1.25em !important;
+  .markdown h1 {
+    font-size: 1.75rem;
   }
-  .notion-h3 {
-    font-size: 1.1em !important;
+  .markdown h2 {
+    font-size: 1.5rem;
+  }
+  .markdown h3 {
+    font-size: 1.25rem;
+  }
+  .markdown ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+  }
+  .markdown ol {
+    list-style: decimal;
+    padding-left: 1.5rem;
+  }
+  .markdown li + li {
+    margin-top: 0.35rem;
+  }
+  .markdown a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .markdown blockquote {
+    border-left: 3px solid #94a3b8;
+    padding-left: 1rem;
+    color: #475569;
+  }
+  .markdown pre {
+    overflow-x: auto;
+    padding: 1rem;
+    background: #f6f8fa;
+    border-radius: 0.35rem;
+    line-height: 1.6;
+  }
+  .markdown :not(pre) > code {
+    background: #f1f5f9;
+    padding: 0.1rem 0.3rem;
+    border-radius: 0.2rem;
+  }
+  .markdown table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+  }
+  .markdown th,
+  .markdown td {
+    border: 1px solid #cbd5e1;
+    padding: 0.5rem 0.75rem;
+  }
+  .markdown th {
+    background: #f8fafc;
+  }
+  .markdown hr {
+    border-color: #cbd5e1;
+    margin-block: 1.75rem;
+  }
+  .markdown img {
+    max-width: 100%;
+    height: auto;
+  }
+  .markdown .contains-task-list {
+    list-style: none;
+  }
+  .mermaid-diagram svg {
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
   }
   .help-row {
     display: flex;

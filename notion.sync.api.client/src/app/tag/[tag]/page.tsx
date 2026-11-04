@@ -1,16 +1,22 @@
-import { getTagDetailWithArticles } from "@/utils/blog-cache/server";
+import { articlePath, jsonLd as serializeJsonLd } from "@/lib/blog-path";
+import { getTagDetailWithArticles } from "@/lib/blog";
 import ArticleList from "@/components/ArticleList";
+import { notFound } from "next/navigation";
 
 type PageProps = {
   params: Promise<{ tag: string }>;
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = false;
+export function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({ params }: PageProps) {
   const { tag } = await params;
 
   const data = await getTagDetailWithArticles(tag);
+  if (!data) notFound();
 
   return {
     title: `标签：${data?.tag?.title}`,
@@ -37,7 +43,7 @@ export default async function TagPage({ params }: PageProps) {
   const data = await getTagDetailWithArticles(tag);
 
   if (!data) {
-    return null;
+    notFound();
   }
 
   const article = Array.isArray(data?.articles) ? data?.articles : [];
@@ -55,7 +61,7 @@ export default async function TagPage({ params }: PageProps) {
           itemListElement: article.map((post, index) => ({
             "@type": "ListItem",
             position: index + 1,
-            url: `${process.env.HOME_URL}/blog/${tag}/${post.slug}`,
+            url: `${process.env.HOME_URL}${articlePath(post.slug)}`,
             name: post.title,
           })),
         },
@@ -90,10 +96,10 @@ export default async function TagPage({ params }: PageProps) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <h1 className="sr-only">
-        街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
+        街街的脏书包 - 专注于 C#、Next.js、React、TypeScript、AWS 的全栈技术博客
       </h1>
       <main className="mt-5 w-full">
         <h2 className="text-2xl ml-4 mb-5 italic">标签：{data.tag?.title}</h2>

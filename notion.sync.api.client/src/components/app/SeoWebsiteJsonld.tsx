@@ -1,3 +1,4 @@
+import { jsonLd as serializeJsonLd } from "@/lib/blog-path";
 export default function SeoWebsiteJsonld() {
   const baseUrl = process.env.HOME_URL;
 
@@ -17,7 +18,7 @@ export default function SeoWebsiteJsonld() {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
     />
   );
 }

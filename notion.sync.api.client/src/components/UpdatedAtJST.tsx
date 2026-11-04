@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
@@ -12,6 +12,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 dayjs.locale("zh-cn");
+const subscribe = () => () => {};
 
 export default function UpdatedAtJST({
   date,
@@ -23,16 +24,13 @@ export default function UpdatedAtJST({
   const d = dayjs(date).tz("Asia/Tokyo");
 
   const absoluteValue = d.format("YYYY-MM-DD HH:mm");
-  const [displayValue, setDisplayValue] = useState(absoluteValue);
+  const hydrated = useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
+  const displayValue = hydrated && relative ? d.fromNow() : absoluteValue;
   const fullTimeTitle = d.format("YYYY-MM-DD HH:mm:ss");
-
-  useEffect(() => {
-    const value = relative
-      ? dayjs(date).tz("Asia/Tokyo").fromNow()
-      : dayjs(date).tz("Asia/Tokyo").format("YYYY-MM-DD HH:mm");
-
-    setDisplayValue(value);
-  }, [date, relative]);
 
   return (
     <time

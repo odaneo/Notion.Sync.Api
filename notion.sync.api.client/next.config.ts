@@ -1,15 +1,9 @@
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import type { NextConfig } from "next";
 
-initOpenNextCloudflareForDev();
-
 const nextConfig: NextConfig = {
-  transpilePackages: [
-    "react-notion-x",
-    "notion-types",
-    "notion-utils",
-    "lucide-react",
-  ],
+  agentRules: false,
+  images: { unoptimized: true },
+  transpilePackages: ["lucide-react"],
 };
 
 export default nextConfig;

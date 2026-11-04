@@ -1,12 +1,12 @@
-import { getTagsAndRecommendArticles } from "@/utils/blog-cache/server";
+import { articlePath, jsonLd } from "@/lib/blog-path";
+import { getTagsAndRecommendArticles } from "@/lib/blog";
 import Image from "next/image";
-import MyAvatar from "../../public/avatar.jpg";
 import LucideIcon from "@/components/LucideIcon";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
 import ArticleList from "@/components/ArticleList";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
+export const revalidate = false;
 
 export default async function AppPage() {
   const data = await getTagsAndRecommendArticles();
@@ -35,7 +35,7 @@ export default async function AppPage() {
         jobTitle: "Full Stack Engineer",
         url: process.env.HOME_URL,
         image: `${process.env.HOME_URL}/avatar.jpg`,
-        description: "一名旅居东京的全栈工程师，擅长 React、AWS、C#。",
+        description: "一名全栈工程师，擅长 React、AWS、C#。",
         sameAs: ["https://github.com/odaneo"],
       },
       {
@@ -48,7 +48,7 @@ export default async function AppPage() {
           itemListElement: recommendArticles.map((article, index) => ({
             "@type": "ListItem",
             position: index + 1,
-            url: `${process.env.HOME_URL}/blog/${article.tags[0].slug}/${article.slug}`,
+            url: `${process.env.HOME_URL}${articlePath(article.slug)}`,
             name: article.title,
           })),
         },
@@ -60,7 +60,7 @@ export default async function AppPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(homeJsonLd) }}
       />
       <h1 className="sr-only">
         街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
@@ -72,14 +72,14 @@ export default async function AppPage() {
               alt="街街的头像"
               width={192}
               height={192}
-              src={MyAvatar}
+              src="/avatar.jpg"
               priority
             />
           </div>
         </div>
         <p className="mx-4">
-          我叫 Curtis，是一名旅居东京的全栈工程师，擅长
-          React、AWS、C#，计划回国中。头像是我的猫，名字叫街街。
+          我叫 Curtis，是一名全栈工程师，擅长 React、AWS、C#。
+          头像是我的猫，名字叫街街。
         </p>
       </section>
       <section className="my-6">
@@ -88,7 +88,7 @@ export default async function AppPage() {
           {tags?.map(({ slug, title, lucideIconName, articleCount }) => {
             return (
               <div key={slug} className="px-2 sm:w-1/3 flex justify-center">
-                <Link href={`/tag/${slug}`}>
+                <Link href={`/tag/${encodeURIComponent(slug)}`}>
                   <div className="stats hover:shadow cursor-pointer">
                     <div className="stat">
                       <div className="stat-figure text-primary">
