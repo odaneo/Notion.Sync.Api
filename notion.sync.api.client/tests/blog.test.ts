@@ -143,12 +143,13 @@ test("refresh authentication fails closed for missing, short or incorrect tokens
   assert.equal(authorized("Bearer short", "short"), false);
 });
 
-test("Cloudflare purge requires credentials and a successful JSON acknowledgement", async (t) => {
+test("Cloudflare purge requires credentials, rejects redirects and requires a successful JSON acknowledgement", async (t) => {
   configureEnv(t, {
     CACHE_PURGE_ZONE_ID: "test-zone",
     CACHE_PURGE_API_TOKEN: "test-purge-token",
   });
   let succeed = false;
+  let status = 200;
   t.mock.method(
     globalThis,
     "fetch",
@@ -160,13 +161,24 @@ test("Cloudflare purge requires credentials and a successful JSON acknowledgemen
       assert.deepEqual(JSON.parse(String(init.body)), {
         tags: [BLOG_CACHE_TAG],
       });
-      assert.equal(init.redirect, "error");
+      assert.equal(init.redirect, "manual");
+      if (status !== 200)
+        return new Response("<html>Not a JSON acknowledgement</html>", {
+          status,
+          headers: { Location: "https://example.com/redirect-target" },
+        });
       return Response.json({ success: succeed });
     },
   );
   await assert.rejects(() => purgeCloudflare([BLOG_CACHE_TAG]), /purge failed/);
   succeed = true;
   await purgeCloudflare([BLOG_CACHE_TAG]);
+  for (status of [302, 403, 503]) {
+    await assert.rejects(
+      () => purgeCloudflare([BLOG_CACHE_TAG]),
+      new RegExp(`HTTP ${status}`),
+    );
+  }
   process.env.CACHE_PURGE_API_TOKEN = "";
   await assert.rejects(
     () => purgeCloudflare([BLOG_CACHE_TAG]),
