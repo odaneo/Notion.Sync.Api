@@ -19,10 +19,11 @@ export default function ScrollToTop() {
 
   return (
     <button
+      type="button"
       onClick={scrollToTop}
-      className={`btn btn-circle btn-primary fixed bottom-6 right-6 transition-opacity duration-300 ${
-        visible ? "opacity-100" : "opacity-0 pointer-events-none"
-      }`}
+      className="icon-link back-to-top"
+      aria-label="返回顶部"
+      hidden={!visible}
     >
       <ArrowUp className="h-5 w-5" />
     </button>

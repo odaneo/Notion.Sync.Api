@@ -1,5 +1,4 @@
-import { Mail, Github } from "lucide-react";
-import Link from "next/link";
+import { ArrowUpRight, Mail, Github } from "lucide-react";
 import type { Metadata } from "next";
 import Minesweeper from "@/components/Minesweeper";
 
@@ -70,27 +69,33 @@ export default async function Contact() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <h1 className="sr-only">
-        街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
-      </h1>
-      <main className="mt-5 w-full">
-        <h2 className="text-2xl ml-4 mb-8 italic">联系我</h2>
-        <div className="flex flex-col gap-y-5 mx-10">
-          <div className="flex flex-wrap">
-            <Mail className="mr-5" />
-            <Link href={"mailto:odaneo@outlook.com"}>odaneo@outlook.com</Link>
-          </div>
-          <div className="flex flex-wrap">
-            <Github className="mr-5" />
-            <Link target="_blank" href={"https://github.com/odaneo"}>
-              github.com/odaneo
-            </Link>
-          </div>
-        </div>
-      </main>
-      <div className="flex h-full w-full flex-col items-center select-none">
-        <Minesweeper />
+      <header className="page-heading">
+        <p className="eyebrow">Curtis</p>
+        <h1>联系我</h1>
+        <p>欢迎交流技术问题，也欢迎聊聊你最近在做的项目。</p>
+      </header>
+      <div className="contact-links">
+        <a href="mailto:odaneo@outlook.com">
+          <Mail size={19} aria-hidden="true" />
+          <span>odaneo@outlook.com</span>
+          <ArrowUpRight size={17} aria-hidden="true" />
+        </a>
+        <a
+          href="https://github.com/odaneo"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Github size={19} aria-hidden="true" />
+          <span>github.com/odaneo</span>
+          <ArrowUpRight size={17} aria-hidden="true" />
+        </a>
       </div>
+      <section className="game-section" aria-labelledby="game-heading">
+        <h2 id="game-heading">扫雷</h2>
+        <div className="flex min-w-0 flex-col items-center select-none">
+          <Minesweeper />
+        </div>
+      </section>
     </>
   );
 }

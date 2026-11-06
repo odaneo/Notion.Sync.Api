@@ -35,7 +35,7 @@ export default function UpdatedAtJST({
   return (
     <time
       dateTime={d.toISOString()}
-      className="badge badge-dash ml-auto rounded"
+      className="entry-date"
       title={fullTimeTitle}
     >
       {displayValue}

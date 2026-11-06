@@ -1,10 +1,9 @@
 import { articlePath, jsonLd } from "@/lib/blog-path";
 import { getTagsAndRecommendArticles } from "@/lib/blog";
 import Image from "next/image";
-import LucideIcon from "@/components/LucideIcon";
-import dynamicIconImports from "lucide-react/dynamicIconImports";
 import ArticleList from "@/components/ArticleList";
 import Link from "next/link";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export const revalidate = false;
 
@@ -62,68 +61,59 @@ export default async function AppPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(homeJsonLd) }}
       />
-      <h1 className="sr-only">
-        街街的脏书包 - 专注于 Next.js、React、TypeScript、AWS 的全栈技术博客
-      </h1>
-      <section className="mx-auto max-w-2xl flex mt-10">
-        <div className="avatar ml-4">
-          <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2">
-            <Image
-              alt="街街的头像"
-              width={192}
-              height={192}
-              src="/avatar.jpg"
-              priority
-            />
+      <section className="home-hero">
+        <div>
+          <h1>街街的脏书包</h1>
+          <p className="hero-description">
+            我是 Curtis，一名全栈开发者。这里记录 React、.NET 和 AWS
+            的实践，也收下平时遇到的有趣问题。
+          </p>
+          <Link className="primary-link" href="/blog">
+            浏览文章 <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+        </div>
+        <figure className="hero-photo">
+          <Image
+            alt="橘猫街街"
+            width={224}
+            height={224}
+            src="/avatar.jpg"
+            priority
+          />
+        </figure>
+      </section>
+      <div className="home-sections">
+        <section aria-labelledby="featured-heading">
+          <div className="section-heading">
+            <h2 id="featured-heading">精选文章</h2>
+            <Link className="text-link" href="/blog">
+              查看全部 <ArrowUpRight size={15} aria-hidden="true" />
+            </Link>
           </div>
-        </div>
-        <p className="mx-4">
-          我叫 Curtis，是一名全栈工程师，擅长 React、AWS、C#。
-          头像是我的猫，名字叫街街。
-        </p>
-      </section>
-      <section className="my-6">
-        <h2 className="text-2xl ml-4 mb-3 italic">文章分类</h2>
-        <div className="flex flex-wrap flex-col sm:flex-row gap-y-2">
-          {tags?.map(({ slug, title, lucideIconName, articleCount }) => {
-            return (
-              <div key={slug} className="px-2 sm:w-1/3 flex justify-center">
-                <Link href={`/tag/${encodeURIComponent(slug)}`}>
-                  <div className="stats hover:shadow cursor-pointer">
-                    <div className="stat">
-                      <div className="stat-figure text-primary">
-                        <LucideIcon
-                          name={
-                            lucideIconName as keyof typeof dynamicIconImports
-                          }
-                          color="var(--color-info)"
-                          className="h-8 w-8"
-                        />
-                      </div>
-                      <h3 className="stat-value text-lg font-medium">
-                        {title}
-                      </h3>
-                      <div className="stat-title">{articleCount}篇文章</div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-      <section className="my-6">
-        <h2 className="text-2xl ml-4 mb-5 italic">精选文章</h2>
-        <ul className="flex flex-col gap-y-2 mx-10">
-          {recommendArticles.map(({ id, ...props }) => {
-            return (
+          <ul className="entry-list">
+            {recommendArticles.map(({ id, ...props }) => (
               <li key={id}>
                 <ArticleList {...props} />
               </li>
-            );
-          })}
-        </ul>
-      </section>
+            ))}
+          </ul>
+        </section>
+        <section className="home-topics" aria-labelledby="topics-heading">
+          <div className="section-heading">
+            <h2 id="topics-heading">文章分类</h2>
+          </div>
+          <ul className="topic-list">
+            {tags.map(({ slug, title, articleCount }) => (
+              <li key={slug}>
+                <Link href={`/tag/${encodeURIComponent(slug)}`}>
+                  <span>{title}</span>
+                  <span className="entry-date">{articleCount} 篇</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </>
   );
 }

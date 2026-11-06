@@ -1,6 +1,7 @@
 import { articlePath } from "@/lib/blog-path";
 import { ArticlesType } from "@/type/api.type";
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import UpdatedAtJST from "./UpdatedAtJST";
 
 export default function ArticleList({
@@ -11,28 +12,28 @@ export default function ArticleList({
   subTags,
 }: Omit<ArticlesType, "id">) {
   return (
-    <>
-      <Link
-        href={articlePath(slug)}
-        className="text-lg link link-hover hover:underline-offset-3"
-      >
-        <h3>{title}</h3>
+    <div className="article-entry">
+      <Link href={articlePath(slug)} className="entry-title">
+        <span>{title}</span>
+        <ArrowUpRight size={17} aria-hidden="true" />
       </Link>
-      <div className="mt-2 mb-4 flex flex-wrap gap-3">
-        {tags?.map((t) => (
-          <span key={t.id} className="badge badge-soft badge-info rounded">
-            <Link key={t.id} href={`/tag/${encodeURIComponent(t.slug)}`}>
-              {t.title}
-            </Link>
-          </span>
-        ))}
-        {subTags?.map((t) => (
-          <span key={t.id} className="badge badge-primary rounded">
-            {t.title}
-          </span>
-        ))}
+      <div className="entry-meta">
         {lastEditedTime && <UpdatedAtJST date={lastEditedTime} />}
+        {tags?.map(({ id, slug, title }) => (
+          <Link
+            key={id}
+            className="tag-pill"
+            href={`/tag/${encodeURIComponent(slug)}`}
+          >
+            {title}
+          </Link>
+        ))}
+        {subTags?.map(({ id, title }) => (
+          <span key={id} className="tag-pill">
+            {title}
+          </span>
+        ))}
       </div>
-    </>
+    </div>
   );
 }

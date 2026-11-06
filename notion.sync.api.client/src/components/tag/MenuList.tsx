@@ -1,5 +1,6 @@
 import { articlePath } from "@/lib/blog-path";
 import Link from "next/link";
+import { ChevronDown } from "lucide-react";
 import { GetTagsWithArticlesResponseType } from "@/type/api.type";
 
 export default function MenuList({
@@ -8,48 +9,28 @@ export default function MenuList({
   tags: GetTagsWithArticlesResponseType[];
 }) {
   return (
-    <ul className="menu block w-full py-0 px-10">
-      {tags?.length === 0 && (
-        <li>
-          <a>暂无分类</a>
-        </li>
-      )}
-      {tags?.map((tag) => (
+    <ul className="tag-groups">
+      {tags.length === 0 && <li className="entry-date">暂无分类</li>}
+      {tags.map((tag) => (
         <li key={tag.slug}>
           <details open>
             <summary>
-              <h3 className="truncate font-semibold text-xl">{tag.title}</h3>
-              <span className="ml-auto text-slate-500">
-                {tag.articles?.length ?? 0} 篇文章
-              </span>
+              <span>{tag.title}</span>
+              <span className="entry-date">{tag.articles.length} 篇</span>
+              <ChevronDown size={16} aria-hidden="true" />
             </summary>
-            {tag.articles?.length ? (
-              <ul>
-                {tag.articles.map((a) => {
-                  const href = articlePath(a.slug);
-                  return (
-                    <li key={a.id}>
-                      <div className="flex">
-                        <Link
-                          className={`line-clamp-2 break-words text-lg flex-1`}
-                          href={href}
-                        >
-                          <h4>{a.title}</h4>
-                        </Link>
-                        {a.subTags?.map((t) => (
-                          <span
-                            key={t.id}
-                            className="badge badge-primary rounded"
-                          >
-                            {t.title}
-                          </span>
-                        ))}
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : null}
+            <ul className="tag-articles">
+              {tag.articles.map((article) => (
+                <li key={article.id}>
+                  <Link href={articlePath(article.slug)}>{article.title}</Link>
+                  {article.subTags?.map(({ id, title }) => (
+                    <span key={id} className="tag-pill">
+                      {title}
+                    </span>
+                  ))}
+                </li>
+              ))}
+            </ul>
           </details>
         </li>
       ))}

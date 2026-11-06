@@ -53,13 +53,12 @@ export default async function Tag() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
-      <h1 className="sr-only">
-        街街的脏书包 - 专注于C#、Next.js、React、TypeScript、AWS 的全栈技术博客
-      </h1>
-      <main className="mt-5 w-full">
-        <h2 className="text-2xl ml-4 mb-3 italic">所有标签</h2>
-        {tags && <MenuList tags={tags} />}
-      </main>
+      <header className="page-heading">
+        <p className="eyebrow">共 {tags.length} 个主题</p>
+        <h1>标签</h1>
+        <p>按主题浏览文章。</p>
+      </header>
+      <MenuList tags={tags} />
     </>
   );
 }
