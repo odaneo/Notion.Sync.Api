@@ -75,21 +75,18 @@ export default async function Blog() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
-      <h1 className="sr-only">
-        街街的脏书包 - 专注于C#、Next.js、React、TypeScript、AWS 的全栈技术博客
-      </h1>
-      <main className="mt-5 w-full">
-        <h2 className="text-2xl ml-4 mb-5 italic">最新技术分享</h2>
-        <ul className="flex flex-col gap-y-2 mx-10">
-          {articleData.map(({ id, ...props }) => {
-            return (
-              <li key={id}>
-                <ArticleList {...props} />
-              </li>
-            );
-          })}
-        </ul>
-      </main>
+      <header className="page-heading">
+        <p className="eyebrow">共 {articleData.length} 篇文章</p>
+        <h1>文章</h1>
+        <p>关于前端、后端与云架构的实践笔记。</p>
+      </header>
+      <ul className="entry-list">
+        {articleData.map(({ id, ...props }) => (
+          <li key={id}>
+            <ArticleList {...props} />
+          </li>
+        ))}
+      </ul>
     </>
   );
 }

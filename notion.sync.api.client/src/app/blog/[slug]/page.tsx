@@ -4,6 +4,7 @@ import Markdown from "@/components/blog/Markdown";
 import UpdatedAtJST from "@/components/UpdatedAtJST";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 type PageProps = { params: Promise<{ slug: string }> };
 export const revalidate = false;
@@ -61,31 +62,36 @@ export default async function ArticlePage({ params }: PageProps) {
       .join(", "),
   };
   return (
-    <article className="mt-5 min-w-0">
+    <article className="reading-page">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }}
       />
-      <h1 className="mb-3 text-2xl font-semibold tracking-tight px-4">
-        {detail.title}
-      </h1>
-      <div className="mb-4 flex flex-wrap gap-3 px-4">
-        {detail.tags?.map((tag) => (
-          <span key={tag.id} className="badge badge-soft badge-info rounded">
-            <Link href={`/tag/${encodeURIComponent(tag.slug)}`}>
-              {tag.title}
+      <header className="article-heading">
+        <Link className="text-link" href="/blog">
+          <ArrowLeft size={16} aria-hidden="true" /> 所有文章
+        </Link>
+        <h1>{detail.title}</h1>
+        <div className="entry-meta">
+          {detail.lastEditedTime && (
+            <UpdatedAtJST date={detail.lastEditedTime} relative={false} />
+          )}
+          {detail.tags?.map(({ id, slug, title }) => (
+            <Link
+              key={id}
+              className="tag-pill"
+              href={`/tag/${encodeURIComponent(slug)}`}
+            >
+              {title}
             </Link>
-          </span>
-        ))}
-        {detail.subTags?.map((tag) => (
-          <span key={tag.id} className="badge badge-primary rounded">
-            {tag.title}
-          </span>
-        ))}
-        {detail.lastEditedTime && (
-          <UpdatedAtJST date={detail.lastEditedTime} relative={false} />
-        )}
-      </div>
+          ))}
+          {detail.subTags?.map(({ id, title }) => (
+            <span key={id} className="tag-pill">
+              {title}
+            </span>
+          ))}
+        </div>
+      </header>
       <Markdown content={detail.content} sourcePath={detail.sourcePath} />
     </article>
   );

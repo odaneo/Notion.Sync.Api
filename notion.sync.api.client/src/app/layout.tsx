@@ -5,8 +5,7 @@ import ScrollToTop from "@/components/app/ScrollToTop";
 import Link from "next/link";
 import SeoWebsiteJsonld from "@/components/app/SeoWebsiteJsonld";
 import LayoutNav from "@/components/app/LayoutNav";
-import { LayoutNavConst } from "@/const/LayoutNavConst";
-import { Menu, Github } from "lucide-react";
+import { Github, PawPrint } from "lucide-react";
 
 const notoTabs = Noto_Sans_SC({
   subsets: ["latin"],
@@ -75,83 +74,30 @@ export default function RootLayout({
         className={`${notoTabs.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <SeoWebsiteJsonld />
-        <div className="mx-auto max-w-4xl flex-1 w-full">
-          <header className="sticky top-0 w-full z-50 backdrop-blur-sm">
-            <div className="navbar">
-              <div className="navbar-start">
-                <div className="dropdown">
-                  <div
-                    tabIndex={0}
-                    role="button"
-                    className="btn btn-ghost sm:hidden"
-                  >
-                    <Menu />
-                  </div>
-                  <ul
-                    tabIndex={-1}
-                    className="menu dropdown-content bg-base-100 rounded-box z-1 mt-3 w-18 p-2 shadow"
-                  >
-                    {LayoutNavConst.map(({ key, name, href }) => {
-                      return (
-                        <li key={key}>
-                          <Link href={href} aria-label={name}>
-                            {name}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-                <Link
-                  href="/"
-                  aria-label="街街的脏书包｜前沿技术与深度思考"
-                  className="flex items-end justify-start gap-4 h-10"
-                >
-                  <div className="text-3xl font-bold text-gray-800 leading-tight min-w-56">
-                    街街的脏书包
-                  </div>
-                </Link>
-              </div>
-              <div className="navbar-center hidden sm:flex">
-                <LayoutNav />
-              </div>
-              <div className="navbar-end">
-                <Link
-                  href={"https://github.com/odaneo"}
-                  target="_blank"
-                  className="btn btn-ghost btn-circle"
-                >
-                  <Github />
-                </Link>
-              </div>
-            </div>
-          </header>
-          {children}
-        </div>
-        <footer className="mx-auto max-w-4xl text-base-content p-6 w-full">
-          <div className="footer sm:footer-horizontal">
-            <nav>
-              <Link
-                className="link link-hover hover:underline-offset-3"
-                href={"/contact"}
-              >
-                联系
-              </Link>
-            </nav>
+        <header className="site-header">
+          <div className="site-shell site-header-inner">
+            <Link href="/" className="site-brand">
+              <span className="site-mark">
+                <PawPrint size={19} aria-hidden="true" />
+              </span>
+              街街的脏书包
+            </Link>
+            <LayoutNav />
+            <a
+              href="https://github.com/odaneo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="icon-link site-github"
+              aria-label="GitHub"
+            >
+              <Github size={19} aria-hidden="true" />
+            </a>
           </div>
-          <aside className="mt-10 text-center">
-            <p>
-              Copyright © {new Date().getFullYear()} -
-              <Link
-                className="link link-hover hover:underline-offset-3"
-                href={"https://odaneo.com"}
-              >
-                {" "}
-                odaneo.com{" "}
-              </Link>
-              保留所有权利
-            </p>
-          </aside>
+        </header>
+        <main className="site-shell site-main">{children}</main>
+        <footer className="site-shell site-footer">
+          <p>© {new Date().getFullYear()} Curtis · 街街的脏书包</p>
+          <Link href="/contact">联系我</Link>
         </footer>
         <ScrollToTop />
       </body>

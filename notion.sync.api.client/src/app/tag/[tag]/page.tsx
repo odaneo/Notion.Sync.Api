@@ -2,6 +2,8 @@ import { articlePath, jsonLd as serializeJsonLd } from "@/lib/blog-path";
 import { getTagDetailWithArticles } from "@/lib/blog";
 import ArticleList from "@/components/ArticleList";
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 type PageProps = {
   params: Promise<{ tag: string }>;
@@ -98,21 +100,21 @@ export default async function TagPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
-      <h1 className="sr-only">
-        街街的脏书包 - 专注于 C#、Next.js、React、TypeScript、AWS 的全栈技术博客
-      </h1>
-      <main className="mt-5 w-full">
-        <h2 className="text-2xl ml-4 mb-5 italic">标签：{data.tag?.title}</h2>
-        <ul className="flex flex-col gap-y-2 mx-10">
-          {article.map(({ id, ...props }) => {
-            return (
-              <li key={id}>
-                <ArticleList {...props} />
-              </li>
-            );
-          })}
-        </ul>
-      </main>
+      <header className="page-heading">
+        <Link className="text-link" href="/tag">
+          <ArrowLeft size={16} aria-hidden="true" /> 所有标签
+        </Link>
+        <h1>{data.tag.title}</h1>
+        {data.tag.description && <p>{data.tag.description}</p>}
+        <p className="entry-date">共 {article.length} 篇文章</p>
+      </header>
+      <ul className="entry-list">
+        {article.map(({ id, ...props }) => (
+          <li key={id}>
+            <ArticleList {...props} />
+          </li>
+        ))}
+      </ul>
     </>
   );
 }

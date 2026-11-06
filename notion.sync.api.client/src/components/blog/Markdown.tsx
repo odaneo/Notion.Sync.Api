@@ -17,7 +17,7 @@ export default async function Markdown({
 }) {
   const articles = await getAllArticles();
   return (
-    <div className="markdown px-4">
+    <div className="markdown">
       <ReactMarkdown
         skipHtml
         remarkPlugins={[remarkGfm, remarkArticleLinks(articles, sourcePath)]}
