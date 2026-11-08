@@ -145,9 +145,12 @@ test(
       1,
       "multi-tag articles appear once",
     );
-    assert.equal(
-      (await get("/blog/primary/cache-sample", { redirect: "manual" })).status,
-      404,
-    );
+    const legacy = await get("/blog/primary/cache-sample?from=old-link", {
+      redirect: "manual",
+    });
+    assert.equal(legacy.status, 308);
+    const destination = new URL(legacy.headers.get("location"), legacy.url);
+    assert.equal(destination.pathname, "/blog/cache-sample");
+    assert.equal(destination.search, "?from=old-link");
   },
 );
