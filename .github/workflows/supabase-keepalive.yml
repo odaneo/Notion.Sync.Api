@@ -1,0 +1,26 @@
+name: Supabase keepalive
+
+on:
+  schedule:
+    - cron: '17 */8 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Read one article ID
+        shell: bash
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SCHEMA: ${{ secrets.SUPABASE_SCHEMA }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          curl --fail --silent --show-error --retry 2 --max-time 20 \
+            --header "apikey: ${SUPABASE_PUBLISHABLE_KEY:?Missing SUPABASE_PUBLISHABLE_KEY}" \
+            --header "Accept-Profile: ${SUPABASE_SCHEMA:?Missing SUPABASE_SCHEMA}" \
+            "${SUPABASE_URL%/}/rest/v1/Articles?select=Id&limit=1" \
+            | jq -e 'type == "array"' > /dev/null
