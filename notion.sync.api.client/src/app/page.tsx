@@ -66,7 +66,7 @@ export default async function AppPage() {
           <h1>街街的脏书包</h1>
           <p className="hero-description">
             我是 Curtis，一名全栈开发者。这里记录 React、.NET 和 AWS
-            的实践，也收下平时遇到的有趣问题。
+            的实践，也收录平时遇到的有趣问题。
           </p>
           <Link className="primary-link" href="/blog">
             浏览文章 <ArrowRight size={17} aria-hidden="true" />
